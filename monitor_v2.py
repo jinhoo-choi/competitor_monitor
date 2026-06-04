@@ -66,10 +66,15 @@ HARD_EXCLUDE_PATTERNS = [
     r"\[오늘의\s*게임.IT\s*소식\]",
     # IB·법인·인프라 금융 기사
     r"인프라\s*금융", r"생산적\s*금융", r"첨단\s*인프라", r"프로젝트\s*파이낸싱",
-    r"부동산\s*금융", r"PF\s*대출", r"항공\s*금융", r"선박\s*금융",
+    r"부동산\s*금융", r"PF\s*대출", r"PF\s*충격", r"PF\s*리스크", r"PF\s*부실",
+    r"항공\s*금융", r"선박\s*금융",
     # 금융권 전반 이벤트·행사 묶음 기사
     r"금융권.{0,10}이벤트\s*전개", r"금융권.{0,10}맞이.{0,5}이벤트",
     r"금융권.{0,10}행사", r"6월\s*맞이.{0,10}금융",
+    # 인터넷은행 — 토스뱅크·케이뱅크·카카오뱅크 기사 (증권사 오분류 방지)
+    r"토스뱅크", r"케이뱅크", r"카카오뱅크", r"인터넷은행", r"인뱅\s*[0-9]인자",
+    # 글로벌 마케팅·홍보 기사
+    r"나스닥\s*타워", r"글로벌\s*마케팅", r"해외\s*홍보", r"글로벌\s*광고",
 ]
 HARD_EXCLUDE_RE = re.compile("|".join(HARD_EXCLUDE_PATTERNS))
 
@@ -418,14 +423,14 @@ def collect_articles(seen: dict) -> list[dict]:
                     # ── 24시간 필터
                     if not _is_within_cutoff(art.get("pubDate","")):
                         continue
-                    # ── 자사 기사 제외 — 제목만으로도 체크 (broad 수집 시 description에 자사명 없어도 제목에 있을 수 있음)
-                    title_text = art.get("title","")
-                    full_text  = title_text + art.get("description","")
-                    if KIS_EXCLUDE_RE.search(title_text) or KIS_EXCLUDE_RE.search(full_text):
+                    # ── 자사 기사 제외 — clean_html 전 원본 텍스트로 체크
+                    raw_title = art.get("title","")
+                    raw_desc  = art.get("description","")
+                    raw_text  = raw_title + raw_desc
+                    if KIS_EXCLUDE_RE.search(raw_title) or KIS_EXCLUDE_RE.search(raw_text):
                         continue
-                    # ── 금융 무관 기사 제외 — 제목 기준으로만 체크
-                    # description 포함 시 투자 종목 뉴스도 통과되는 오탐 방지
-                    if not FINANCE_RE.search(art.get("title","")):
+                    # ── 금융 무관 기사 제외 — 제목 기준
+                    if not FINANCE_RE.search(raw_title):
                         continue
                     if is_duplicate(art, seen):
                         continue
@@ -600,7 +605,7 @@ ACTION_RULES = """
 """
 
 MAX_ANALYZE_ARTICLES = 15  # AI 비용 폭증 방지 상한
-GRADE_LIMITS = {"상": 2, "중": 3}  # 영향도 상한 — 초과 시 다음 등급 강등
+GRADE_LIMITS = {"상": 2, "중": 3, "하": 5}  # 영향도 상한 — 초과 시 다음 등급 강등/제거
 
 def analyze_article(art: dict) -> dict:
     global _ai_fail_count
@@ -1542,6 +1547,13 @@ def main():
         a["analysis"]["impact_level"] = "하"
         regrade_log.append(f"  [강등] 중→하: {a['_company']} | {a['title'][:35]}")
         bucket["하"].append(a)
+
+    # 하 → 초과분 제거 (점수 낮은 순, 5건 초과 시 드롭)
+    bucket["하"].sort(key=_impact_score, reverse=True)
+    over_low = bucket["하"][GRADE_LIMITS["하"]:]
+    bucket["하"] = bucket["하"][:GRADE_LIMITS["하"]]
+    for a in over_low:
+        regrade_log.append(f"  [제거] 하 초과: {a['_company']} | {a['title'][:35]}")
 
     if regrade_log:
         print("  등급 재조정:")
