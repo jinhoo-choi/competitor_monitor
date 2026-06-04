@@ -71,7 +71,8 @@ HARD_EXCLUDE_RE = re.compile("|".join(HARD_EXCLUDE_PATTERNS))
 FINANCE_RE = re.compile(
     r"증권|투자|금융|주식|펀드|ETF|IRP|ISA|연금|수수료|MTS|HTS|"
     r"계좌|자산|채권|파생|선물|옵션|공모|IPO|STO|토큰|디지털자산|"
-    r"거래소|환전|외환|뱅키스|플랫폼|서비스\s*출시|앱\s*출시|제휴|MOU"
+    r"거래소|환전|외환|뱅키스|플랫폼|서비스\s*출시|앱\s*출시|제휴|MOU|"
+    r"키움|토스|미래에셋|메리츠|신한투자|NH투자|나무증권|카카오페이증권|대신|한화투자"
 )
 
 def hard_filter(articles: list[dict]) -> list[dict]:
@@ -393,8 +394,9 @@ def collect_articles(seen: dict) -> list[dict]:
                     text = art.get("title","") + art.get("description","")
                     if KIS_EXCLUDE_RE.search(text):
                         continue
-                    # ── 금융 무관 기사 제외 (targeted/broad 공통)
-                    if not FINANCE_RE.search(text):
+                    # ── 금융 무관 기사 제외 — 제목 기준으로만 체크
+                    # description 포함 시 투자 종목 뉴스도 통과되는 오탐 방지
+                    if not FINANCE_RE.search(art.get("title","")):
                         continue
                     if is_duplicate(art, seen):
                         continue
