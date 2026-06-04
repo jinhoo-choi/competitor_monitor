@@ -644,12 +644,12 @@ JSON only, 다른 텍스트 없이:
             raw_text = raw_text[:end_idx]
         analysis = json.loads(raw_text)
 
-        # ── 회사명 갱신: AI가 추출한 company_name이 수집 키워드 회사명과 다르면 갱신
-        # broad/targeted 공통 적용 — 단, KIS 자사명은 덮어쓰지 않음
+        # ── 회사명 갱신: broad 기사만 AI 추출 company_name으로 갱신
+        # targeted는 수집 키워드 기준 회사명이 더 정확하므로 고정
         extracted = analysis.get("company_name","").strip()
-        if (extracted and extracted != "-"
-                and not KIS_EXCLUDE_RE.search(extracted)
-                and extracted != art.get("_company","")):
+        if (art.get("_source_type") == "broad"
+                and extracted and extracted != "-"
+                and not KIS_EXCLUDE_RE.search(extracted)):
             art["_company"] = extracted
 
         if not analysis.get("impact_domain","").strip():
