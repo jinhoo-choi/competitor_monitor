@@ -12,7 +12,7 @@ KIS 경쟁사 영향 탐지봇 v2
 - 발신자명 displayname 설정
 - 매체 티어 배지 (1군/2군)
 - table 기반 640px 이메일 (Outlook·모바일 호환)
-- 이메일 제목: (eBiz본부) 경쟁사 인사이트 탐지_MM월 DD일 HH시 기준 [영향도 상 N건]
+- 이메일 제목: [인사이트 탐지] MM월 DD일 HH시 MM분 기준 [영향도 상 N건]
 """
 
 import os, json, hashlib, smtplib, urllib.request, urllib.parse, re
@@ -593,7 +593,7 @@ JSON only, 다른 텍스트 없이:
   "impact_level": "상/중/하 중 택1",
   "impact_score": 1.0~10.0 사이 숫자 (소수점 1자리, 영향도와 일관성 유지),
   "impact_domain": "영향받는 한투 사업영역 (최대 20자)",
-  "threat_type": "신규진출/기능강화/수수료경쟁/제휴·지분/플랫폼확장 중 택1",
+  "threat_type": "신규진출/기능강화/수수료경쟁/제휴·지분/플랫폼확장 중 반드시 택1. 모르면 가장 근접한 것 선택. '-' 입력 금지.",
   "summary": "기사 핵심 요약 (80자 이내, 본문 명시 내용만)",
   "impact_tags": {{
     "위협유형": "위협의 핵심 성격 (6자 이내)",
@@ -624,6 +624,11 @@ JSON only, 다른 텍스트 없이:
 
         if not analysis.get("impact_domain","").strip():
             analysis["impact_domain"] = "-"
+
+        # threat_type 유효값 강제 — '-' 또는 범위 외 값이면 '기능강화' 대체
+        VALID_THREATS = {"신규진출","기능강화","수수료경쟁","제휴·지분","플랫폼확장"}
+        if analysis.get("threat_type","") not in VALID_THREATS:
+            analysis["threat_type"] = "기능강화"
         _ai_fail_count = 0
         return {**art, "analysis": analysis}
     except Exception as e:
@@ -880,7 +885,8 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
         a.get("_company","") for a in analyzed if a.get("analysis")
     )
     threat_counter = Counter(
-        a["analysis"].get("threat_type","") for a in analyzed if a.get("analysis")
+        a["analysis"].get("threat_type","") for a in analyzed
+        if a.get("analysis") and a["analysis"].get("threat_type","") not in ("-","")
     )
 
     # 경쟁사 바 차트 — 회사명 고정폭(px) + 바 + 건수 정렬
@@ -1164,7 +1170,7 @@ def send_email(html: str, analyzed: list[dict], raw_count: int):
     high_count = sum(1 for a in analyzed
                      if a.get("analysis") and a["analysis"].get("impact_level") == "상")
     urgent_tag = f" [영향도 상 {high_count}건]" if high_count > 0 else ""
-    subject    = f"(eBiz본부) 경쟁사 인사이트 탐지_{now_str} 기준{urgent_tag}"
+    subject    = f"[인사이트 탐지] {now_str} 기준{urgent_tag}"
 
     cc = RECIPIENTS_HIGH if high_count > 0 and RECIPIENTS_HIGH else None
     _smtp_send(subject, html, RECIPIENTS_ALL, cc)
@@ -1296,7 +1302,7 @@ def main():
     print(f"{'='*55}")
 
     seen = load_seen()
-    now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
+    now_str = datetime.now(KST).strftime("%m월 %d일 %H시 %M분")
 
     # ── 1) 병렬 수집
     print("\n[1/5] 네이버 뉴스 수집 중 (병렬)...")
@@ -1305,7 +1311,7 @@ def main():
 
     if not raw:
         print("  신규 뉴스 없음.")
-        subj = f"(eBiz본부) 경쟁사 인사이트 탐지_{now_str} — 신규 뉴스 없음"
+        subj = f"[인사이트 탐지] {now_str} — 신규 뉴스 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
         return
@@ -1339,7 +1345,7 @@ def main():
 
     if not relevant:
         print("  한투 영향 기사 없음.")
-        subj = f"(eBiz본부) 경쟁사 인사이트 탐지_{now_str} — 해당 기사 없음"
+        subj = f"[인사이트 탐지] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
         save_filter_log(raw, hard_excluded, [], [])
@@ -1386,6 +1392,44 @@ def main():
         if result.get("analysis"):
             new_title_norms.append(_normalize_title(art.get("title","")))
             new_desc_norms.append(_normalize_title(art.get("description","")))
+
+    # ── 동일 사건 중복 제거
+    # 같은 회사 + 같은 위협유형 조합에서 impact_score 최고 1건만 유지, 나머지 제거
+    def _dedup_same_event(arts: list) -> list:
+        from collections import defaultdict
+        def sc(a):
+            try: return float(a.get("analysis",{}).get("impact_score", 0))
+            except: return 0.0
+
+        # 분석 성공 기사만 그룹핑
+        groups = defaultdict(list)
+        no_analysis = []
+        for a in arts:
+            an = a.get("analysis")
+            if not an:
+                no_analysis.append(a)
+                continue
+            key = (a.get("_company",""), an.get("threat_type",""))
+            groups[key].append(a)
+
+        kept, removed = [], []
+        for key, group in groups.items():
+            if len(group) == 1:
+                kept.append(group[0])
+                continue
+            # 점수 내림차순 정렬 후 1건만 유지
+            group.sort(key=sc, reverse=True)
+            kept.append(group[0])
+            for dup in group[1:]:
+                removed.append(dup)
+                print(f"  [중복제거] {dup['_company']} | {dup['title'][:45]}")
+
+        if removed:
+            print(f"  → 동일 사건 중복 {len(removed)}건 제거")
+
+        return kept + no_analysis
+
+    analyzed = _dedup_same_event(analyzed)
 
     # ── 등급 상한 적용: 상 2건·중 3건 초과 시 다음 등급으로 강등
 
