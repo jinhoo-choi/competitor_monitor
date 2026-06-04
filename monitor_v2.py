@@ -63,6 +63,13 @@ HARD_EXCLUDE_PATTERNS = [
 ]
 HARD_EXCLUDE_RE = re.compile("|".join(HARD_EXCLUDE_PATTERNS))
 
+# 금융 무관 기사 필터 — targeted/broad 공통, 제목+description에 하나도 없으면 스킵
+FINANCE_RE = re.compile(
+    r"증권|투자|금융|주식|펀드|ETF|IRP|ISA|연금|수수료|MTS|HTS|"
+    r"계좌|자산|채권|파생|선물|옵션|공모|IPO|STO|토큰|디지털자산|"
+    r"거래소|환전|외환|뱅키스|플랫폼|서비스\s*출시|앱\s*출시|제휴|MOU"
+)
+
 def hard_filter(articles: list[dict]) -> list[dict]:
     passed, blocked = [], 0
     for art in articles:
@@ -350,7 +357,9 @@ def fetch_article_body(url: str) -> str:
         return ""
 
 def _crawl_keyword(args: tuple) -> tuple:
+    import time as _time
     source_type, company, kw = args
+    _time.sleep(0.3)   # 429 방지 — 호출 간 최소 딜레이
     items = fetch_naver_news(kw, display=5)
     return source_type, company, items
 
@@ -367,7 +376,7 @@ def collect_articles(seen: dict) -> list[dict]:
 
     results, targeted_cnt, broad_cnt = [], 0, 0
 
-    with ThreadPoolExecutor(max_workers=6) as ex:
+    with ThreadPoolExecutor(max_workers=3) as ex:  # 429 방지 — 3으로 축소
         futures = {ex.submit(_crawl_keyword, t): t for t in tasks}
         for future in as_completed(futures):
             try:
@@ -376,10 +385,13 @@ def collect_articles(seen: dict) -> list[dict]:
                     # ── 24시간 필터
                     if not _is_within_cutoff(art.get("pubDate","")):
                         continue
-                    if source_type == "broad":
-                        text = art.get("title","") + art.get("description","")
-                        if KIS_EXCLUDE_RE.search(text):
-                            continue
+                    # ── 자사 기사 제외 (targeted/broad 공통)
+                    text = art.get("title","") + art.get("description","")
+                    if KIS_EXCLUDE_RE.search(text):
+                        continue
+                    # ── 금융 무관 기사 제외 (targeted/broad 공통)
+                    if not FINANCE_RE.search(text):
+                        continue
                     if is_duplicate(art, seen):
                         continue
                     for field in ("title","description"):
@@ -609,17 +621,28 @@ JSON only, 다른 텍스트 없이:
             messages=[{"role":"user","content":prompt}]
         )
         raw_text = res.content[0].text.strip()
-        # ── JSON 파싱 방어: ```json ... ``` 래퍼 제거
+        # ── JSON 파싱 방어: ```json 래퍼 제거 + Extra data 방어
         raw_text = re.sub(r"^```json\s*", "", raw_text)
         raw_text = re.sub(r"\s*```$", "", raw_text)
+        # JSON이 두 개 이상 붙어있는 경우 첫 번째만 추출
+        brace_depth, end_idx = 0, -1
+        for i, ch in enumerate(raw_text):
+            if ch == "{": brace_depth += 1
+            elif ch == "}":
+                brace_depth -= 1
+                if brace_depth == 0:
+                    end_idx = i + 1
+                    break
+        if end_idx > 0:
+            raw_text = raw_text[:end_idx]
         analysis = json.loads(raw_text)
 
-        # ── broad 기사: AI가 추출한 회사명으로 _company 갱신
-        # 단, 한국투자증권 자사명이 추출되면 덮어쓰지 않음
+        # ── 회사명 갱신: AI가 추출한 company_name이 수집 키워드 회사명과 다르면 갱신
+        # broad/targeted 공통 적용 — 단, KIS 자사명은 덮어쓰지 않음
         extracted = analysis.get("company_name","").strip()
-        if (art.get("_source_type") == "broad"
-                and extracted and extracted != "-"
-                and not KIS_EXCLUDE_RE.search(extracted)):
+        if (extracted and extracted != "-"
+                and not KIS_EXCLUDE_RE.search(extracted)
+                and extracted != art.get("_company","")):
             art["_company"] = extracted
 
         if not analysis.get("impact_domain","").strip():
@@ -662,7 +685,7 @@ def _card_low(art: dict) -> str:
     is_major = company in MAJOR_COMPETITORS
 
     tier_badge = (
-        f'<span style="font-size:9px;color:#1e5c3a;background:#e8f5e9;'
+        f'<span style="font-size:10px;color:#1e5c3a;background:#e8f5e9;'
         f'padding:1px 5px;margin-left:5px;font-family:Arial,sans-serif;">주요 경쟁사</span>'
         if is_major else ""
     )
@@ -670,7 +693,7 @@ def _card_low(art: dict) -> str:
 
     return (
         f'<tr><td style="padding:5px 16px;border-bottom:1px solid #f0f0f0;">'
-        f'<p style="margin:0;font-size:12px;font-family:Arial,sans-serif;">'
+        f'<p style="margin:0;font-size:13px;font-family:Arial,sans-serif;">'
         f'<span style="color:#888;margin-right:6px;">·</span>'
         f'<span style="color:#555;font-weight:bold;">{company}</span>{tier_badge}'
         f'&nbsp;&nbsp;'
@@ -698,8 +721,8 @@ def _card(art: dict) -> str:
             f'<table width="100%" cellpadding="0" cellspacing="0"'
             f' style="background:#fafafa;border-top:2px solid #cccccc;border-right:1px solid #e0e0e0;">'
             f'<tr><td style="padding:10px 16px;">'
-            f'<p style="margin:0 0 3px;font-size:9px;color:#aaa;font-family:Arial,sans-serif;letter-spacing:1px;">분석 실패</p>'
-            f'<p style="margin:0;font-size:12px;color:#666;font-family:Arial,sans-serif;">'
+            f'<p style="margin:0 0 3px;font-size:10px;color:#aaa;font-family:Arial,sans-serif;letter-spacing:1px;">분석 실패</p>'
+            f'<p style="margin:0;font-size:13px;color:#666;font-family:Arial,sans-serif;">'
             f'{company} &nbsp;|&nbsp; {title_cell}</p>'
             f'</td></tr></table></td></tr>'
         )
@@ -721,8 +744,8 @@ def _card(art: dict) -> str:
         bar = "&#9608;" * round(s) + "&#9617;" * (10 - round(s))
         sc  = "#c0392b" if s >= 7 else "#b45309" if s >= 5 else "#666666"
         score_html = (
-            f'<span style="font-size:15px;font-weight:bold;color:{sc};font-family:Arial,sans-serif;">{s:.1f}</span>'
-            f'<span style="font-size:8px;color:{sc};font-family:\'Courier New\',Courier,monospace;'
+            f'<span style="font-size:16px;font-weight:bold;color:{sc};font-family:Arial,sans-serif;">{s:.1f}</span>'
+            f'<span style="font-size:9px;color:{sc};font-family:\'Courier New\',Courier,monospace;'
             f'letter-spacing:-1px;margin-left:5px;opacity:0.8;">{bar}</span>'
         )
     except Exception:
@@ -737,14 +760,14 @@ def _card(art: dict) -> str:
     except Exception:
         pass
     pub_span = (
-        f'&nbsp;<span style="font-size:10px;color:#bbbbbb;font-family:Arial,sans-serif;">{pub_str}</span>'
+        f'&nbsp;<span style="font-size:11px;color:#bbbbbb;font-family:Arial,sans-serif;">{pub_str}</span>'
         if pub_str else ""
     )
 
     # ② 매체 주요 경쟁사 배지 — 주요 경쟁사 8개사만 표시
     is_major = company in MAJOR_COMPETITORS
     tier_badge = (
-        f'<span style="font-size:9px;color:#1e5c3a;background:#e8f5e9;'
+        f'<span style="font-size:10px;color:#1e5c3a;background:#e8f5e9;'
         f'padding:2px 7px;border:1px solid #a8d5b5;font-family:Arial,sans-serif;margin-left:6px;">주요 경쟁사</span>'
         if is_major else ""
     )
@@ -757,8 +780,8 @@ def _card(art: dict) -> str:
             f' style="width:198px;background:{bg};border-top:3px solid {top_c};'
             f'border-left:1px solid #e4e4e4;border-right:1px solid #e4e4e4;border-bottom:1px solid #e4e4e4;">'
             f'<tr><td style="padding:7px 9px;">'
-            f'<p style="margin:0;font-size:9px;color:{lc2};font-family:Arial,sans-serif;">{icon}&nbsp;{label}</p>'
-            f'<p style="margin:4px 0 0;font-size:11px;font-weight:bold;color:{vc};font-family:Arial,sans-serif;line-height:1.3;">{val}</p>'
+            f'<p style="margin:0;font-size:10px;color:{lc2};font-family:Arial,sans-serif;">{icon}&nbsp;{label}</p>'
+            f'<p style="margin:4px 0 0;font-size:12px;font-weight:bold;color:{vc};font-family:Arial,sans-serif;line-height:1.3;">{val}</p>'
             f'</td></tr></table></td>'
         )
 
@@ -768,7 +791,7 @@ def _card(art: dict) -> str:
 
     # 모바일 전용 한 줄 텍스트 (데스크톱에서는 미디어쿼리로 숨김)
     tag_inline = (
-        f'<p class="tag-inline" style="display:none;margin:6px 0 0;font-size:11px;'
+        f'<p class="tag-inline" style="display:none;margin:6px 0 0;font-size:12px;'
         f'font-family:Arial,sans-serif;line-height:1.6;">'
         f'<span style="color:#2d8653;font-weight:bold;">{domain}</span>'
         f'<span style="color:#cccccc;padding:0 5px;">·</span>'
@@ -792,15 +815,15 @@ def _card(art: dict) -> str:
               <td class="header-td" style="padding:9px 16px;vertical-align:middle;">
                 <table cellpadding="0" cellspacing="0"><tr>
                   <td style="padding-right:6px;">
-                    <span style="background:{lc};color:#ffffff;font-size:10px;font-weight:bold;
+                    <span style="background:{lc};color:#ffffff;font-size:11px;font-weight:bold;
                                  padding:3px 10px;font-family:Arial,sans-serif;">영향도 {lvl}</span>
                   </td>
                   <td style="padding-right:6px;">
-                    <span style="background:#2c3e50;color:#ffffff;font-size:10px;
+                    <span style="background:#2c3e50;color:#ffffff;font-size:11px;
                                  padding:3px 10px;font-family:Arial,sans-serif;">{company}</span>
                   </td>
                   <td style="padding-right:6px;">
-                    <span style="background:#ffffff;color:#555555;font-size:10px;
+                    <span style="background:#ffffff;color:#555555;font-size:11px;
                                  padding:3px 10px;border:1px solid #dddddd;font-family:Arial,sans-serif;">{threat}</span>
                   </td>
                   <td>{tier_badge}</td>
@@ -817,12 +840,12 @@ def _card(art: dict) -> str:
             <tr>
               <td class="title-td" style="padding:12px 16px 8px;vertical-align:top;">
                 <a href="{link}"
-                   style="font-size:13px;font-weight:bold;color:#1a1a1a;text-decoration:none;
+                   style="font-size:14px;font-weight:bold;color:#1a1a1a;text-decoration:none;
                           font-family:Arial,sans-serif;line-height:1.5;">{title}</a>{pub_span}
               </td>
               <td class="goto-td" style="padding:12px 16px 8px;vertical-align:top;text-align:right;white-space:nowrap;">
                 <a href="{link}"
-                   style="font-size:10px;color:#1e5c3a;font-weight:bold;text-decoration:none;
+                   style="font-size:11px;color:#1e5c3a;font-weight:bold;text-decoration:none;
                           border:1px solid #1e5c3a;padding:3px 10px;font-family:Arial,sans-serif;">바로가기 &#8599;</a>
               </td>
             </tr>
@@ -831,9 +854,9 @@ def _card(art: dict) -> str:
               <table width="100%" cellpadding="0" cellspacing="0"
                      style="background:#f8f9fa;border-left:3px solid #2d8653;">
                 <tr><td style="padding:9px 12px;">
-                  <p style="margin:0 0 4px;font-size:9px;font-weight:bold;color:#2d8653;
+                  <p style="margin:0 0 4px;font-size:10px;font-weight:bold;color:#2d8653;
                              letter-spacing:1px;font-family:Arial,sans-serif;">AI 요약</p>
-                  <p style="margin:0;font-size:12px;color:#333333;line-height:1.65;
+                  <p style="margin:0;font-size:13px;color:#333333;line-height:1.65;
                              font-family:Arial,sans-serif;">{summ}</p>
                 </td></tr>
               </table>
@@ -843,7 +866,7 @@ def _card(art: dict) -> str:
               <table width="100%" cellpadding="0" cellspacing="0"
                      style="background:#fafafa;border:1px solid #ebebeb;">
                 <tr><td style="padding:10px 10px 8px;">
-                  <p style="margin:0 0 8px;font-size:9px;font-weight:bold;color:#444444;
+                  <p style="margin:0 0 8px;font-size:10px;font-weight:bold;color:#444444;
                              letter-spacing:1px;font-family:Arial,sans-serif;">AI 영향 분석</p>
                   <table class="tag-cards" cellpadding="0" cellspacing="0" style="width:100%;">
                     <tr class="tag-row">{t1}{t2}{t3}</tr>
@@ -858,9 +881,9 @@ def _card(art: dict) -> str:
                      style="background:#f6fef9;border-top:1px solid #a8d5b5;border-right:1px solid #a8d5b5;
                             border-bottom:1px solid #a8d5b5;border-left:4px solid #1e5c3a;">
                 <tr><td style="padding:10px 13px;">
-                  <p style="margin:0 0 6px;font-size:9px;font-weight:bold;color:#1e5c3a;
+                  <p style="margin:0 0 6px;font-size:10px;font-weight:bold;color:#1e5c3a;
                              letter-spacing:1px;font-family:Arial,sans-serif;">&#128161;&nbsp;AI 추천 대응 방안</p>
-                  <p style="margin:0;font-size:12px;color:#1b3a28;line-height:1.8;
+                  <p style="margin:0;font-size:13px;color:#1b3a28;line-height:1.8;
                              font-family:Arial,sans-serif;">{action}</p>
                 </td></tr>
               </table>
@@ -896,20 +919,20 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
         bar_w = max(4, round(cnt / max_co_cnt * 100))
         is_major = co in MAJOR_COMPETITORS
         major_tag = (
-            f'<span style="font-size:8px;color:#52b788;font-family:Arial,sans-serif;margin-left:3px;">★</span>'
+            f'<span style="font-size:9px;color:#52b788;font-family:Arial,sans-serif;margin-left:3px;">★</span>'
             if is_major else ""
         )
         company_rows += (
             f'<tr>'
             f'<td class="chart-label" width="110" style="width:110px;padding:3px 8px 3px 0;vertical-align:middle;white-space:nowrap;">'
-            f'<span style="font-size:10px;color:#d8f3dc;font-family:Arial,sans-serif;">{co}</span>{major_tag}'
+            f'<span style="font-size:11px;color:#d8f3dc;font-family:Arial,sans-serif;">{co}</span>{major_tag}'
             f'</td>'
             f'<td style="padding:3px 0;vertical-align:middle;">'
             f'<table cellpadding="0" cellspacing="0" style="width:100%;"><tr>'
             f'<td width="{bar_w}" height="8" style="width:{bar_w}px;height:8px;'
             f'background:#52b788;border-radius:2px;font-size:0;line-height:0;">&nbsp;</td>'
             f'<td style="padding-left:6px;vertical-align:middle;">'
-            f'<span style="font-size:10px;color:#95d5b2;font-family:Arial,sans-serif;">{cnt}건</span>'
+            f'<span style="font-size:11px;color:#95d5b2;font-family:Arial,sans-serif;">{cnt}건</span>'
             f'</td>'
             f'</tr></table>'
             f'</td>'
@@ -934,7 +957,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
             f'<table cellpadding="0" cellspacing="0"><tr>'
             f'<td width="8" height="8" style="width:8px;height:8px;background:{tc};border-radius:2px;font-size:0;line-height:0;">&nbsp;</td>'
             f'<td style="padding-left:5px;vertical-align:middle;">'
-            f'<span style="font-size:10px;color:#d8f3dc;font-family:Arial,sans-serif;">{th}</span>'
+            f'<span style="font-size:11px;color:#d8f3dc;font-family:Arial,sans-serif;">{th}</span>'
             f'</td></tr></table>'
             f'</td>'
             f'<td style="padding:3px 0;vertical-align:middle;">'
@@ -942,7 +965,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
             f'<td width="{bar_w}" height="8" style="width:{bar_w}px;height:8px;'
             f'background:{tc};opacity:0.7;border-radius:2px;font-size:0;line-height:0;">&nbsp;</td>'
             f'<td style="padding-left:6px;vertical-align:middle;">'
-            f'<span style="font-size:10px;color:#95d5b2;font-family:Arial,sans-serif;">{cnt}건</span>'
+            f'<span style="font-size:11px;color:#95d5b2;font-family:Arial,sans-serif;">{cnt}건</span>'
             f'</td>'
             f'</tr></table>'
             f'</td>'
@@ -959,8 +982,8 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
         border_r = "border-right:1px solid rgba(255,255,255,0.15);" if label != "하" else ""
         dash_cells += (
             f'<td width="33%" align="center" style="padding:8px 0;{border_r}">'
-            f'<p class="dash-num" style="margin:0 0 1px;font-size:18px;font-weight:bold;color:{color};font-family:Arial,sans-serif;">{len(items)}</p>'
-            f'<p style="margin:0;font-size:10px;color:#d8f3dc;font-family:Arial,sans-serif;">영향도 {label}</p>'
+            f'<p class="dash-num" style="margin:0 0 1px;font-size:19px;font-weight:bold;color:{color};font-family:Arial,sans-serif;">{len(items)}</p>'
+            f'<p style="margin:0;font-size:11px;color:#d8f3dc;font-family:Arial,sans-serif;">영향도 {label}</p>'
             f'</td>'
         )
 
@@ -978,7 +1001,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
       <table width="100%" cellpadding="0" cellspacing="0"
              style="background:#ffffff;border-right:1px solid #e0e0e0;border-bottom:1px solid #e8e8e8;">
         <tr><td style="padding:10px 16px 4px;">
-          <p style="margin:0;font-size:10px;font-weight:bold;color:#2e7d32;letter-spacing:1px;font-family:Arial,sans-serif;">
+          <p style="margin:0;font-size:11px;font-weight:bold;color:#2e7d32;letter-spacing:1px;font-family:Arial,sans-serif;">
             영향도 하 &nbsp;<span style="font-weight:normal;color:#aaa;">{len(low)}건 — 참고용</span>
           </p>
         </td></tr>
@@ -994,7 +1017,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
 
     if not cards_html:
         cards_html = (
-            '<tr><td style="padding:40px 16px;text-align:center;font-size:13px;color:#aaaaaa;'
+            '<tr><td style="padding:40px 16px;text-align:center;font-size:14px;color:#aaaaaa;'
             'font-family:Arial,sans-serif;background:#ffffff;border:1px solid #e0e0e0;">'
             '오늘 탐지된 영향 기사가 없습니다.</td></tr>'
         )
@@ -1021,7 +1044,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
       .header-td     {{ display:block!important; width:100%!important; box-sizing:border-box!important;
                         padding-left:16px!important; padding-right:16px!important; text-align:left!important; }}
       /* 대시보드 숫자 */
-      .dash-num      {{ font-size:14px!important; }}
+      .dash-num      {{ font-size:15px!important; }}
       /* 차트 좌우 → 세로 스택 */
       .chart-wrap    {{ display:block!important; width:100%!important; }}
       .chart-col     {{ display:block!important; width:100%!important; box-sizing:border-box!important;
@@ -1042,7 +1065,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
       /* AI 영향 분석 태그: 모바일에서 카드 숨기고 한 줄 텍스트 표시 */
       .tag-cards     {{ display:none!important; }}
       .tag-inline    {{ display:block!important; }}
-      .title-td a    {{ font-size:14px!important; }}
+      .title-td a    {{ font-size:15px!important; }}
     }}
   </style>
 </head>
@@ -1060,16 +1083,16 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
            style="background:#1e5c3a;border-radius:10px 10px 0 0;-webkit-border-radius:10px 10px 0 0;mso-border-radius:0;">
       <!--[if mso]><tr><td width="420" valign="top" class="header-td"><![endif]-->
       <!--[if !mso]><!--><tr><td class="header-td" style="padding:20px 22px 10px;vertical-align:top;"><!--<![endif]-->
-        <p style="margin:0;font-size:20px;font-weight:bold;color:#ffffff;
+        <p style="margin:0;font-size:21px;font-weight:bold;color:#ffffff;
                   font-family:Arial,sans-serif;letter-spacing:-0.3px;">&#129302; eBiz 인사이트봇</p>
-        <p style="margin:7px 0 0;font-size:11px;color:#74c69d;font-family:Arial,sans-serif;">
+        <p style="margin:7px 0 0;font-size:12px;color:#74c69d;font-family:Arial,sans-serif;">
           수집 {raw_count}건 &rarr; AI 선별 {filtered_count}건 &rarr;
           <strong style="color:#d8f3dc;">영향 탐지 {len(analyzed)}건</strong>
         </p>
       </td>
       <!--[if mso]><td width="180" valign="top" align="right" style="padding:20px 22px 10px;"><![endif]-->
       <!--[if !mso]><!--><td class="header-td" style="padding:20px 22px 10px;text-align:right;vertical-align:top;white-space:nowrap;"><!--<![endif]-->
-        <p style="margin:0;font-size:10px;color:#95d5b2;font-family:Arial,sans-serif;">{now_str}</p>
+        <p style="margin:0;font-size:11px;color:#95d5b2;font-family:Arial,sans-serif;">{now_str}</p>
       </td></tr>
 
       <!-- 영향도 대시보드 -->
@@ -1085,13 +1108,13 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
         <table class="chart-wrap" width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td class="chart-col" width="54%" valign="top" style="padding-right:10px;">
-              <p style="margin:0 0 8px;font-size:9px;color:#74c69d;letter-spacing:1px;
+              <p style="margin:0 0 8px;font-size:10px;color:#74c69d;letter-spacing:1px;
                          font-family:Arial,sans-serif;font-weight:bold;">금일 경쟁사별 탐지</p>
               <table width="100%" cellpadding="0" cellspacing="0">{company_rows}</table>
             </td>
             <td class="chart-divider" width="1" style="width:1px;background:rgba(255,255,255,0.12);padding:0;"></td>
             <td class="chart-col" width="45%" valign="top" style="padding-left:12px;">
-              <p style="margin:0 0 8px;font-size:9px;color:#74c69d;letter-spacing:1px;
+              <p style="margin:0 0 8px;font-size:10px;color:#74c69d;letter-spacing:1px;
                          font-family:Arial,sans-serif;font-weight:bold;">위협유형 분포</p>
               <table width="100%" cellpadding="0" cellspacing="0">{threat_rows}</table>
             </td>
@@ -1114,7 +1137,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
                   border-bottom:1px solid #e0e0e0;
                   border-radius:0 0 10px 10px;-webkit-border-radius:0 0 10px 10px;">
       <tr><td style="padding:13px 18px;">
-        <p style="margin:0;font-size:10px;color:#888888;line-height:2.0;font-family:Arial,sans-serif;">
+        <p style="margin:0;font-size:11px;color:#888888;line-height:2.0;font-family:Arial,sans-serif;">
           ※ 탐지 경쟁사 : 삼성증권, 토스증권, 미래에셋증권, NH투자증권, 키움증권, KB증권, 메리츠증권, 신한투자증권 외 전체 증권사<br>
           ※ 담당자 : 최진후 차장
         </p>
@@ -1199,7 +1222,7 @@ def send_email_error(error_msg: str, trace: str):
               white-space:pre-wrap;word-break:break-all;">{_esc(str(error_msg))}</pre>
   <h3>스택 트레이스</h3>
   <pre style="background:#f8f9fa;border:1px solid #dee2e6;padding:12px;
-              white-space:pre-wrap;word-break:break-all;font-size:11px;">{_esc(trace[-3000:])}</pre>
+              white-space:pre-wrap;word-break:break-all;font-size:12px;">{_esc(trace[-3000:])}</pre>
   <p style="color:#888;">GitHub Actions 워크플로우 로그에서 상세 확인 바랍니다.<br>담당자: 최진후 차장</p>
 </body></html>"""
     try:
@@ -1280,13 +1303,13 @@ def build_empty_html() -> str:
 <table width="640" align="center" cellpadding="0" cellspacing="0"
        style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;overflow:hidden;">
   <tr><td style="background:#1e5c3a;padding:20px 22px;">
-    <p style="margin:0;font-size:18px;font-weight:bold;color:#fff;">&#129302; eBiz 인사이트봇</p>
-    <p style="margin:6px 0 0;font-size:11px;color:#95d5b2;">{now_str}</p>
+    <p style="margin:0;font-size:19px;font-weight:bold;color:#fff;">&#129302; eBiz 인사이트봇</p>
+    <p style="margin:6px 0 0;font-size:12px;color:#95d5b2;">{now_str}</p>
   </td></tr>
-  <tr><td style="padding:40px;text-align:center;font-size:14px;color:#aaa;">
+  <tr><td style="padding:40px;text-align:center;font-size:15px;color:#aaa;">
     오늘 탐지된 영향 기사가 없습니다.
   </td></tr>
-  <tr><td style="padding:14px 18px;border-top:1px solid #e0e0e0;font-size:10px;color:#888;">
+  <tr><td style="padding:14px 18px;border-top:1px solid #e0e0e0;font-size:11px;color:#888;">
     ※ 담당자 : 최진후 차장
   </td></tr>
 </table>
@@ -1401,10 +1424,27 @@ def main():
             try: return float(a.get("analysis",{}).get("impact_score", 0))
             except: return 0.0
 
-        # 분석 성공 기사만 그룹핑
+        # 0단계: URL 완전 동일 기사 제거 (회사명이 달라도)
+        seen_links = {}
+        url_deduped = []
+        for a in arts:
+            link = a.get("link","") or a.get("originallink","")
+            if link and link in seen_links:
+                prev = seen_links[link]
+                if sc(a) > sc(prev):
+                    url_deduped.remove(prev)
+                    seen_links[link] = a
+                    url_deduped.append(a)
+                print(f"  [중복제거-URL] {a['_company']} | {a['title'][:45]}")
+            else:
+                if link:
+                    seen_links[link] = a
+                url_deduped.append(a)
+
+        # 1단계: 같은 회사 + 같은 위협유형 → 점수 최고 1건만 유지
         groups = defaultdict(list)
         no_analysis = []
-        for a in arts:
+        for a in url_deduped:
             an = a.get("analysis")
             if not an:
                 no_analysis.append(a)
@@ -1417,7 +1457,6 @@ def main():
             if len(group) == 1:
                 kept.append(group[0])
                 continue
-            # 점수 내림차순 정렬 후 1건만 유지
             group.sort(key=sc, reverse=True)
             kept.append(group[0])
             for dup in group[1:]:
