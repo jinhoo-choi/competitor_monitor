@@ -67,6 +67,9 @@ HARD_EXCLUDE_PATTERNS = [
     # IB·법인·인프라 금융 기사
     r"인프라\s*금융", r"생산적\s*금융", r"첨단\s*인프라", r"프로젝트\s*파이낸싱",
     r"부동산\s*금융", r"PF\s*대출", r"항공\s*금융", r"선박\s*금융",
+    # 금융권 전반 이벤트·행사 묶음 기사
+    r"금융권.{0,10}이벤트\s*전개", r"금융권.{0,10}맞이.{0,5}이벤트",
+    r"금융권.{0,10}행사", r"6월\s*맞이.{0,10}금융",
 ]
 HARD_EXCLUDE_RE = re.compile("|".join(HARD_EXCLUDE_PATTERNS))
 
@@ -273,6 +276,15 @@ def save_seen(seen: dict, sent_urls: set = None,
 def _normalize_title(text: str) -> str:
     t = unicodedata.normalize("NFKC", text or "")
     t = re.sub(r"\[.*?\]|\(.*?\)", "", t)
+    # 증권사 한자 약자 → 한글 정규화 (키움證 → 키움증권 등)
+    t = t.replace("키움證", "키움증권")
+    t = t.replace("삼성證", "삼성증권")
+    t = t.replace("미래에셋證", "미래에셋증권")
+    t = t.replace("KB證", "KB증권")
+    t = t.replace("NH證", "NH투자증권")
+    t = t.replace("토스證", "토스증권")
+    t = t.replace("메리츠證", "메리츠증권")
+    t = t.replace("신한投", "신한투자증권")
     t = re.sub(r"[^가-힣a-zA-Z0-9]", "", t)
     return t.strip()
 
