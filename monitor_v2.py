@@ -782,7 +782,7 @@ def _card(art: dict) -> str:
     <tr><td style="height:10px;background:#f0f0f0;font-size:0;line-height:0;">&nbsp;</td></tr>
     <tr><td style="padding:0;">
       <table width="100%" cellpadding="0" cellspacing="0"
-             style="background:#ffffff;border-right:1px solid #e0e0e0;border-bottom:1px solid #e8e8e8;border-top:3px solid {lvl_bd};">
+             style="background:#ffffff;border-right:1px solid #e0e0e0;border-bottom:1px solid #e8e8e8;">
         <tr><td style="padding:0;">
 
           <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0"><tr><td style="background:{lvl_bg};padding:9px 16px;" width="440"><![endif]-->
@@ -976,7 +976,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
     <tr><td style="height:10px;background:#f0f0f0;font-size:0;line-height:0;">&nbsp;</td></tr>
     <tr><td style="padding:0;">
       <table width="100%" cellpadding="0" cellspacing="0"
-             style="background:#ffffff;border-right:1px solid #e0e0e0;border-bottom:1px solid #e8e8e8;border-top:3px solid #2e7d32;">
+             style="background:#ffffff;border-right:1px solid #e0e0e0;border-bottom:1px solid #e8e8e8;">
         <tr><td style="padding:10px 16px 4px;">
           <p style="margin:0;font-size:10px;font-weight:bold;color:#2e7d32;letter-spacing:1px;font-family:Arial,sans-serif;">
             영향도 하 &nbsp;<span style="font-weight:normal;color:#aaa;">{len(low)}건 — 참고용</span>
