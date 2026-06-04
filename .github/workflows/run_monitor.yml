@@ -1,14 +1,16 @@
 name: eBiz 인사이트봇
 
 on:
-  workflow_dispatch:          # 수동 실행
-  repository_dispatch:        # cron-job.org 웹훅 트리거
+  workflow_dispatch:
+  repository_dispatch:
     types: [run_monitor]
 
 jobs:
   run:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: 코드 체크아웃
