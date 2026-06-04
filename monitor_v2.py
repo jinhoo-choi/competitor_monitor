@@ -60,10 +60,13 @@ HARD_EXCLUDE_PATTERNS = [
     r"해외법인\s*설립", r"해외\s*IB", r"법인\s*영업",
     r"기관투자자", r"기업금융", r"M&A\s*주관",
     r"패널\s*모집", r"고객\s*패널", r"설문\s*모집", r"설문\s*참여",
-    # 브리핑 묶음 기사 — 여러 회사 소식이 섞여 회사명 오분류 발생
+    # 브리핑 묶음 기사
     r"\[금융권\s*이모저모\]", r"\[금융\s*소식\]", r"\[오늘의\s*금융\]",
     r"\[금융\s*브리핑\]", r"\[금융권\s*단신\]", r"\[증권\s*가\s*이모저모\]",
     r"\[오늘의\s*게임.IT\s*소식\]",
+    # IB·법인·인프라 금융 기사
+    r"인프라\s*금융", r"생산적\s*금융", r"첨단\s*인프라", r"프로젝트\s*파이낸싱",
+    r"부동산\s*금융", r"PF\s*대출", r"항공\s*금융", r"선박\s*금융",
 ]
 HARD_EXCLUDE_RE = re.compile("|".join(HARD_EXCLUDE_PATTERNS))
 
@@ -403,9 +406,10 @@ def collect_articles(seen: dict) -> list[dict]:
                     # ── 24시간 필터
                     if not _is_within_cutoff(art.get("pubDate","")):
                         continue
-                    # ── 자사 기사 제외 (targeted/broad 공통)
-                    text = art.get("title","") + art.get("description","")
-                    if KIS_EXCLUDE_RE.search(text):
+                    # ── 자사 기사 제외 — 제목만으로도 체크 (broad 수집 시 description에 자사명 없어도 제목에 있을 수 있음)
+                    title_text = art.get("title","")
+                    full_text  = title_text + art.get("description","")
+                    if KIS_EXCLUDE_RE.search(title_text) or KIS_EXCLUDE_RE.search(full_text):
                         continue
                     # ── 금융 무관 기사 제외 — 제목 기준으로만 체크
                     # description 포함 시 투자 종목 뉴스도 통과되는 오탐 방지
@@ -454,6 +458,7 @@ def filter_relevant_articles(articles: list[dict]) -> list[dict]:
 [판단 원칙]
 - 불확실하면 제외. 차라리 제외하는 것이 낫습니다.
 - 한국투자증권 자사 기사는 무조건 제외
+  제목 또는 본문에 "한국투자증권", "한투", "뱅키스", "eFriend" 포함 시 무조건 제외
 - 단순 실적·인사·사옥·채용·IB·법인영업 기사는 무조건 제외
 - 기사 본문에 명시된 내용만 판단하세요. 추론 금지.
 - 경쟁사 서비스·사업이 후퇴하거나 차질이 생기는 기사는 제외
