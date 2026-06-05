@@ -339,7 +339,7 @@ def fetch_naver_news(query: str, display: int = 5) -> list[dict]:
         return []
 
 # 일 1회 크론잡 기준 — 25시간으로 약간 여유
-NEWS_CUTOFF_HOURS = 25
+NEWS_CUTOFF_HOURS = 15  # 일 2회 실행 기준 — 12시간 + 3시간 여유 (크론잡 지연 대비)
 
 def _is_within_cutoff(pub_date_str: str) -> bool:
     """pubDate가 NEWS_CUTOFF_HOURS 이내인지 확인, 파싱 실패 시 통과"""
