@@ -63,7 +63,7 @@ HARD_EXCLUDE_PATTERNS = [
     # 브리핑 묶음 기사
     r"\[금융권\s*이모저모\]", r"\[금융\s*소식\]", r"\[오늘의\s*금융\]",
     r"\[금융\s*브리핑\]", r"\[금융권\s*단신\]", r"\[증권\s*가\s*이모저모\]",
-    r"\[오늘의\s*게임.IT\s*소식\]",
+    r"\[오늘의\s*게임.IT\s*소식\]", r"\[증권\s*단신\]", r"\[증권가\s*단신\]",
     # IB·법인·인프라 금융 기사
     r"인프라\s*금융", r"생산적\s*금융", r"첨단\s*인프라", r"프로젝트\s*파이낸싱",
     r"부동산\s*금융", r"PF\s*대출", r"PF\s*충격", r"PF\s*리스크", r"PF\s*부실",
@@ -220,43 +220,58 @@ def _valid_hour_keys() -> set:
     now = datetime.now(KST)
     return {(now - timedelta(hours=i)).strftime("%Y-%m-%d %H") for i in range(24)}
 
+def _valid_event_keys() -> set:
+    """사건 레벨 중복: 3일(72시간) 유효"""
+    now = datetime.now(KST)
+    return {(now - timedelta(hours=i)).strftime("%Y-%m-%d") for i in range(72)}
+
 def load_seen() -> dict:
     """24시간 내 키만 보존, 구버전 자동 호환"""
     valid = _valid_hour_keys()
+    valid_days = _valid_event_keys()
     try:
         with open(SEEN_FILE, "r", encoding="utf-8") as f:
             raw = json.load(f)
         # 구버전 호환 (list/단순 dict)
         if isinstance(raw, list):
-            return {"ids": set(raw), "title_norms": [], "desc_norms": []}
-        if "ids" in raw and not any(k.count("-") == 2 for k in raw.keys() if k != "ids"):
-            return {"ids": set(raw.get("ids",[])), "title_norms": [], "desc_norms": []}
+            return {"ids": set(raw), "title_norms": [], "desc_norms": [], "events": set()}
+        if "ids" in raw and not any(k.count("-") == 2 for k in raw.keys() if k not in ("ids","events")):
+            return {"ids": set(raw.get("ids",[])), "title_norms": [], "desc_norms": [], "events": set()}
         # 시간 기반 구조
         ids, title_norms, desc_norms = set(), [], []
         for k, v in raw.items():
+            if k in ("events",): continue
             if k not in valid:
                 continue
             if isinstance(v, dict):
                 ids        |= set(v.get("ids", []))
                 title_norms += v.get("title_norms", [])
                 desc_norms  += v.get("desc_norms", [])
-        return {"ids": ids, "title_norms": title_norms[-100:], "desc_norms": desc_norms[-100:]}
+        # 사건 레벨 중복 — 3일 유효
+        events = set()
+        for day, evts in raw.get("events", {}).items():
+            if day in valid_days:
+                events |= set(evts)
+        return {"ids": ids, "title_norms": title_norms[-100:], "desc_norms": desc_norms[-100:], "events": events}
     except Exception:
-        return {"ids": set(), "title_norms": [], "desc_norms": []}
+        return {"ids": set(), "title_norms": [], "desc_norms": [], "events": set()}
 
 def save_seen(seen: dict, sent_urls: set = None,
-              new_title_norms: list = None, new_desc_norms: list = None):
+              new_title_norms: list = None, new_desc_norms: list = None,
+              new_events: set = None):
     """현재 시각 키로 저장, 24시간 외 키 자동 제거, atomic write"""
     now = datetime.now(KST)
-    cur_key = now.strftime("%Y-%m-%d %H")
-    valid   = _valid_hour_keys()
+    cur_key  = now.strftime("%Y-%m-%d %H")
+    cur_day  = now.strftime("%Y-%m-%d")
+    valid    = _valid_hour_keys()
+    valid_days = _valid_event_keys()
 
     existing = {}
     try:
         with open(SEEN_FILE, "r", encoding="utf-8") as f:
             raw = json.load(f)
         if isinstance(raw, dict) and any("-" in k for k in raw.keys()):
-            existing = {k: v for k, v in raw.items() if k in valid}
+            existing = {k: v for k, v in raw.items() if k in valid or k == "events"}
     except Exception:
         pass
 
@@ -265,6 +280,14 @@ def save_seen(seen: dict, sent_urls: set = None,
     merged_titles = (cur.get("title_norms", []) + (new_title_norms or []))[-100:]
     merged_descs  = (cur.get("desc_norms",  []) + (new_desc_norms  or []))[-100:]
     existing[cur_key] = {"ids": merged_ids, "title_norms": merged_titles, "desc_norms": merged_descs}
+
+    # 사건 레벨 중복 저장 — 날짜별로 묶어 3일 보존
+    event_store = {k: v for k, v in existing.get("events", {}).items() if k in valid_days}
+    if new_events:
+        day_events = set(event_store.get(cur_day, []))
+        day_events |= new_events
+        event_store[cur_day] = list(day_events)
+    existing["events"] = event_store
 
     import tempfile as _tmp
     fd, tmp_path = _tmp.mkstemp(prefix="seen_", suffix=".tmp",
@@ -277,6 +300,18 @@ def save_seen(seen: dict, sent_urls: set = None,
         try: os.unlink(tmp_path)
         except: pass
         raise
+
+def make_event_key(company: str, threat_type: str) -> str:
+    """사건 레벨 중복 키 — 회사명 + 위협유형"""
+    return f"{company}::{threat_type}"
+
+def is_duplicate_event(art: dict, seen: dict) -> bool:
+    """AI 2차 분석 결과 기준 — 동일 사건 3일 내 재탐지 방지"""
+    an = art.get("analysis")
+    if not an:
+        return False
+    key = make_event_key(art.get("_company",""), an.get("threat_type",""))
+    return key in seen.get("events", set())
 
 def _normalize_title(text: str) -> str:
     t = unicodedata.normalize("NFKC", text or "")
@@ -1462,6 +1497,8 @@ def main():
     analyzed, new_title_norms, new_desc_norms = [], [], []
 
     for i, art in enumerate(relevant):
+        # ── 사건 레벨 중복 체크 — 3일 내 동일 회사+위협유형 탐지된 기사 스킵
+        # (위협유형은 2차 분석 전이라 1차 필터 기준으로만 사전 체크 불가 → 분석 후 처리)
         print(f"  [{i+1}/{len(relevant)}] {art['_company']} | {art['title'][:38]}...")
         result = analyze_article(art)
         analyzed.append(result)
@@ -1470,17 +1507,25 @@ def main():
             new_desc_norms.append(_normalize_title(art.get("description","")))
 
     # ── 동일 사건 중복 제거
-    # 같은 회사 + 같은 위협유형 조합에서 impact_score 최고 1건만 유지, 나머지 제거
     def _dedup_same_event(arts: list) -> list:
         from collections import defaultdict
         def sc(a):
             try: return float(a.get("analysis",{}).get("impact_score", 0))
             except: return 0.0
 
-        # 0단계: URL 완전 동일 기사 제거 (회사명이 달라도)
+        # 0단계: 3일 내 seen events 체크 — 이미 탐지된 사건 제거
+        event_filtered = []
+        for a in arts:
+            if is_duplicate_event(a, seen):
+                ekey = make_event_key(a.get("_company",""), a.get("analysis",{}).get("threat_type",""))
+                print(f"  [사건중복-3일] {a['_company']} | {a['title'][:45]} (키: {ekey})")
+                continue
+            event_filtered.append(a)
+
+        # 1단계: URL 완전 동일 기사 제거
         seen_links = {}
         url_deduped = []
-        for a in arts:
+        for a in event_filtered:
             link = a.get("link","") or a.get("originallink","")
             if link and link in seen_links:
                 prev = seen_links[link]
@@ -1593,10 +1638,23 @@ def main():
     html = build_email_html(analyzed, len(raw), len(relevant))
     send_email(html, analyzed, len(raw))
 
-    # ── 저장
-    sent_urls = {a.get("link","") for a in analyzed}
+    # ── 저장 — 사건 키 포함
+    sent_urls  = {a.get("link","") for a in analyzed}
+    new_events = {
+        make_event_key(a.get("_company",""), a["analysis"].get("threat_type",""))
+        for a in analyzed if a.get("analysis")
+    }
     save_seen(seen, sent_urls=sent_urls,
-              new_title_norms=new_title_norms, new_desc_norms=new_desc_norms)
+              new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
+              new_events=new_events)
+
+    # ── seen_articles.json 상태 출력 (캐시 저장 확인용)
+    try:
+        sz = os.path.getsize(SEEN_FILE)
+        print(f"  seen_articles.json: {sz:,} bytes | 사건 키 {len(new_events)}개 등록")
+    except Exception:
+        print("  [WARN] seen_articles.json 저장 확인 실패")
+
     save_filter_log(raw, hard_excluded, ai_filtered_list, analyzed)
 
     high = sum(1 for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="상")
