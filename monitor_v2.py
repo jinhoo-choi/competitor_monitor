@@ -179,34 +179,35 @@ COMPETITORS = {
     "토스증권":     ["토스증권 서비스", "토스증권 출시", "토스증권 진출", "토스증권 기능", "토스증권 수수료"],
 }
 
-# 광범위 키워드 — 전체 증권사 커버 (회사명은 AI가 자동 추출)
-BROAD_KEYWORDS = [
-    # 서비스·플랫폼
-    "증권사 서비스 출시",
-    "증권사 플랫폼 개편",
-    "증권사 MTS 개편",
-    "증권사 디지털 서비스",
-    "온라인 증권 서비스 출시",
-    "리테일 증권 플랫폼",
-    # 상품·영역
-    "증권사 연금 IRP",
-    "증권사 해외주식",
-    "증권사 수수료 인하",
-    "증권사 토큰증권 STO",
-    "증권사 ISA 출시",
-    "증권사 공모주 서비스",
-    # 제휴·협업 — 주요 8개사 외 증권사 포함
-    "증권사 제휴",
-    "증권사 MOU",
-    "증권사 파트너십",
-    "증권 플랫폼 제휴",
-    "증권사 이벤트 제휴",
-    "증권사 앱 출시",
-    "증권사 신규 서비스",
-    "증권 디지털 제휴",
-    "증권사 협업",
-    "증권 플랫폼 출시",
-]
+# 광범위 키워드 — {키워드: display 건수} 형태
+# 핵심 키워드(제휴·MOU·출시)는 10건, 일반은 5건, 보조는 3건
+BROAD_KEYWORDS: dict = {
+    # 핵심 — 10건
+    "증권사 제휴":          10,
+    "증권사 MOU":           10,
+    "증권사 파트너십":       10,
+    "증권 플랫폼 제휴":      10,
+    "증권사 앱 출시":        10,
+    "증권사 신규 서비스":    10,
+    # 일반 — 5건
+    "증권사 서비스 출시":     5,
+    "증권사 플랫폼 개편":     5,
+    "증권사 MTS 개편":        5,
+    "증권사 디지털 서비스":   5,
+    "온라인 증권 서비스 출시": 5,
+    "리테일 증권 플랫폼":     5,
+    "증권사 연금 IRP":        5,
+    "증권사 해외주식":         5,
+    "증권사 수수료 인하":      5,
+    "증권사 토큰증권 STO":    5,
+    "증권사 ISA 출시":        5,
+    "증권사 공모주 서비스":   5,
+    # 보조 — 3건
+    "증권사 이벤트 제휴":     3,
+    "증권 디지털 제휴":       3,
+    "증권사 협업":            3,
+    "증권 플랫폼 출시":       3,
+}
 
 # 자사 기사 제외 패턴
 KIS_EXCLUDE_RE = re.compile(r"한국투자증권|한투|뱅키스|eFriend")
@@ -301,16 +302,21 @@ def save_seen(seen: dict, sent_urls: set = None,
         except: pass
         raise
 
-def make_event_key(company: str, threat_type: str) -> str:
-    """사건 레벨 중복 키 — 회사명 + 위협유형"""
-    return f"{company}::{threat_type}"
+def make_event_key(company: str, threat_type: str, impact_domain: str = "") -> str:
+    """사건 레벨 중복 키 — 회사명 + 위협유형 + 영향사업"""
+    domain_short = impact_domain.split("·")[0].split("/")[0].strip()[:10]
+    return f"{company}::{threat_type}::{domain_short}"
 
 def is_duplicate_event(art: dict, seen: dict) -> bool:
     """AI 2차 분석 결과 기준 — 동일 사건 3일 내 재탐지 방지"""
     an = art.get("analysis")
     if not an:
         return False
-    key = make_event_key(art.get("_company",""), an.get("threat_type",""))
+    key = make_event_key(
+        art.get("_company",""),
+        an.get("threat_type",""),
+        an.get("impact_domain","")
+    )
     return key in seen.get("events", set())
 
 def _normalize_title(text: str) -> str:
@@ -431,9 +437,9 @@ def fetch_article_body(url: str) -> str:
 
 def _crawl_keyword(args: tuple) -> tuple:
     import time as _time
-    source_type, company, kw = args
-    _time.sleep(0.3)   # 429 방지 — 호출 간 최소 딜레이
-    items = fetch_naver_news(kw, display=5)
+    source_type, company, kw, display = args
+    _time.sleep(0.3)
+    items = fetch_naver_news(kw, display=display)
     return source_type, company, items
 
 def collect_articles(seen: dict) -> list[dict]:
@@ -443,9 +449,9 @@ def collect_articles(seen: dict) -> list[dict]:
     tasks = []
     for company, keywords in COMPETITORS.items():
         for kw in keywords:
-            tasks.append(("targeted", company, kw))
-    for kw in BROAD_KEYWORDS:
-        tasks.append(("broad", "미확인", kw))
+            tasks.append(("targeted", company, kw, 5))
+    for kw, display in BROAD_KEYWORDS.items():
+        tasks.append(("broad", "미확인", kw, display))
 
     results, targeted_cnt, broad_cnt = [], 0, 0
 
@@ -1331,7 +1337,7 @@ def save_filter_log(raw: list, hard_excluded: list, ai_filtered: list, final: li
     # 오래된 로그 정리
     try:
         logs = sorted(f for f in os.listdir(".") if f.startswith("filter_log_") and f.endswith(".json"))
-        for old in logs[:-30]:
+        for old in logs[:-7]:
             os.remove(old)
     except Exception:
         pass
@@ -1517,7 +1523,11 @@ def main():
         event_filtered = []
         for a in arts:
             if is_duplicate_event(a, seen):
-                ekey = make_event_key(a.get("_company",""), a.get("analysis",{}).get("threat_type",""))
+                ekey = make_event_key(
+                    a.get("_company",""),
+                    a.get("analysis",{}).get("threat_type",""),
+                    a.get("analysis",{}).get("impact_domain","")
+                )
                 print(f"  [사건중복-3일] {a['_company']} | {a['title'][:45]} (키: {ekey})")
                 continue
             event_filtered.append(a)
@@ -1641,7 +1651,11 @@ def main():
     # ── 저장 — 사건 키 포함
     sent_urls  = {a.get("link","") for a in analyzed}
     new_events = {
-        make_event_key(a.get("_company",""), a["analysis"].get("threat_type",""))
+        make_event_key(
+            a.get("_company",""),
+            a["analysis"].get("threat_type",""),
+            a["analysis"].get("impact_domain","")
+        )
         for a in analyzed if a.get("analysis")
     }
     save_seen(seen, sent_urls=sent_urls,
