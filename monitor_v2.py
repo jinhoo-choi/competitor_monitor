@@ -1564,7 +1564,27 @@ def main():
         print("  등급 재조정:")
         for msg in regrade_log: print(msg)
 
-    analyzed = bucket["상"] + bucket["중"] + bucket["하"] + bucket.get(None, [])
+    # ── 등급 확정 후 최종 중복 제거
+    # 상/중 카드와 하 리스트 간 동일 기사(URL 동일 or 제목 유사도 80점↑) 제거
+    all_arts = bucket["상"] + bucket["중"] + bucket["하"] + bucket.get(None, [])
+    seen_final_links = set()
+    seen_final_titles = []
+    analyzed = []
+    for a in all_arts:
+        link  = a.get("link","") or a.get("originallink","")
+        title = _normalize_title(a.get("title",""))
+        # URL 중복
+        if link and link in seen_final_links:
+            print(f"  [최종중복-URL] {a.get('_company','')} | {a.get('title','')[:45]}")
+            continue
+        # 제목 유사도 중복 (15자 초과 + 80점 이상)
+        if HAS_RAPIDFUZZ and len(title) > 15:
+            if any(fuzz.ratio(title, prev) >= 80 for prev in seen_final_titles):
+                print(f"  [최종중복-제목] {a.get('_company','')} | {a.get('title','')[:45]}")
+                continue
+        if link: seen_final_links.add(link)
+        if len(title) > 15: seen_final_titles.append(title)
+        analyzed.append(a)
 
     # ── 이메일 발송
     html = build_email_html(analyzed, len(raw), len(relevant))
