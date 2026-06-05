@@ -201,11 +201,11 @@ BROAD_KEYWORDS = [
     "증권사 파트너십",
     "증권 플랫폼 제휴",
     "증권사 이벤트 제휴",
-    "@증권 서비스 출시",
-    "@증권 제휴",
-    "@증권 MOU",
-    "@증권 출시",
-    "@증권 플랫폼",
+    "증권사 앱 출시",
+    "증권사 신규 서비스",
+    "증권 디지털 제휴",
+    "증권사 협업",
+    "증권 플랫폼 출시",
 ]
 
 # 자사 기사 제외 패턴
@@ -513,6 +513,9 @@ JSON only, 다른 텍스트 없이:
         raw = re.sub(r"^```json\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw)
         indices = json.loads(raw).get("relevant", [])
+        # ⑥ 정수 단일 반환 방어 — {"relevant": 2} → [2]
+        if isinstance(indices, int):
+            indices = [indices]
         _ai_fail_count = 0
         return [articles[i] for i in indices if isinstance(i,int) and i < len(articles)]
     except Exception as e:
@@ -1226,7 +1229,7 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
                 server.ehlo()
                 server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-                server.sendmail(GMAIL_USER, all_rcpt, msg.as_bytes())
+                server.sendmail(GMAIL_USER, all_rcpt, msg.as_string())
             return
         except smtplib.SMTPAuthenticationError:
             raise
