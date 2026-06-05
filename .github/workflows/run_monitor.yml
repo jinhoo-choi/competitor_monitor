@@ -24,13 +24,6 @@ jobs:
       - name: 패키지 설치
         run: pip install -r requirements.txt
 
-      - name: seen_articles.json 복원
-        uses: actions/cache@v4
-        with:
-          path: seen_articles.json
-          key: seen-articles-${{ runner.os }}
-          restore-keys: seen-articles-
-
       - name: 모니터 실행
         env:
           NAVER_CLIENT_ID:     ${{ secrets.NAVER_CLIENT_ID }}
@@ -43,9 +36,11 @@ jobs:
           NO_RESULT_RECEIVER:  ${{ secrets.NO_RESULT_RECEIVER }}
         run: python monitor_v2.py
 
-      - name: seen_articles.json 저장
-        uses: actions/cache/save@v4
+      - name: seen_articles.json 커밋
         if: always()
-        with:
-          path: seen_articles.json
-          key: seen-articles-${{ runner.os }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add seen_articles.json || true
+          git diff --staged --quiet || git commit -m "chore: update seen_articles [skip ci]"
+          git push || true
