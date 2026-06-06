@@ -1647,7 +1647,7 @@ def main():
             continue
         # 제목 유사도 중복 (15자 초과 + 80점 이상)
         if HAS_RAPIDFUZZ and len(title) > 15:
-            if any(fuzz.ratio(title, prev) >= 80 for prev in seen_final_titles):
+            if any(fuzz.ratio(title, prev) >= 75 for prev in seen_final_titles):
                 print(f"  [최종중복-제목] {a.get('_company','')} | {a.get('title','')[:45]}")
                 continue
         if link: seen_final_links.add(link)
