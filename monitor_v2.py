@@ -1499,14 +1499,24 @@ def main():
     if len(relevant) > MAX_ANALYZE_ARTICLES:
         print(f"  ⚠️ AI 선별 {len(relevant)}건 → 상위 {MAX_ANALYZE_ARTICLES}건만 분석 (비용 상한)")
         relevant = relevant[:MAX_ANALYZE_ARTICLES]
-    ai_filtered_list = list(relevant)   # 로그용
+    ai_filtered_list = list(relevant)
     analyzed, new_title_norms, new_desc_norms = [], [], []
+    runtime_events: set = set()  # 런타임 사건 키 — seen 파일 없어도 당일 중복 차단
 
     for i, art in enumerate(relevant):
-        # ── 사건 레벨 중복 체크 — 3일 내 동일 회사+위협유형 탐지된 기사 스킵
-        # (위협유형은 2차 분석 전이라 1차 필터 기준으로만 사전 체크 불가 → 분석 후 처리)
         print(f"  [{i+1}/{len(relevant)}] {art['_company']} | {art['title'][:38]}...")
         result = analyze_article(art)
+        if result.get("analysis"):
+            # 런타임 사건 키 중복 체크 (seen 파일 보완)
+            ekey = make_event_key(
+                result.get("_company",""),
+                result["analysis"].get("threat_type",""),
+                result["analysis"].get("impact_domain","")
+            )
+            if ekey in runtime_events:
+                print(f"  [런타임중복] {result.get('_company','')} | {result.get('title','')[:45]}")
+                continue
+            runtime_events.add(ekey)
         analyzed.append(result)
         if result.get("analysis"):
             new_title_norms.append(_normalize_title(art.get("title","")))
