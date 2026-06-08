@@ -713,7 +713,7 @@ def analyze_article(art: dict) -> dict:
 JSON only, 다른 텍스트 없이:
 {{
   "company_name": "기사의 실제 행위 주체 증권사명. 수집 키워드와 무관하게 본문에서 직접 추출. 모르면 '-'",
-  "event_key": "이 기사가 나타내는 사건의 고유 식별자. 형식: {{증권사명}}_{{핵심행위}}_{{YYYYMM}}. 예) 미래에셋_싱가포르UOB외국인계좌_202606 / 삼성증권_두나무지분취득_202606 / 키움증권_퇴직연금출시_202606. 동일 사건의 후속기사·재송고는 동일한 event_key 생성. 30자 이내.",
+  "event_key": "이 기사가 나타내는 사건의 고유 식별자. 형식: {증권사명}_{핵심행위}_{YYYYMM}. 30자 이내.\n\n★★★ event_key 생성 핵심 규칙 ★★★\n① 동일 사건의 후속기사·재송고·인터뷰·분석기사는 반드시 완전히 동일한 event_key 생성\n② 기사 제목이 달라도, 언론사가 달라도, 표현이 달라도 같은 사건이면 같은 event_key\n③ 사건 판단 기준: 같은 회사가 같은 행위를 한 것 = 같은 사건\n예) '미래에셋_싱가포르UOB외국인계좌_202606' 이 키는 아래 기사 모두에 동일 적용:\n  - '미래에셋증권, 싱가포르 UOB와 외국인 통합계좌 개시'\n  - '미래에셋증권도 외국인 통합계좌 개시…싱가포르 제휴'\n  - '미래에셋, UOB Kay Hian과 외국인 통합계좌 계약'\n  - '동남아 자금 유입 길 열렸다…미래에셋 4조 규모 UOB'\n  - '\"싱가포르 자금 유입 길 열렸다\" 미래에셋 UOB 통합계좌'\n예) '삼성증권_두나무지분취득_202606':\n  - '삼성증권·SDS·카드, 두나무 지분 4% 인수'\n  - '삼성증권, 두나무 지분 2% 취득'\n  - '증권사들, 코인원·두나무·코빗 찍었다'(삼성증권 관련)\n예) '메리츠증권_해진공선박조각투자_202606':\n  - '해진공, 선박 조각투자 9월 출시'\n  - '안병길 해진공 사장 \"9월 선박 조각투자 상장\"'",
   "impact_level": "상/중/하 중 택1",
   "impact_score": 1.0~10.0 사이 숫자 (소수점 1자리, 영향도와 일관성 유지),
   "impact_domain": "영향받는 한투 사업영역 (최대 20자)",
@@ -1524,33 +1524,36 @@ def main():
         relevant = relevant[:MAX_ANALYZE_ARTICLES]
     ai_filtered_list = list(relevant)
     analyzed, new_title_norms, new_desc_norms = [], [], []
-    runtime_events: set = set()  # 런타임 사건 키 — seen 파일 없어도 당일 중복 차단
+    runtime_events: set = set()  # 런타임 event_key 세트 — 파일 없어도 당일 중복 차단
 
     for i, art in enumerate(relevant):
         print(f"  [{i+1}/{len(relevant)}] {art['_company']} | {art['title'][:38]}...")
         result = analyze_article(art)
-        if result.get("analysis"):
-            # 런타임 중복: AI가 생성한 event_key 기반
-            ekey = result["analysis"].get("event_key","")
+        an = result.get("analysis")
+        if an:
+            ekey = an.get("event_key","").strip()
             if not ekey:
-                an = result["analysis"]
                 co = an.get("company_name","") or result.get("_company","")
                 ekey = f"{co}::{an.get('threat_type','')}"
-            if ekey in runtime_events:
-                print(f"  [런타임중복] {result.get('_company','')} | {result.get('title','')[:45]}")
+            # ① seen events 체크 — 3일 내 이미 탐지된 사건
+            if ekey in seen.get("events", set()):
+                print(f"  [사건중복-3일] {result.get('_company','')} | {result.get('title','')[:45]} (키: {ekey})")
                 continue
-            runtime_events.add(ekey)
+            # ② 런타임 중복 체크 — 이번 실행에서 이미 분석한 사건
             if ekey in runtime_events:
                 print(f"  [런타임중복] {result.get('_company','')} | {result.get('title','')[:45]}")
                 continue
             runtime_events.add(ekey)
         analyzed.append(result)
-        if result.get("analysis"):
+        if an:
             new_title_norms.append(_normalize_title(art.get("title","")))
             new_desc_norms.append(_normalize_title(art.get("description","")))
 
     # ── 동일 사건 중복 제거
     def _dedup_same_event(arts: list) -> list:
+        """event_key 기반 그룹핑 → 대표기사 선정
+        seen events 체크는 AI 2차 분석 직후에 이미 처리됨.
+        여기서는 같은 실행 내 동일 event_key 기사들을 묶어 대표 1건만 유지."""
         from collections import defaultdict
 
         def sc(a):
@@ -1560,48 +1563,32 @@ def main():
         def press_rank(a):
             return 0 if a.get("_tier","") == "1군" else 1
 
-        # 0단계: 3일 내 seen events 체크
-        event_filtered = []
-        for a in arts:
-            an = a.get("analysis")
-            if an:
-                ekey = an.get("event_key","")
-                if not ekey:
-                    co = an.get("company_name","") or a.get("_company","")
-                    ekey = f"{co}::{an.get('threat_type','')}"
-                if ekey in seen.get("events", set()):
-                    print(f"  [사건중복-3일] {a.get('_company','')} | {a.get('title','')[:45]} (키: {ekey})")
-                    continue
-            event_filtered.append(a)
-
-        # 1단계: event_key 기반 그룹핑 → 대표기사 선정
         groups = defaultdict(list)
         no_analysis = []
-        for a in event_filtered:
+        for a in arts:
             an = a.get("analysis")
             if not an:
                 no_analysis.append(a); continue
-            ekey = an.get("event_key","")
+            ekey = an.get("event_key","").strip()
             if ekey:
                 groups[ekey].append(a)
             else:
                 co = an.get("company_name","") or a.get("_company","")
-                th = an.get("threat_type","")
-                groups[f"{co}::{th}"].append(a)
+                groups[f"{co}::{an.get('threat_type','')}"].append(a)
 
         kept = []
         for ekey, group in groups.items():
             if len(group) == 1:
                 kept.append(group[0]); continue
-            # 대표기사: ① impact_score ② 언론사 등급 ③ 최신
+            # 대표기사 선정: ① impact_score ② 언론사 등급(1군 우선) ③ 최신
             group.sort(key=lambda a: (sc(a), -press_rank(a)), reverse=True)
             rep = group[0]
-            rep["_related_count"] = len(group) - 1
+            rep["_related_count"]  = len(group) - 1
             rep["_related_titles"] = [a.get("title","")[:40] for a in group[1:]]
             kept.append(rep)
             for dup in group[1:]:
                 print(f"  [event중복] {dup.get('_company','')} | {dup.get('title','')[:45]}")
-            print(f"  → '{ekey}' {len(group)}건 → 대표기사 1건 유지")
+            print(f"  → '{ekey}' {len(group)}건 → 대표기사 1건 (score={sc(rep):.1f})")
 
         return kept + no_analysis
 
