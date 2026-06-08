@@ -39,8 +39,7 @@ GMAIL_APP_PASSWORD  = os.environ["GMAIL_APP_PASSWORD"]
 
 # 수신자 2그룹: 영향도 상 발생 시 HIGH도 함께 발송
 RECIPIENTS_ALL  = os.environ.get("RECIPIENTS",      GMAIL_USER).split(",")
-RECIPIENTS_HIGH = os.environ.get("RECIPIENTS_HIGH", "").split(",")
-RECIPIENTS_HIGH = [r for r in RECIPIENTS_HIGH if r.strip()]
+# RECIPIENTS_HIGH 제거
 
 SENDER_NAME     = "📢eBiz 인사이트봇"
 KST             = timezone(timedelta(hours=9))
@@ -1290,11 +1289,11 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
                 raise
 
 def send_email(html: str, analyzed: list[dict], raw_count: int):
-    now_str    = datetime.now(KST).strftime("%m월 %d일 %H시 %M분")
-    subject    = f"📢[인사이트 탐지] {now_str} 기준"
+    now_str = datetime.now(KST).strftime("%m월 %d일 %H시 %M분")
+    subject = f"📢[인사이트 탐지] {now_str} 기준"
 
-    cc = RECIPIENTS_HIGH if high_count > 0 and RECIPIENTS_HIGH else None
-    _smtp_send(subject, html, RECIPIENTS_ALL, cc)
+    _smtp_send(subject, html, RECIPIENTS_ALL)
+
     print(f"  ✅ 발송 완료 | {subject}")
 
 def send_email_no_result(subject: str, html: str):
