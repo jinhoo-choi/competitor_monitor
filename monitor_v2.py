@@ -42,7 +42,7 @@ RECIPIENTS_ALL  = os.environ.get("RECIPIENTS",      GMAIL_USER).split(",")
 RECIPIENTS_HIGH = os.environ.get("RECIPIENTS_HIGH", "").split(",")
 RECIPIENTS_HIGH = [r for r in RECIPIENTS_HIGH if r.strip()]
 
-SENDER_NAME     = "eBiz 인사이트봇"
+SENDER_NAME     = "📢eBiz 인사이트봇"
 KST             = timezone(timedelta(hours=9))
 SEEN_FILE       = "seen_articles.json"
 TITLE_SIM_THRESHOLD = 88   # rapidfuzz 유사도 임계값
