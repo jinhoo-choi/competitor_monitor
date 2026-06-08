@@ -1291,10 +1291,7 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
 
 def send_email(html: str, analyzed: list[dict], raw_count: int):
     now_str    = datetime.now(KST).strftime("%m월 %d일 %H시 %M분")
-    high_count = sum(1 for a in analyzed
-                     if a.get("analysis") and a["analysis"].get("impact_level") == "상")
-    urgent_tag = f" [영향도 상 {high_count}건]" if high_count > 0 else ""
-    subject    = f"[인사이트 탐지] {now_str} 기준{urgent_tag}"
+    subject    = f"📢[인사이트 탐지] {now_str} 기준"
 
     cc = RECIPIENTS_HIGH if high_count > 0 and RECIPIENTS_HIGH else None
     _smtp_send(subject, html, RECIPIENTS_ALL, cc)
@@ -1426,7 +1423,7 @@ def main():
     print(f"{'='*55}")
 
     seen = load_seen()
-    now_str = datetime.now(KST).strftime("%m월 %d일 %H시 %M분")
+    now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
 
     # ── 1) 병렬 수집
     print("\n[1/5] 네이버 뉴스 수집 중 (병렬)...")
@@ -1435,7 +1432,7 @@ def main():
 
     if not raw:
         print("  신규 뉴스 없음.")
-        subj = f"[인사이트 탐지] {now_str} — 신규 뉴스 없음"
+        subj = f"📢[인사이트 탐지] {now_str} — 신규 뉴스 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
         return
@@ -1469,7 +1466,7 @@ def main():
 
     if not relevant:
         print("  한투 영향 기사 없음.")
-        subj = f"[인사이트 탐지] {now_str} — 해당 기사 없음"
+        subj = f"📢[인사이트 탐지] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
         save_filter_log(raw, hard_excluded, [], [])
