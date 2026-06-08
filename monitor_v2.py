@@ -39,9 +39,10 @@ GMAIL_APP_PASSWORD  = os.environ["GMAIL_APP_PASSWORD"]
 
 # 수신자 2그룹: 영향도 상 발생 시 HIGH도 함께 발송
 RECIPIENTS_ALL  = os.environ.get("RECIPIENTS",      GMAIL_USER).split(",")
-# RECIPIENTS_HIGH 제거
+RECIPIENTS_HIGH = os.environ.get("RECIPIENTS_HIGH", "").split(",")
+RECIPIENTS_HIGH = [r for r in RECIPIENTS_HIGH if r.strip()]
 
-SENDER_NAME     = "📢eBiz 인사이트봇"
+SENDER_NAME     = "eBiz 인사이트봇"
 KST             = timezone(timedelta(hours=9))
 SEEN_FILE       = "seen_articles.json"
 TITLE_SIM_THRESHOLD = 88   # rapidfuzz 유사도 임계값
@@ -219,7 +220,7 @@ BROAD_KEYWORDS: dict = {
 KIS_EXCLUDE_RE = re.compile(r"한국투자증권|한투|뱅키스|eFriend")
 
 # ═══════════════════════════════════════════════
-# seen 관리 — 24시간 시간 기반 + 맥락 기반 중복 제거
+# seen 관리 — URL 기반(24시간) + event_key 기반(3일)
 # ═══════════════════════════════════════════════
 import unicodedata
 
@@ -227,73 +228,95 @@ def _valid_hour_keys() -> set:
     now = datetime.now(KST)
     return {(now - timedelta(hours=i)).strftime("%Y-%m-%d %H") for i in range(24)}
 
-def _valid_event_keys() -> set:
-    """사건 레벨 중복: 3일(72시간) 유효"""
+def _valid_event_days() -> set:
+    """event_key 3일 유효"""
     now = datetime.now(KST)
-    return {(now - timedelta(hours=i)).strftime("%Y-%m-%d") for i in range(72)}
+    return {(now - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(3)}
 
 def load_seen() -> dict:
-    """24시간 내 키만 보존, 구버전 자동 호환"""
-    valid = _valid_hour_keys()
-    valid_days = _valid_event_keys()
+    """
+    구조:
+      {
+        "2026-06-08 10": {"ids": [...], "title_norms": [...], "desc_norms": [...]},
+        "events": {"2026-06-08": ["미래에셋_UOB_202606", ...], ...}
+      }
+    구버전 자동 호환.
+    """
+    valid      = _valid_hour_keys()
+    valid_days = _valid_event_days()
     try:
         with open(SEEN_FILE, "r", encoding="utf-8") as f:
             raw = json.load(f)
-        # 구버전 호환 (list/단순 dict)
+
+        # 구버전 호환
         if isinstance(raw, list):
             return {"ids": set(raw), "title_norms": [], "desc_norms": [], "events": set()}
-        if "ids" in raw and not any(k.count("-") == 2 for k in raw.keys() if k not in ("ids","events")):
-            return {"ids": set(raw.get("ids",[])), "title_norms": [], "desc_norms": [], "events": set()}
-        # 시간 기반 구조
+
         ids, title_norms, desc_norms = set(), [], []
         for k, v in raw.items():
-            if k in ("events",): continue
-            if k not in valid:
-                continue
+            if k == "events": continue
+            if k not in valid: continue
             if isinstance(v, dict):
                 ids        |= set(v.get("ids", []))
                 title_norms += v.get("title_norms", [])
                 desc_norms  += v.get("desc_norms", [])
-        # 사건 레벨 중복 — 3일 유효
+
+        # event_key 3일치 로드
         events = set()
-        for day, evts in raw.get("events", {}).items():
-            if day in valid_days:
-                events |= set(evts)
-        return {"ids": ids, "title_norms": title_norms[-100:], "desc_norms": desc_norms[-100:], "events": events}
+        raw_events = raw.get("events", {})
+        if isinstance(raw_events, dict):
+            for day, evts in raw_events.items():
+                if day in valid_days:
+                    events |= set(evts)
+        elif isinstance(raw_events, list):  # 구버전 호환
+            events = set(raw_events)
+
+        return {
+            "ids":         ids,
+            "title_norms": title_norms[-100:],
+            "desc_norms":  desc_norms[-100:],
+            "events":      events,
+        }
     except Exception:
         return {"ids": set(), "title_norms": [], "desc_norms": [], "events": set()}
 
 def save_seen(seen: dict, sent_urls: set = None,
               new_title_norms: list = None, new_desc_norms: list = None,
               new_events: set = None):
-    """현재 시각 키로 저장, 24시간 외 키 자동 제거, atomic write"""
-    now = datetime.now(KST)
+    """atomic write. event_key는 날짜별로 묶어 3일 보존."""
+    now      = datetime.now(KST)
     cur_key  = now.strftime("%Y-%m-%d %H")
     cur_day  = now.strftime("%Y-%m-%d")
     valid    = _valid_hour_keys()
-    valid_days = _valid_event_keys()
+    valid_days = _valid_event_days()
 
+    # 기존 파일 로드
     existing = {}
     try:
         with open(SEEN_FILE, "r", encoding="utf-8") as f:
             raw = json.load(f)
-        if isinstance(raw, dict) and any("-" in k for k in raw.keys()):
-            existing = {k: v for k, v in raw.items() if k in valid or k == "events"}
+        if isinstance(raw, dict):
+            existing = {k: v for k, v in raw.items()
+                        if k == "events" or k in valid}
     except Exception:
         pass
 
+    # URL/제목 갱신
     cur = existing.get(cur_key, {"ids": [], "title_norms": [], "desc_norms": []})
-    merged_ids    = list(set(cur.get("ids", [])) | (sent_urls or set()))[-500:]
-    merged_titles = (cur.get("title_norms", []) + (new_title_norms or []))[-100:]
-    merged_descs  = (cur.get("desc_norms",  []) + (new_desc_norms  or []))[-100:]
-    existing[cur_key] = {"ids": merged_ids, "title_norms": merged_titles, "desc_norms": merged_descs}
+    existing[cur_key] = {
+        "ids":         list(set(cur.get("ids", [])) | (sent_urls or set()))[-500:],
+        "title_norms": (cur.get("title_norms", []) + (new_title_norms or []))[-100:],
+        "desc_norms":  (cur.get("desc_norms",  []) + (new_desc_norms  or []))[-100:],
+    }
 
-    # 사건 레벨 중복 저장 — 날짜별로 묶어 3일 보존
-    event_store = {k: v for k, v in existing.get("events", {}).items() if k in valid_days}
+    # event_key 갱신 — 3일치만 보존
+    raw_ev = existing.get("events", {})
+    event_store = raw_ev if isinstance(raw_ev, dict) else {}
+    event_store = {k: v for k, v in event_store.items() if k in valid_days}
     if new_events:
-        day_events = set(event_store.get(cur_day, []))
-        day_events |= new_events
-        event_store[cur_day] = list(day_events)
+        day_set = set(event_store.get(cur_day, []))
+        day_set |= new_events
+        event_store[cur_day] = list(day_set)
     existing["events"] = event_store
 
     import tempfile as _tmp
@@ -307,23 +330,6 @@ def save_seen(seen: dict, sent_urls: set = None,
         try: os.unlink(tmp_path)
         except: pass
         raise
-
-def make_event_key(company: str, threat_type: str, impact_domain: str = "") -> str:
-    """사건 레벨 중복 키 — 회사명 + 위협유형 + 영향사업"""
-    domain_short = impact_domain.split("·")[0].split("/")[0].strip()[:10]
-    return f"{company}::{threat_type}::{domain_short}"
-
-def is_duplicate_event(art: dict, seen: dict) -> bool:
-    """AI 2차 분석 결과 기준 — 동일 사건 3일 내 재탐지 방지"""
-    an = art.get("analysis")
-    if not an:
-        return False
-    key = make_event_key(
-        art.get("_company",""),
-        an.get("threat_type",""),
-        an.get("impact_domain","")
-    )
-    return key in seen.get("events", set())
 
 def _normalize_title(text: str) -> str:
     t = unicodedata.normalize("NFKC", text or "")
@@ -543,6 +549,12 @@ def filter_relevant_articles(articles: list[dict]) -> list[dict]:
 강화하는 기사도 탐지 대상.
 예) 커뮤니티 회원 돌파, 투자자 소통 플랫폼 확대, 앱 내 커뮤니티 기능 출시
 
+[무조건 제외 — 브리핑·단순 묶음 기사]
+아래 형태의 기사는 특정 경쟁사 서비스 내용이 없으므로 무조건 제외:
+더밸류 브리핑 / 오늘의 증권업계 소식 / 업계 소식 / 증권가 소식 / 금융권 소식
+증권사 단신 / 이모저모 / 금융 브리핑 / 단순 기사 모음
+여러 회사 소식을 한 기사에 묶은 형태
+
 [뉴스 목록]
 {batch}
 
@@ -700,7 +712,8 @@ def analyze_article(art: dict) -> dict:
 
 JSON only, 다른 텍스트 없이:
 {{
-  "company_name": "기사 본문에서 추출한 증권사명 (모르면 '-')",
+  "company_name": "기사의 실제 행위 주체 증권사명. 수집 키워드와 무관하게 본문에서 직접 추출. 모르면 '-'",
+  "event_key": "이 기사가 나타내는 사건의 고유 식별자. 형식: {{증권사명}}_{{핵심행위}}_{{YYYYMM}}. 예) 미래에셋_싱가포르UOB외국인계좌_202606 / 삼성증권_두나무지분취득_202606 / 키움증권_퇴직연금출시_202606. 동일 사건의 후속기사·재송고는 동일한 event_key 생성. 30자 이내.",
   "impact_level": "상/중/하 중 택1",
   "impact_score": 1.0~10.0 사이 숫자 (소수점 1자리, 영향도와 일관성 유지),
   "impact_domain": "영향받는 한투 사업영역 (최대 20자)",
@@ -716,14 +729,12 @@ JSON only, 다른 텍스트 없이:
     try:
         res = client.messages.create(
             model="claude-haiku-4-5-20251001",
-            max_tokens=600,
+            max_tokens=700,
             messages=[{"role":"user","content":prompt}]
         )
         raw_text = res.content[0].text.strip()
-        # ── JSON 파싱 방어: ```json 래퍼 제거 + Extra data 방어
         raw_text = re.sub(r"^```json\s*", "", raw_text)
         raw_text = re.sub(r"\s*```$", "", raw_text)
-        # JSON이 두 개 이상 붙어있는 경우 첫 번째만 추출
         brace_depth, end_idx = 0, -1
         for i, ch in enumerate(raw_text):
             if ch == "{": brace_depth += 1
@@ -736,18 +747,25 @@ JSON only, 다른 텍스트 없이:
             raw_text = raw_text[:end_idx]
         analysis = json.loads(raw_text)
 
-        # ── 회사명 갱신: broad 기사만 AI 추출 company_name으로 갱신
-        # targeted는 수집 키워드 기준 회사명이 더 정확하므로 고정
+        # ── company_name 기반 _company 갱신 — targeted/broad 공통
+        # 수집 키워드 회사명(삼성증권)이 달라도 실제 기사 주체(미래에셋)로 교정
         extracted = analysis.get("company_name","").strip()
-        if (art.get("_source_type") == "broad"
-                and extracted and extracted != "-"
-                and not KIS_EXCLUDE_RE.search(extracted)):
+        if extracted and extracted != "-" and not KIS_EXCLUDE_RE.search(extracted):
             art["_company"] = extracted
+
+        # ── event_key 정규화 — 빈값/누락 시 폴백 생성
+        event_key = analysis.get("event_key","").strip()
+        if not event_key or len(event_key) < 5:
+            from datetime import datetime as _dt
+            ym = _dt.now(KST).strftime("%Y%m")
+            co = extracted if (extracted and extracted != "-") else art.get("_company","미확인")
+            th = analysis.get("threat_type","기능강화")[:6]
+            event_key = f"{co}_{th}_{ym}"
+        analysis["event_key"] = event_key[:40]
 
         if not analysis.get("impact_domain","").strip():
             analysis["impact_domain"] = "-"
 
-        # threat_type 유효값 강제 — '-' 또는 범위 외 값이면 '기능강화' 대체
         VALID_THREATS = {"신규진출","기능강화","수수료경쟁","제휴·지분","플랫폼확장"}
         if analysis.get("threat_type","") not in VALID_THREATS:
             analysis["threat_type"] = "기능강화"
@@ -1289,11 +1307,13 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
                 raise
 
 def send_email(html: str, analyzed: list[dict], raw_count: int):
-    now_str = datetime.now(KST).strftime("%m월 %d일 %H시 %M분")
+    now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
     subject = f"📢[인사이트 탐지] {now_str} 기준"
 
-    _smtp_send(subject, html, RECIPIENTS_ALL)
-
+    high_count = sum(1 for a in analyzed
+                     if a.get("analysis") and a["analysis"].get("impact_level") == "상")
+    cc = RECIPIENTS_HIGH if high_count > 0 and RECIPIENTS_HIGH else None
+    _smtp_send(subject, html, RECIPIENTS_ALL, cc)
     print(f"  ✅ 발송 완료 | {subject}")
 
 def send_email_no_result(subject: str, html: str):
@@ -1425,7 +1445,7 @@ def main():
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
 
     # ── 1) 병렬 수집
-    print("\n[1/5] 네이버 뉴스 수집 중 (병렬)...")
+    print("\n[1/6] 네이버 뉴스 수집 중 (병렬)...")
     raw = collect_articles(seen)
     print(f"  → 신규 수집: {len(raw)}건")
 
@@ -1437,7 +1457,7 @@ def main():
         return
 
     # ── 2) 하드필터
-    print("\n[2/5] 하드필터 적용 중...")
+    print("\n[2/6] 하드필터 적용 중...")
     hard_excluded = []
     articles_kept = []
     for a in raw:
@@ -1459,7 +1479,7 @@ def main():
         return
 
     # ── 3) AI 1차 필터링
-    print("\n[3/5] AI 1차 필터링 중...")
+    print("\n[3/6] AI 1차 필터링 중...")
     relevant = filter_relevant_articles(articles)
     print(f"  → AI 선별: {len(relevant)}건 (전체 {len(raw)}건 중)")
 
@@ -1472,7 +1492,7 @@ def main():
         return
 
     # ── 4) 본문 크롤링 (병렬)
-    print("\n[4/5] 기사 본문 크롤링 중...")
+    print("\n[4/6] 기사 본문 크롤링 중...")
     from concurrent.futures import ThreadPoolExecutor, as_completed as _asc
 
     def _fetch_body(art: dict) -> dict:
@@ -1498,7 +1518,7 @@ def main():
     print(f"  → 본문 수집 성공: {body_ok}건 / 실패(description 대체): {body_fail}건")
 
     # ── 5) AI 2차 심층 분석 (상한: MAX_ANALYZE_ARTICLES)
-    print("\n[5/5] AI 2차 심층 분석 중...")
+    print("\n[5/6] AI 2차 심층 분석 + event_key 중복제거...")
     if len(relevant) > MAX_ANALYZE_ARTICLES:
         print(f"  ⚠️ AI 선별 {len(relevant)}건 → 상위 {MAX_ANALYZE_ARTICLES}건만 분석 (비용 상한)")
         relevant = relevant[:MAX_ANALYZE_ARTICLES]
@@ -1510,12 +1530,16 @@ def main():
         print(f"  [{i+1}/{len(relevant)}] {art['_company']} | {art['title'][:38]}...")
         result = analyze_article(art)
         if result.get("analysis"):
-            # 런타임 사건 키 중복 체크 (seen 파일 보완)
-            ekey = make_event_key(
-                result.get("_company",""),
-                result["analysis"].get("threat_type",""),
-                result["analysis"].get("impact_domain","")
-            )
+            # 런타임 중복: AI가 생성한 event_key 기반
+            ekey = result["analysis"].get("event_key","")
+            if not ekey:
+                an = result["analysis"]
+                co = an.get("company_name","") or result.get("_company","")
+                ekey = f"{co}::{an.get('threat_type','')}"
+            if ekey in runtime_events:
+                print(f"  [런타임중복] {result.get('_company','')} | {result.get('title','')[:45]}")
+                continue
+            runtime_events.add(ekey)
             if ekey in runtime_events:
                 print(f"  [런타임중복] {result.get('_company','')} | {result.get('title','')[:45]}")
                 continue
@@ -1528,64 +1552,56 @@ def main():
     # ── 동일 사건 중복 제거
     def _dedup_same_event(arts: list) -> list:
         from collections import defaultdict
+
         def sc(a):
             try: return float(a.get("analysis",{}).get("impact_score", 0))
             except: return 0.0
 
-        # 0단계: 3일 내 seen events 체크 — 이미 탐지된 사건 제거
+        def press_rank(a):
+            return 0 if a.get("_tier","") == "1군" else 1
+
+        # 0단계: 3일 내 seen events 체크
         event_filtered = []
         for a in arts:
-            if is_duplicate_event(a, seen):
-                ekey = make_event_key(
-                    a.get("_company",""),
-                    a.get("analysis",{}).get("threat_type",""),
-                    a.get("analysis",{}).get("impact_domain","")
-                )
-                print(f"  [사건중복-3일] {a['_company']} | {a['title'][:45]} (키: {ekey})")
-                continue
+            an = a.get("analysis")
+            if an:
+                ekey = an.get("event_key","")
+                if not ekey:
+                    co = an.get("company_name","") or a.get("_company","")
+                    ekey = f"{co}::{an.get('threat_type','')}"
+                if ekey in seen.get("events", set()):
+                    print(f"  [사건중복-3일] {a.get('_company','')} | {a.get('title','')[:45]} (키: {ekey})")
+                    continue
             event_filtered.append(a)
 
-        # 1단계: URL 완전 동일 기사 제거
-        seen_links = {}
-        url_deduped = []
-        for a in event_filtered:
-            link = a.get("link","") or a.get("originallink","")
-            if link and link in seen_links:
-                prev = seen_links[link]
-                if sc(a) > sc(prev):
-                    url_deduped.remove(prev)
-                    seen_links[link] = a
-                    url_deduped.append(a)
-                print(f"  [중복제거-URL] {a['_company']} | {a['title'][:45]}")
-            else:
-                if link:
-                    seen_links[link] = a
-                url_deduped.append(a)
-
-        # 1단계: 같은 회사 + 같은 위협유형 → 점수 최고 1건만 유지
+        # 1단계: event_key 기반 그룹핑 → 대표기사 선정
         groups = defaultdict(list)
         no_analysis = []
-        for a in url_deduped:
+        for a in event_filtered:
             an = a.get("analysis")
             if not an:
-                no_analysis.append(a)
-                continue
-            key = (a.get("_company",""), an.get("threat_type",""))
-            groups[key].append(a)
+                no_analysis.append(a); continue
+            ekey = an.get("event_key","")
+            if ekey:
+                groups[ekey].append(a)
+            else:
+                co = an.get("company_name","") or a.get("_company","")
+                th = an.get("threat_type","")
+                groups[f"{co}::{th}"].append(a)
 
-        kept, removed = [], []
-        for key, group in groups.items():
+        kept = []
+        for ekey, group in groups.items():
             if len(group) == 1:
-                kept.append(group[0])
-                continue
-            group.sort(key=sc, reverse=True)
-            kept.append(group[0])
+                kept.append(group[0]); continue
+            # 대표기사: ① impact_score ② 언론사 등급 ③ 최신
+            group.sort(key=lambda a: (sc(a), -press_rank(a)), reverse=True)
+            rep = group[0]
+            rep["_related_count"] = len(group) - 1
+            rep["_related_titles"] = [a.get("title","")[:40] for a in group[1:]]
+            kept.append(rep)
             for dup in group[1:]:
-                removed.append(dup)
-                print(f"  [중복제거] {dup['_company']} | {dup['title'][:45]}")
-
-        if removed:
-            print(f"  → 동일 사건 중복 {len(removed)}건 제거")
+                print(f"  [event중복] {dup.get('_company','')} | {dup.get('title','')[:45]}")
+            print(f"  → '{ekey}' {len(group)}건 → 대표기사 1건 유지")
 
         return kept + no_analysis
 
@@ -1657,20 +1673,22 @@ def main():
         if len(title) > 15: seen_final_titles.append(title)
         analyzed.append(a)
 
-    # ── 이메일 발송
+    # ── 6) 저장 및 발송
+    print(f"\n[6/6] 메일 발송 중...")
     html = build_email_html(analyzed, len(raw), len(relevant))
     send_email(html, analyzed, len(raw))
 
-    # ── 저장 — 사건 키 포함
+    # ── 저장 — event_key 기반 사건 키 저장
     sent_urls  = {a.get("link","") for a in analyzed}
-    new_events = {
-        make_event_key(
-            a.get("_company",""),
-            a["analysis"].get("threat_type",""),
-            a["analysis"].get("impact_domain","")
-        )
-        for a in analyzed if a.get("analysis")
-    }
+    new_events = set()
+    for a in analyzed:
+        if not a.get("analysis"): continue
+        an = a["analysis"]
+        ekey = an.get("event_key","")
+        if not ekey:
+            co = an.get("company_name","") or a.get("_company","")
+            ekey = f"{co}::{an.get('threat_type','')}"
+        new_events.add(ekey)
     save_seen(seen, sent_urls=sent_urls,
               new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
               new_events=new_events)
