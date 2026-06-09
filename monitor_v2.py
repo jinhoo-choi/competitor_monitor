@@ -45,7 +45,7 @@ RECIPIENTS_HIGH = [r for r in RECIPIENTS_HIGH if r.strip()]
 SENDER_NAME     = "eBiz 인사이트봇"
 KST             = timezone(timedelta(hours=9))
 SEEN_FILE       = "seen_articles.json"
-TITLE_SIM_THRESHOLD = 88   # rapidfuzz 유사도 임계값
+TITLE_SIM_THRESHOLD = 80   # rapidfuzz 유사도 임계값 (88→80 완화)
 MAX_AI_FAILS        = 3    # circuit breaker
 
 # ═══════════════════════════════════════════════
@@ -697,7 +697,7 @@ def analyze_article(art: dict) -> dict:
     # 본문 크롤링 결과 우선, 없으면 description 사용
     body_text    = art.get("_body") or art.get("description","")
     body_failed  = art.get("_body_failed", False)
-    body_note    = " (※ 본문 크롤링 실패 — description만 사용, 추측 금지)" if body_failed else ""
+    body_note    = " (※ 본문 미수집. description만 사용. summary는 30자 이내로 작성 후 끝에 [본문 미수집] 표기.)" if body_failed else ""
     # 본문이 충분히 있으면 800자, 아니면 전체 사용
     body_input   = body_text[:800] if len(body_text) > 200 else body_text
 
@@ -729,7 +729,7 @@ def analyze_article(art: dict) -> dict:
 JSON only, 다른 텍스트 없이:
 {{
   "company_name": "기사의 실제 행위 주체 증권사명. 수집 키워드와 무관하게 본문에서 직접 추출. 모르면 '-'",
-  "event_key": "이 기사가 나타내는 사건의 고유 식별자. 형식: {{증권사명}}_{{핵심행위}}_{{YYYYMM}}. 30자 이내.\n\n★★★ event_key 생성 핵심 규칙 ★★★\n① 동일 사건의 후속기사·재송고·인터뷰·분석기사는 반드시 완전히 동일한 event_key 생성\n② 기사 제목이 달라도, 언론사가 달라도, 표현이 달라도 같은 사건이면 같은 event_key\n③ 사건 판단 기준: 같은 회사가 같은 행위를 한 것 = 같은 사건\n예) '미래에셋_싱가포르UOB외국인계좌_202606' 이 키는 아래 기사 모두에 동일 적용:\n  - '미래에셋증권, 싱가포르 UOB와 외국인 통합계좌 개시'\n  - '미래에셋증권도 외국인 통합계좌 개시…싱가포르 제휴'\n  - '미래에셋, UOB Kay Hian과 외국인 통합계좌 계약'\n  - '동남아 자금 유입 길 열렸다…미래에셋 4조 규모 UOB'\n예) '삼성증권_두나무지분취득_202606':\n  - '삼성증권·SDS·카드, 두나무 지분 4% 인수'\n  - '삼성증권, 두나무 지분 2% 취득'\n예) '메리츠증권_해진공선박조각투자_202606':\n  - '해진공, 선박 조각투자 9월 출시'\n  - '안병길 해진공 사장 \"9월 선박 조각투자 상장\"'",
+  "event_key": "이 기사가 나타내는 사건의 고유 식별자. 형식: {{증권사명}}_{{핵심행위}}_{{YYYYMM}}. 30자 이내.\n\n★★★ event_key 생성 핵심 규칙 ★★★\n아래 4단계를 반드시 순서대로 따르세요:\nstep1: 기사의 실제 주체 증권사명 추출 (수집 키워드 무시)\nstep2: 핵심 행위를 5자 이내로 압축 (예: UOB제휴 / 퇴직연금출시 / 두나무지분 / STO플랫폼)\nstep3: YYYYMM 형식 날짜 추가\nstep4: 세 요소를 _로 연결\n\n① 동일 사건의 후속기사·재송고·인터뷰·분석기사는 반드시 완전히 동일한 event_key 생성\n② 기사 제목이 달라도, 언론사가 달라도, 표현이 달라도 같은 사건이면 같은 event_key\n③ 사건 판단 기준: 같은 회사가 같은 행위를 한 것 = 같은 사건\n예) '미래에셋_싱가포르UOB외국인계좌_202606' 이 키는 아래 기사 모두에 동일 적용:\n  - '미래에셋증권, 싱가포르 UOB와 외국인 통합계좌 개시'\n  - '미래에셋증권도 외국인 통합계좌 개시…싱가포르 제휴'\n  - '미래에셋, UOB Kay Hian과 외국인 통합계좌 계약'\n  - '동남아 자금 유입 길 열렸다…미래에셋 4조 규모 UOB'\n예) '삼성증권_두나무지분취득_202606':\n  - '삼성증권·SDS·카드, 두나무 지분 4% 인수'\n  - '삼성증권, 두나무 지분 2% 취득'\n예) '메리츠증권_해진공선박조각투자_202606':\n  - '해진공, 선박 조각투자 9월 출시'\n  - '안병길 해진공 사장 \"9월 선박 조각투자 상장\"'",
   "impact_level": "상/중/하 중 택1",
   "impact_score": 1.0~10.0 사이 숫자 (소수점 1자리, 영향도와 일관성 유지),
   "impact_domain": "영향받는 한투 사업영역 (최대 20자)",
@@ -739,13 +739,13 @@ JSON only, 다른 텍스트 없이:
     "위협유형": "위협의 핵심 성격 (6자 이내)",
     "고객영향": "고객에게 발생하는 직접 결과 (8자 이내)"
   }},
-  "action_point": "현실적인 수준의 대응 방안 (부서명 없이, 과도한 액션 없이, 2문장 이내)"
+  "action_point": "현실적인 수준의 대응 방안. 1문장 40자+1문장 40자, 총 80자 이내. 부서명 없이. 번호 매기지 말 것."
 }}"""
 
     try:
         res = client.messages.create(
             model="claude-haiku-4-5-20251001",
-            max_tokens=700,
+            max_tokens=500,
             messages=[{"role":"user","content":prompt}]
         )
         raw_text = res.content[0].text.strip()
@@ -877,9 +877,7 @@ def _card(art: dict) -> str:
         bar = "&#9608;" * round(s) + "&#9617;" * (10 - round(s))
         sc  = "#c0392b" if s >= 7 else "#b45309" if s >= 5 else "#666666"
         score_html = (
-            f'<span style="font-size:16px;font-weight:bold;color:{sc};font-family:Arial,sans-serif;">{s:.1f}</span>'
-            f'<span style="font-size:9px;color:{sc};font-family:\'Courier New\',Courier,monospace;'
-            f'letter-spacing:-1px;margin-left:5px;opacity:0.8;">{bar}</span>'
+            f'<span style="font-size:18px;font-weight:bold;color:{sc};font-family:Arial,sans-serif;">{s:.1f}</span>'
         )
     except Exception:
         pass
@@ -924,13 +922,13 @@ def _card(art: dict) -> str:
 
     # 모바일 전용 한 줄 텍스트 (데스크톱에서는 미디어쿼리로 숨김)
     tag_inline = (
-        f'<p class="tag-inline" style="display:none;margin:6px 0 0;font-size:12px;'
-        f'font-family:Arial,sans-serif;line-height:1.6;">'
+        f'<p class="tag-inline" style="display:none;margin:4px 0 0;font-size:12px;'
+        f'font-family:Arial,sans-serif;line-height:1.5;color:#333;">'
         f'<span style="color:#2d8653;font-weight:bold;">{domain}</span>'
-        f'<span style="color:#cccccc;padding:0 5px;">·</span>'
+        f'<span style="color:#ccc;padding:0 4px;">|</span>'
         f'<span style="color:#8a4a00;">{tags.get("위협유형","-")}</span>'
-        f'<span style="color:#cccccc;padding:0 5px;">·</span>'
-        f'<span style="color:#666666;">{tags.get("고객영향","-")}</span>'
+        f'<span style="color:#ccc;padding:0 4px;">|</span>'
+        f'<span style="color:#555;">{tags.get("고객영향","-")}</span>'
         f'</p>'
     )
 
@@ -955,11 +953,6 @@ def _card(art: dict) -> str:
                     <span style="background:#2c3e50;color:#ffffff;font-size:11px;
                                  padding:3px 10px;font-family:Arial,sans-serif;">{company}</span>
                   </td>
-                  <td style="padding-right:6px;">
-                    <span style="background:#ffffff;color:#555555;font-size:11px;
-                                 padding:3px 10px;border:1px solid #dddddd;font-family:Arial,sans-serif;">{threat}</span>
-                  </td>
-                  <td>{tier_badge}</td>
                 </tr></table>
               </td>
               <td class="score-td" style="padding:9px 16px;text-align:right;vertical-align:middle;white-space:nowrap;">
@@ -1536,7 +1529,22 @@ def main():
                 print(f"  [event중복] {dup.get('_company','')} | {dup.get('title','')[:45]}")
             print(f"  → '{ekey}' {len(group)}건 → 대표기사 1건 (score={sc(rep):.1f})")
 
-        return kept + no_analysis
+        # 폴백: event_key 달라도 동일 회사+threat 2건 이상이면 점수 낮은 것 드롭
+        from collections import defaultdict as _dd2
+        co_threat_map = _dd2(list)
+        for a in kept:
+            an2 = a.get("analysis") or {}
+            k2 = (a.get("_company",""), an2.get("threat_type",""))
+            co_threat_map[k2].append(a)
+        kept2 = []
+        for k2, grp in co_threat_map.items():
+            if len(grp) == 1:
+                kept2.append(grp[0]); continue
+            grp.sort(key=lambda a: (sc(a),-press_rank(a)), reverse=True)
+            kept2.append(grp[0])
+            for dup in grp[1:]:
+                print(f"  [폴백중복] {dup.get('_company','')} | {dup.get('title','')[:45]}")
+        return kept2 + no_analysis
 
     analyzed = _dedup_same_event(analyzed)
 
