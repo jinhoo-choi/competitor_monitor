@@ -71,6 +71,14 @@ HARD_EXCLUDE_PATTERNS = [
     r"\[크립토퀵서치\]", r"\[가상자산\s*대전환", r"\[비트코인\s*리포트\]",
     r"\[비트코인\s*이슈\]", r"\[코인\s*브리핑\]",
     r"\[스몰캡", r"스몰캡\s*증권사\s*서바이벌",
+    # C레벨 인터뷰·임원 기획
+    r"\[C레벨\s*터치\]", r"\[C레벨\]", r"\[임원\s*인터뷰\]",
+    # 입법·규제 동향 단순 기사
+    r"입법\s*시계", r"입법\s*지연", r"입법\s*공백",
+    # 마케팅·광고 비용 비교
+    r"광고선전비",
+    # 해외영토·신수익원 일반론
+    r"신수익원\s*찾아", r"해외\s*영토\s*확장",
     # IB·법인·인프라 금융 기사
     r"인프라\s*금융", r"생산적\s*금융", r"첨단\s*인프라", r"프로젝트\s*파이낸싱",
     r"부동산\s*금융", r"PF\s*대출", r"PF\s*충격", r"PF\s*리스크", r"PF\s*부실",
@@ -534,6 +542,11 @@ def filter_relevant_articles(articles: list[dict]) -> list[dict]:
 - 경쟁사 서비스·사업이 후퇴하거나 차질이 생기는 기사는 제외
   예) "인가 제동", "진입 차질", "인가 거부", "서비스 중단", "사업 철수", "영업 정지"
   → 경쟁사가 약해지는 방향이므로 한투 고객 이동 가능성 없음
+- 업계 전반 입법·규제 동향, 일반론 기획기사 제외
+  예) "입법 시계 다시 움직이나", "입법 지연 불구", "신수익원 찾아 해외영토 확장"
+  → 특정 경쟁사의 즉각적 서비스 출시·제휴가 아니면 제외
+- 광고비 비교, C레벨 인터뷰·임원 기획, 대표 전략 소개 기사 제외
+  예) "광고선전비 팽팽", "[C레벨 터치]", "대표의 N사 키우기"
 - 업계 전반 동향·기획 기사는 제외
   특정 경쟁사의 구체적 서비스·출시·제휴가 아닌 "금융권 전반", "업계 동향", "시장 분석"
   형태의 기획·해설 기사는 제외. 예) "ETF 생태계 동향", "디지털금융 체질 개선", "금융권 현황"
@@ -684,7 +697,9 @@ def analyze_article(art: dict) -> dict:
     # 본문 크롤링 결과 우선, 없으면 description 사용
     body_text    = art.get("_body") or art.get("description","")
     body_failed  = art.get("_body_failed", False)
-    body_note    = " (※ 본문 크롤링 실패 — 추측 금지, 명시 내용만 사용)" if body_failed else ""
+    body_note    = " (※ 본문 크롤링 실패 — description만 사용, 추측 금지)" if body_failed else ""
+    # 본문이 충분히 있으면 800자, 아니면 전체 사용
+    body_input   = body_text[:800] if len(body_text) > 200 else body_text
 
     prompt = f"""{KIS_CONTEXT}
 {IMPACT_CRITERIA}
@@ -700,14 +715,15 @@ def analyze_article(art: dict) -> dict:
 아래 기사를 분석하여 한투 비대면 사업에 미치는 영향을 판단하세요.
 
 규칙:
-- 기사 본문에 명시된 내용만 사용. 추론·추측 금지.
-- 확인 불가 내용은 "-" 기입.
+- 기사 본문에 명시된 수치·날짜·고유명사를 최대한 활용하세요.
+- 확인 불가 내용은 "-" 기입. 추론·추측 금지.
 - company_name: 기사 본문에서 증권사명 직접 추출. 여러 개면 주된 1개만.{body_note}
+- summary: 본문의 구체적 수치(금액·기간·건수·목표치)와 행위 주체를 포함해 작성.
 
 <<BODY>>
 경쟁사(사전 분류, 미확인일 수 있음): {art['_company']}
 제목: {art['title']}
-내용: {body_text[:500]}
+내용: {body_input}
 <<END>>
 
 JSON only, 다른 텍스트 없이:
@@ -718,7 +734,7 @@ JSON only, 다른 텍스트 없이:
   "impact_score": 1.0~10.0 사이 숫자 (소수점 1자리, 영향도와 일관성 유지),
   "impact_domain": "영향받는 한투 사업영역 (최대 20자)",
   "threat_type": "신규진출/기능강화/수수료경쟁/제휴·지분/플랫폼확장 중 반드시 택1. 모르면 가장 근접한 것 선택. '-' 입력 금지.",
-  "summary": "기사 핵심 요약 (80자 이내, 본문 명시 내용만)",
+  "summary": "기사 핵심 요약 (본문에 명시된 수치·사실·행위 주체 중심으로 2문장 이내 60자. 추측 금지. 예: '키움증권이 6월1일 퇴직연금 출시, 10년내 점유율 10% 목표. WM잔고 5개월 만에 11조 돌파.' / '미래에셋이 싱가포르 UOB Kay Hian과 외국인 통합계좌 계약 체결, 동남아 4조 규모 자금 유입 기대.')",
   "impact_tags": {{
     "위협유형": "위협의 핵심 성격 (6자 이내)",
     "고객영향": "고객에게 발생하는 직접 결과 (8자 이내)"
@@ -1020,89 +1036,34 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
     low   = [a for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="하"]
     no_an = [a for a in analyzed if not a.get("analysis")]
 
-    # ③ 집계: 경쟁사별 건수 + 위협유형별 건수
-    company_counter  = Counter(
-        a.get("_company","") for a in analyzed if a.get("analysis")
-    )
-    threat_counter = Counter(
-        a["analysis"].get("threat_type","") for a in analyzed
-        if a.get("analysis") and a["analysis"].get("threat_type","") not in ("-","")
-    )
+    # 헤더 한줄 요약 — Claude API로 40자 이내 단일 문장 생성
+    top_arts = high + mid
+    summary_list = ""
+    if top_arts:
+        try:
+            titles_text = "\n".join(
+                f"- [{a['analysis'].get('impact_level','')}] {a.get('_company','')} | "
+                f"{a['analysis'].get('summary','')[:60]}"
+                for a in top_arts[:5] if a.get("analysis")
+            )
+            res = client.messages.create(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=80,
+                messages=[{"role":"user","content":
+                    f"아래 오늘의 경쟁사 인사이트 현황을 보고, 전체 흐름을 40자 이내 한 문장으로만 작성하세요.\n"
+                    f"문장 외 다른 내용 일절 금지. 경쟁사명·핵심 사건을 균형있게 반영.\n"
+                    f"예: '키움 퇴직연금 진출·미래에셋 UOB 제휴, 연금·해외주식 경쟁 심화'\n\n"
+                    f"{titles_text}"
+                }]
+            )
+            one_line = res.content[0].text.strip()[:50]
+            summary_list = (
+                f'<p style="margin:0;font-size:11px;color:#95d5b2;font-family:Arial,sans-serif;'
+                f'line-height:1.6;word-break:keep-all;">{one_line}</p>'
+            )
+        except Exception:
+            pass
 
-    # 경쟁사 바 차트 — 회사명 고정폭(px) + 바 + 건수 정렬
-    max_co_cnt = max(company_counter.values()) if company_counter else 1
-    company_rows = ""
-    for co, cnt in company_counter.most_common(6):
-        bar_w = max(4, round(cnt / max_co_cnt * 100))
-        is_major = co in MAJOR_COMPETITORS
-        major_tag = (
-            f'<span style="font-size:9px;color:#52b788;font-family:Arial,sans-serif;margin-left:3px;">★</span>'
-            if is_major else ""
-        )
-        company_rows += (
-            f'<tr>'
-            f'<td class="chart-label" width="110" style="width:110px;padding:3px 8px 3px 0;vertical-align:middle;white-space:nowrap;">'
-            f'<span style="font-size:11px;color:#d8f3dc;font-family:Arial,sans-serif;">{co}</span>{major_tag}'
-            f'</td>'
-            f'<td style="padding:3px 0;vertical-align:middle;">'
-            f'<table cellpadding="0" cellspacing="0" style="width:100%;"><tr>'
-            f'<td width="{bar_w}" height="8" style="width:{bar_w}px;height:8px;'
-            f'background:#52b788;border-radius:2px;font-size:0;line-height:0;">&nbsp;</td>'
-            f'<td style="padding-left:6px;vertical-align:middle;">'
-            f'<span style="font-size:11px;color:#95d5b2;font-family:Arial,sans-serif;">{cnt}건</span>'
-            f'</td>'
-            f'</tr></table>'
-            f'</td>'
-            f'</tr>'
-        )
-
-    THREAT_COLOR = {
-        "신규진출":  "#ef9a9a",
-        "기능강화":  "#ffcc80",
-        "수수료경쟁": "#a5d6a7",
-        "제휴·지분": "#ce93d8",
-        "플랫폼확장": "#80cbc4",
-    }
-    max_th_cnt = max(threat_counter.values()) if threat_counter else 1
-    threat_rows = ""
-    for th, cnt in threat_counter.most_common(5):
-        tc = THREAT_COLOR.get(th, "#90a4ae")
-        bar_w = max(4, round(cnt / max_th_cnt * 80))
-        threat_rows += (
-            f'<tr>'
-            f'<td class="chart-label" width="85" style="width:85px;padding:3px 8px 3px 0;vertical-align:middle;white-space:nowrap;">'
-            f'<table cellpadding="0" cellspacing="0"><tr>'
-            f'<td width="8" height="8" style="width:8px;height:8px;background:{tc};border-radius:2px;font-size:0;line-height:0;">&nbsp;</td>'
-            f'<td style="padding-left:5px;vertical-align:middle;">'
-            f'<span style="font-size:11px;color:#d8f3dc;font-family:Arial,sans-serif;">{th}</span>'
-            f'</td></tr></table>'
-            f'</td>'
-            f'<td style="padding:3px 0;vertical-align:middle;">'
-            f'<table cellpadding="0" cellspacing="0" style="width:100%;"><tr>'
-            f'<td width="{bar_w}" height="8" style="width:{bar_w}px;height:8px;'
-            f'background:{tc};opacity:0.7;border-radius:2px;font-size:0;line-height:0;">&nbsp;</td>'
-            f'<td style="padding-left:6px;vertical-align:middle;">'
-            f'<span style="font-size:11px;color:#95d5b2;font-family:Arial,sans-serif;">{cnt}건</span>'
-            f'</td>'
-            f'</tr></table>'
-            f'</td>'
-            f'</tr>'
-        )
-
-    # 헤더 대시보드
-    dash_cells = ""
-    for label, items, color, subtext in [
-        ("상", high,  "#c0392b", "즉시 검토"),
-        ("중", mid,   "#b45309", "모니터링"),
-        ("하", low,   "#2e7d32", "참고"),
-    ]:
-        border_r = "border-right:1px solid rgba(255,255,255,0.15);" if label != "하" else ""
-        dash_cells += (
-            f'<td width="33%" align="center" style="padding:8px 0;{border_r}">'
-            f'<p class="dash-num" style="margin:0 0 1px;font-size:19px;font-weight:bold;color:{color};font-family:Arial,sans-serif;">{len(items)}</p>'
-            f'<p style="margin:0;font-size:11px;color:#d8f3dc;font-family:Arial,sans-serif;">영향도 {label}</p>'
-            f'</td>'
-        )
 
     # ① 영향도 하 리스트 카드 생성
     ordered_high_mid = high + mid
@@ -1161,7 +1122,6 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
       .header-td     {{ display:block!important; width:100%!important; box-sizing:border-box!important;
                         padding-left:16px!important; padding-right:16px!important; text-align:left!important; }}
       /* 대시보드 숫자 */
-      .dash-num      {{ font-size:15px!important; }}
       /* 차트 좌우 → 세로 스택 */
       .chart-wrap    {{ display:block!important; width:100%!important; }}
       .chart-col     {{ display:block!important; width:100%!important; box-sizing:border-box!important;
@@ -1199,8 +1159,8 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
     <table width="100%" cellpadding="0" cellspacing="0"
            style="background:#1e5c3a;border-radius:10px 10px 0 0;-webkit-border-radius:10px 10px 0 0;mso-border-radius:0;">
       <!--[if mso]><tr><td width="420" valign="top" class="header-td"><![endif]-->
-      <!--[if !mso]><!--><tr><td class="header-td" style="padding:20px 22px 10px;vertical-align:top;"><!--<![endif]-->
-        <p style="margin:0;font-size:21px;font-weight:bold;color:#ffffff;
+      <!--[if !mso]><!--><tr><td class="header-td" style="padding:12px 16px 6px;vertical-align:top;"><!--<![endif]-->
+        <p style="margin:0;font-size:17px;font-weight:bold;color:#ffffff;
                   font-family:Arial,sans-serif;letter-spacing:-0.3px;">&#129302; eBiz 인사이트봇</p>
         <p style="margin:7px 0 0;font-size:12px;color:#74c69d;font-family:Arial,sans-serif;">
           수집 {raw_count}건 &rarr; AI 선별 {filtered_count}건 &rarr;
@@ -1208,35 +1168,21 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
         </p>
       </td>
       <!--[if mso]><td width="180" valign="top" align="right" style="padding:20px 22px 10px;"><![endif]-->
-      <!--[if !mso]><!--><td class="header-td" style="padding:20px 22px 10px;text-align:right;vertical-align:top;white-space:nowrap;"><!--<![endif]-->
+      <!--[if !mso]><!--><td class="header-td" style="padding:12px 16px 6px;text-align:right;vertical-align:top;white-space:nowrap;"><!--<![endif]-->
         <p style="margin:0;font-size:11px;color:#95d5b2;font-family:Arial,sans-serif;">{now_str}</p>
       </td></tr>
 
-      <!-- 영향도 대시보드 -->
-      <tr><td colspan="2" style="padding:0 16px 12px;">
-        <table width="100%" cellpadding="0" cellspacing="0"
-               style="background:rgba(0,0,0,0.18);border-radius:6px;">
-          <tr>{dash_cells}</tr>
-        </table>
-      </td></tr>
-
-      <!-- 경쟁사별 + 위협유형 바 차트 -->
-      <tr><td colspan="2" style="padding:0 16px 18px;">
-        <table class="chart-wrap" width="100%" cellpadding="0" cellspacing="0">
-          <tr>
-            <td class="chart-col" width="54%" valign="top" style="padding-right:10px;">
-              <p style="margin:0 0 8px;font-size:10px;color:#74c69d;letter-spacing:1px;
-                         font-family:Arial,sans-serif;font-weight:bold;">금일 경쟁사별 탐지</p>
-              <table width="100%" cellpadding="0" cellspacing="0">{company_rows}</table>
-            </td>
-            <td class="chart-divider" width="1" style="width:1px;background:rgba(255,255,255,0.12);padding:0;"></td>
-            <td class="chart-col" width="45%" valign="top" style="padding-left:12px;">
-              <p style="margin:0 0 8px;font-size:10px;color:#74c69d;letter-spacing:1px;
-                         font-family:Arial,sans-serif;font-weight:bold;">위협유형 분포</p>
-              <table width="100%" cellpadding="0" cellspacing="0">{threat_rows}</table>
-            </td>
-          </tr>
-        </table>
+      <!-- 영향도 + 탐지 기사 한줄 요약 -->
+      <tr><td colspan="2" style="padding:2px 16px 14px;">
+        <p style="margin:0 0 8px;font-size:12px;color:#d8f3dc;font-family:Arial,sans-serif;">
+          영향도&nbsp;
+          <span style="color:#ff8a80;font-weight:bold;">상 {len(high)}건</span>
+          &nbsp;&#183;&nbsp;
+          <span style="color:#ffd180;font-weight:bold;">중 {len(mid)}건</span>
+          &nbsp;&#183;&nbsp;
+          <span style="color:#74c69d;font-weight:bold;">하 {len(low)}건</span>
+        </p>
+        {summary_list}
       </td></tr>
     </table>
 
