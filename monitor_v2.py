@@ -42,7 +42,7 @@ RECIPIENTS_ALL  = os.environ.get("RECIPIENTS",      GMAIL_USER).split(",")
 RECIPIENTS_HIGH = os.environ.get("RECIPIENTS_HIGH", "").split(",")
 RECIPIENTS_HIGH = [r for r in RECIPIENTS_HIGH if r.strip()]
 
-SENDER_NAME     = "eBiz 인사이트봇"
+SENDER_NAME     = "✅ eBiz 인사이트봇"
 KST             = timezone(timedelta(hours=9))
 SEEN_FILE       = "seen_articles.json"
 TITLE_SIM_THRESHOLD = 80   # rapidfuzz 유사도 임계값 (88→80 완화)
@@ -1247,7 +1247,7 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
 
 def send_email(html: str, analyzed: list[dict], raw_count: int):
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
-    subject = f"📢[인사이트 탐지] {now_str} 기준"
+    subject = f"✅ [eBiz 인사이트] {now_str} 기준"
 
     high_count = sum(1 for a in analyzed
                      if a.get("analysis") and a["analysis"].get("impact_level") == "상")
@@ -1390,7 +1390,7 @@ def main():
 
     if not raw:
         print("  신규 뉴스 없음.")
-        subj = f"📢[인사이트 탐지] {now_str} — 신규 뉴스 없음"
+        subj = f"✅ [eBiz 인사이트] {now_str} — 신규 뉴스 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
         return
@@ -1424,7 +1424,7 @@ def main():
 
     if not relevant:
         print("  한투 영향 기사 없음.")
-        subj = f"📢[인사이트 탐지] {now_str} — 해당 기사 없음"
+        subj = f"✅ [eBiz 인사이트] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
         save_filter_log(raw, hard_excluded, [], [])
