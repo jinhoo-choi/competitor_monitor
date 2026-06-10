@@ -17,8 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: seen_articles.json 최신화
-        run: |
-          git pull --rebase origin main || true
+        run: git pull --rebase origin main || true
 
       - name: Python 설정
         uses: actions/setup-python@v5
@@ -45,13 +44,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add seen_articles.json || true
+          git add -f seen_articles.json filter_log_*.json || true
           git diff --staged --quiet || git commit -m "chore: update seen_articles [skip ci]"
-          git push || true
-
-      - name: 필터링 로그 커밋
-        if: always()
-        run: |
-          git add filter_log_*.json || true
-          git diff --staged --quiet || git commit -m "chore: update filter_log [skip ci]"
           git push || true
