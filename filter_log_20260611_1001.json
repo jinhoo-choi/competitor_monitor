@@ -1,0 +1,469 @@
+{
+  "time": "2026-06-11T10:01:39.345644+09:00",
+  "total": 65,
+  "sent": 7,
+  "hard_excl": 4,
+  "excl_stats": {
+    "생산적 금융": 2,
+    "[금융소식]": 2,
+    "취약계층": 2,
+    "기업금융": 2
+  },
+  "entries": [
+    {
+      "hash": "93e8d21d",
+      "title": "변동성 커진 韓 증시...거래대금 업은 증권주 다시 주목",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7b742754",
+      "title": "[재테크 풍향계]반도체 불안하다면…피지컬 AI에 '현대차 ETF' 후끈",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fa372d10",
+      "title": "KB증권, ISA·연금 성장에 디지털WM 자산 15조원 넘었다",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "906ede9d",
+      "title": "6월 10일 주식시장 주요공시",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "09ac019c",
+      "title": "증권사 브랜드평판 6월 빅데이터 분석... 1위 미래에셋증권, 2위 삼성증...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8f456640",
+      "title": "네이버 주가, 11% 급락... 증권가는 목표가 '줄상향'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fd60b6af",
+      "title": "미래에셋증권, 6월 증권사 브랜드평판 1위 독주…삼성증권 30% 급등하며...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5d445463",
+      "title": "'우주공룡' 스페이스X 상장 임박…증권사 제시 투자 전략",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6d4c8490",
+      "title": "키움증권, '파트너데이' 개최…고척돔서 1500명에게 콜드컵 쏜다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "50c25398",
+      "title": "키움증권, 고척돔서 파트너데이 행사 13일 개최 外",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2d82000b",
+      "title": "키움증권, 퇴직연금 첫 법인계약…HK이노엔과 '맞손'",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "6977979d",
+      "title": "키움증권 \"美 5월 CPI, 에너지발 충격 전방위 확산은 제한적\"",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8c28662c",
+      "title": "키움증권, HK이노엔과 퇴직연금 1호 법인계약 체결",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "895348d7",
+      "title": "퇴직연금 시장 진출한 키움증권, 1호 법인은 HK이노엔",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "70226148",
+      "title": "[김태문 칼럼] 키움증권의 '퇴직연금 상품' 성공 요건",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "53459812",
+      "title": "[헬로스톡] 6/10 주목할 종목 : 현대건설·삼성E&A·NH투자증권·하나마...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "df5f3661",
+      "title": "KB증권, 개미들 놀이터 된 KB M-able…디지털 자산 15조원 고지 밟았다",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fa061fbd",
+      "title": "[단독] 넥스트증권, '해외주식 소수점 거래' 추진…첫 번째 핵심 사업 낙...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "be169ed0",
+      "title": "KB證, 디지털WM 자산 15조원 돌파…6개월만에 5조원 ‘쑥’",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fc71d853",
+      "title": "KB증권 디지털WM 자산 15조원 돌파",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0d369ac3",
+      "title": "인어그레이션 그룹 '엑스포넨트', 4000만 달러 투자 유치… 美 진출 한국...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "127f3c5a",
+      "title": "하락세 보이는 삼전닉스... KB증권 “주가 아직 절반도 안 올랐다”",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1ce80082",
+      "title": "IPO 속도내는 오픈AI '韓 동맹' 삼성 계열사 8개월째 우상향",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fc1f1117",
+      "title": "'종이 없는 '1억 달러'..KB국민은행 블록체인 디지털 채권 발행, 인프라...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c706cd2e",
+      "title": "서로 다른 증권사 WTS 전략… NH는 재편, 메리츠·토스는 강화",
+      "company": "NH투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "afd0ddb8",
+      "title": "[신진영 칼럼] 생산적 금융의 성공, 사모펀드와 벤처캐피탈에 달렸다",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적 금융"
+    },
+    {
+      "hash": "9361d9f1",
+      "title": "[금융소식] 우리銀, 콜센터 3년 연속 우수 / 신한銀 AX·Web3 아카데미 /...",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융소식]"
+    },
+    {
+      "hash": "b0991ef2",
+      "title": "[금융가 산책] 우리은행, 몽골무역개발은행·KT와 외국인 금융·통신 지...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "095a92de",
+      "title": "금융권 ESG, 취약계층과 지역사회에 직접 닿는 '현장형 사회공헌' 실천",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "취약계층"
+    },
+    {
+      "hash": "80ee2e57",
+      "title": "NH증권 만난 '돈나무 언니'…한국 ETF시장 눈독",
+      "company": "NH투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "95e50b23",
+      "title": "[허정수칼럼] 후발주자 우리투자증권이 사는 길",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d2361a02",
+      "title": "NH투자증권 \"엘케이켐, 실적 성장과 주가 모멘텀 강화\"",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2d1f461c",
+      "title": "[비바100] 초고령사회 연금 전략, ‘축적’에서 ‘인출’로…한도 모르...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fe1f894f",
+      "title": "미래에셋증권, 스페이스X 훈풍 타고 반기 순이익 2조 돌파 유력...한국투...",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "a99ace14",
+      "title": "증시 급락에 ‘마통 빚투’ 폭증…미래에셋證, 스페이스X 청약 철회권 ...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "edf3764a",
+      "title": "채권 결제 5일서 3일로…KB국민銀, 블록체인 조달 첫발",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8194c6d9",
+      "title": "'빅웨이브로보틱스 공모주' 수요예측 시작...어떤 기업일까?",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "36e83ae5",
+      "title": "\"스페이스X 상장 직후 거래 못해\"…미래에셋, 청약 철회권 부여",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ff100bed",
+      "title": "[IB탈탈털기] ETF 시장 키운 LP, 알고 보니 고수익 데스크?… 금감원, 메...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1b7a6cf4",
+      "title": "스페이스X 상장일 매매 어려워…미래에셋, 청약 철회권 부여",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1eff7018",
+      "title": "미래에셋증권, 개인투자용국채 청약 시작",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3d957056",
+      "title": "삼성전자·SK하이닉스 단일종목레버리지 ETF, 고점에 출시돼 개미들 출...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "16f04e1d",
+      "title": "얼굴만 대면 끝인 줄 알았더니…토스 '페이스페이' 큰그림 따로 있다",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b8e79e5d",
+      "title": "금감원, 증권사 긴급 소집…\"해외투자 과당 마케팅·변동성 악용 엄단\"",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5164334b",
+      "title": "스페이스X 상장 앞두고 증권사 불러모은 금감원…과열 마케팅 점검",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e1639697",
+      "title": "금감원, 롤러코스터 장세 증권사 소집 \"무책임 영업행태 엄단\"",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cb18a701",
+      "title": "부산은행도 뛰어든 STO 거래소…유동성·규제 장벽 넘을까",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "91f987e7",
+      "title": "Circle, 비트코인 담보 토큰 출시와 결제망 확장 속 주가 하락",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5220d4ec",
+      "title": "트레져러, 싱가포르 테크 행사서 금융 AI 플랫폼 공개",
+      "company": "미확인",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "e64975b1",
+      "title": "BNK부산은행, 금융권 최초 모바일 퇴직연금 DB·DC 가입 서비스 구축",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "249c3762",
+      "title": "키움증권, HK이노엔과 계약 체결…퇴직연금 1호 법인고객 확보",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ef7b9854",
+      "title": "키움증권, 퇴직연금 사업 공식 개시...법인 1호 계약 체결 완료",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ca3843b8",
+      "title": "키움증권, HK이노엔과 퇴직연금 1호 법인계약 체결…“연금시장 안착 신...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c65cf3bf",
+      "title": "\"하루라도 빨리 시작하는게 승자…MZ, 주식서 번 돈 조금씩 '여기'로 옮...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1323cedf",
+      "title": "'고위험·쏠림 투자 권유말라'…금감원, 증시 변동성에 증권사 압박",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "983814c3",
+      "title": "출렁이는 환율에 증권사 소집한 금감원…\"해외주식 권유 과열\" 경고",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "de409aeb",
+      "title": "美친 자산 토큰화 열풍인데…韓은 아직 '조각투자'[월가 뒤흔든 토큰혁...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "59e4d8ba",
+      "title": "[토큰증권 변곡점 ③끝] 유동성·수익성·규제…STO가 넘어야 할 산",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3c27c088",
+      "title": "\"은행 손잡고, 지분 사고\"...글로벌 가상자산 기업들, 한국 상륙 속도 낸...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "007ff97c",
+      "title": "[기획] 금융지주, 머니무브 속 '비은행' 포폴 강화",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "6de802ef",
+      "title": "로빈후드, IPO 주관사 자격 취득…주가 3% 상승",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "afd0ddb8",
+      "title": "[신진영 칼럼] 생산적 금융의 성공, 사모펀드와 벤처캐피탈에 달렸다",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적 금융"
+    },
+    {
+      "hash": "9361d9f1",
+      "title": "[금융소식] 우리銀, 콜센터 3년 연속 우수 / 신한銀 AX·Web3 아카데미 /...",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융소식]"
+    },
+    {
+      "hash": "095a92de",
+      "title": "금융권 ESG, 취약계층과 지역사회에 직접 닿는 '현장형 사회공헌' 실천",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "취약계층"
+    },
+    {
+      "hash": "007ff97c",
+      "title": "[기획] 금융지주, 머니무브 속 '비은행' 포폴 강화",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    }
+  ]
+}
