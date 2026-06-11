@@ -73,6 +73,20 @@ HARD_EXCLUDE_PATTERNS = [
     r"\[스몰캡", r"스몰캡\s*증권사\s*서바이벌",
     # C레벨 인터뷰·임원 기획
     r"\[C레벨\s*터치\]", r"\[C레벨\]", r"\[임원\s*인터뷰\]",
+    # 시리즈 번호 기획 기사 (①②③ 또는 ①② 등)
+    r"\[.*?[①②③④⑤⑥⑦⑧⑨⑩]\]", r"\[기획\]", r"\[기획\s*특집\]",
+    # 고객 행사·이벤트 기사
+    r"파트너데이", r"고객\s*행사", r"고척돔", r"야구장",
+    # 칼럼·기고·오피니언·인물 기획
+    r"\[칼럼\]", r"칼럼\]", r"\[기고\]", r"기고\]", r"\[오피니언\]", r"\[특별기고\]",
+    r"금융人\]", r"\[금융人", r"금융인\]", r"의\s*금융",
+    # 복합 업계 성과 나열 기사
+    r"금융.*플랫폼.*외식", r"누적\s*성과\s*잇따라",
+    # 실적·순이익 기사
+    r"순이익\s*[0-9]+조", r"반기\s*순이익", r"연간\s*순이익", r"분기\s*순이익",
+
+    # WM 분석·기업 분석 기획
+    r"\[기획\]\s*WM", r"버티는\s*삼성\s*증권", r"\[WM\s*분석\]",
     # 입법·규제 동향 단순 기사
     r"입법\s*시계", r"입법\s*지연", r"입법\s*공백",
     # 마케팅·광고 비용 비교
@@ -615,6 +629,8 @@ IMPACT_CRITERIA = """
 
 [단순 이벤트·홍보 기사 — 무조건 하]
 아래 유형은 영향도 판단 관계없이 반드시 "하"로 고정:
+- 확정되지 않은 논의·미팅·협력 가능성 기사
+  예) "협력 논의", "시장 눈독", "가능성 제기", "검토 중인 것으로 알려져"
 - 신규 계좌 개설 이벤트 (현금·쿠폰·포인트 지급)
 - 수수료 한시 할인·무료 이벤트
 - 특정 기간 이벤트·프로모션·경품 행사
@@ -814,7 +830,6 @@ def _card_low(art: dict) -> str:
     company = art.get("_company","")
     title   = art.get("title","")
     threat  = an.get("threat_type","")
-    tier    = art.get("_tier","")
     is_major = company in MAJOR_COMPETITORS
 
     tier_badge = (
@@ -824,16 +839,36 @@ def _card_low(art: dict) -> str:
     )
     threat_str = f' <span style="color:#aaa;font-family:Arial,sans-serif;">· {threat}</span>' if threat else ""
 
+    # 점수 + 바 (우측)
+    score_str = ""
+    try:
+        s   = max(1.0, min(10.0, float(an.get("impact_score", 0))))
+        bar = "█" * round(s) + "░" * (10 - round(s))
+        score_str = (
+            f'<div style="font-size:10px;font-weight:700;color:#888;font-family:Arial,sans-serif;'
+            f'text-align:right;white-space:nowrap;">{s:.1f}</div>'
+            f'<div style="font-size:8px;color:#bbb;font-family:\'Courier New\',monospace;'
+            f'letter-spacing:-1px;text-align:right;">{bar}</div>'
+        )
+    except Exception:
+        pass
+
     return (
-        f'<tr><td style="padding:5px 16px;border-bottom:1px solid #f0f0f0;">'
-        f'<p style="margin:0;font-size:13px;font-family:Arial,sans-serif;">'
-        f'<span style="color:#888;margin-right:6px;">·</span>'
+        f'<tr><td style="padding:6px 8px 6px 16px;border-bottom:1px solid #f0f0f0;">'
+        f'<table width="100%" cellpadding="0" cellspacing="0"><tr>'
+        f'<td style="vertical-align:middle;">'
+        f'<p style="margin:0;font-size:12px;font-family:Arial,sans-serif;line-height:1.5;">'
+        f'<span style="color:#888;margin-right:4px;">·</span>'
         f'<span style="color:#555;font-weight:bold;">{company}</span>{tier_badge}'
         f'&nbsp;&nbsp;'
         f'<a href="{link}" style="color:#444;text-decoration:none;font-family:Arial,sans-serif;">'
-        f'{title[:45]}{"…" if len(title)>45 else ""}</a>'
+        f'{title[:42]}{"…" if len(title)>42 else ""}</a>'
         f'{threat_str}'
-        f'</p></td></tr>'
+        f'</p></td>'
+        f'<td style="width:52px;padding-left:8px;vertical-align:middle;white-space:nowrap;">'
+        f'{score_str}</td>'
+        f'</tr></table>'
+        f'</td></tr>'
     )
 
 def _card(art: dict) -> str:
@@ -870,14 +905,20 @@ def _card(art: dict) -> str:
     action   = an.get("action_point", "-")
     tags     = an.get("impact_tags", {})
 
-    # 점수: 숫자 크게 + 바 작게
-    score_html = ""
+    # 점수 박스 — 리스크봇 스타일 (우측 상단 독립 박스)
+    score_box = ""
     try:
-        s   = max(1.0, min(10.0, float(an.get("impact_score", 0))))
-        bar = "&#9608;" * round(s) + "&#9617;" * (10 - round(s))
-        sc  = "#c0392b" if s >= 7 else "#b45309" if s >= 5 else "#666666"
-        score_html = (
-            f'<span style="font-size:18px;font-weight:bold;color:{sc};font-family:Arial,sans-serif;">{s:.1f}</span>'
+        s        = max(1.0, min(10.0, float(an.get("impact_score", 0))))
+        sc       = "#c0392b" if s >= 7 else "#b45309" if s >= 5 else "#666666"
+        bar_fill = round(s)
+        bar      = "█" * bar_fill + "░" * (10 - bar_fill)
+        score_box = (
+            f'<div style="font-size:9px;color:#aaaaaa;font-family:Arial,sans-serif;'
+            f'text-align:right;margin-bottom:1px;">영향도 점수</div>'
+            f'<div style="font-size:15px;font-weight:700;color:{sc};font-family:Arial,sans-serif;">'
+            f'{s:.1f}<span style="font-size:9px;color:#aaa;font-weight:400;"> / 10</span></div>'
+            f'<div style="font-size:9px;color:{sc};font-family:\'Courier New\',monospace;'
+            f'letter-spacing:-1px;opacity:0.8;text-align:right;">{bar}</div>'
         )
     except Exception:
         pass
@@ -956,7 +997,7 @@ def _card(art: dict) -> str:
                 </tr></table>
               </td>
               <td class="score-td" style="padding:9px 16px;text-align:right;vertical-align:middle;white-space:nowrap;">
-                {score_html}
+                {score_box}
               </td>
             </tr>
           </table>
@@ -1474,15 +1515,24 @@ def main():
             if not ekey:
                 co = an.get("company_name","") or result.get("_company","")
                 ekey = f"{co}::{an.get('threat_type','')}"
-            # ① seen events 체크 — 3일 내 이미 탐지된 사건
+            # ① seen events 체크 — event_key 기준 3일 차단
             if ekey in seen.get("events", set()):
                 print(f"  [사건중복-3일] {result.get('_company','')} | {result.get('title','')[:45]} (키: {ekey})")
                 continue
+            # ① 폴백: 회사명+위협유형+월 조합으로도 seen 체크 (event_key 불일치 대비)
+            co_for_key  = (an.get("company_name","") or result.get("_company","")).strip()
+            threat_key  = an.get("threat_type","")
+            ym          = datetime.now(KST).strftime("%Y%m")
+            fallback_key = f"{co_for_key}::{threat_key}::{ym}"
+            if fallback_key in seen.get("events", set()):
+                print(f"  [사건중복-폴백] {result.get('_company','')} | {result.get('title','')[:45]} (키: {fallback_key})")
+                continue
             # ② 런타임 중복 체크 — 이번 실행에서 이미 분석한 사건
-            if ekey in runtime_events:
+            if ekey in runtime_events or fallback_key in runtime_events:
                 print(f"  [런타임중복] {result.get('_company','')} | {result.get('title','')[:45]}")
                 continue
             runtime_events.add(ekey)
+            runtime_events.add(fallback_key)
         analyzed.append(result)
         if an:
             new_title_norms.append(_normalize_title(art.get("title","")))
@@ -1619,17 +1669,20 @@ def main():
     html = build_email_html(analyzed, len(raw), len(relevant))
     send_email(html, analyzed, len(raw))
 
-    # ── 저장 — event_key 기반 사건 키 저장
+    # ── 저장 — event_key + 폴백 키(회사명::위협유형::월) 함께 저장
     sent_urls  = {a.get("link","") for a in analyzed}
     new_events = set()
+    ym = datetime.now(KST).strftime("%Y%m")
     for a in analyzed:
         if not a.get("analysis"): continue
         an = a["analysis"]
-        ekey = an.get("event_key","")
+        ekey = an.get("event_key","").strip()
         if not ekey:
             co = an.get("company_name","") or a.get("_company","")
             ekey = f"{co}::{an.get('threat_type','')}"
         new_events.add(ekey)
+        co_fb = (an.get("company_name","") or a.get("_company","")).strip()
+        new_events.add(f"{co_fb}::{an.get('threat_type','')}::{ym}")
     save_seen(seen, sent_urls=sent_urls,
               new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
               new_events=new_events)
