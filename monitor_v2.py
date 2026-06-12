@@ -748,7 +748,7 @@ JSON only, 다른 텍스트 없이:
   "event_key": "이 기사가 나타내는 사건의 고유 식별자. 형식: {{증권사명}}_{{핵심행위}}_{{YYYYMM}}. 30자 이내.\n\n★★★ event_key 생성 핵심 규칙 ★★★\n아래 4단계를 반드시 순서대로 따르세요:\nstep1: 기사의 실제 주체 증권사명 추출 (수집 키워드 무시)\nstep2: 핵심 행위를 5자 이내로 압축 (예: UOB제휴 / 퇴직연금출시 / 두나무지분 / STO플랫폼)\nstep3: YYYYMM 형식 날짜 추가\nstep4: 세 요소를 _로 연결\n\n① 동일 사건의 후속기사·재송고·인터뷰·분석기사는 반드시 완전히 동일한 event_key 생성\n② 기사 제목이 달라도, 언론사가 달라도, 표현이 달라도 같은 사건이면 같은 event_key\n③ 사건 판단 기준: 같은 회사가 같은 행위를 한 것 = 같은 사건\n예) '미래에셋_싱가포르UOB외국인계좌_202606' 이 키는 아래 기사 모두에 동일 적용:\n  - '미래에셋증권, 싱가포르 UOB와 외국인 통합계좌 개시'\n  - '미래에셋증권도 외국인 통합계좌 개시…싱가포르 제휴'\n  - '미래에셋, UOB Kay Hian과 외국인 통합계좌 계약'\n  - '동남아 자금 유입 길 열렸다…미래에셋 4조 규모 UOB'\n예) '삼성증권_두나무지분취득_202606':\n  - '삼성증권·SDS·카드, 두나무 지분 4% 인수'\n  - '삼성증권, 두나무 지분 2% 취득'\n예) '메리츠증권_해진공선박조각투자_202606':\n  - '해진공, 선박 조각투자 9월 출시'\n  - '안병길 해진공 사장 \"9월 선박 조각투자 상장\"'",
   "impact_level": "상/중/하 중 택1",
   "impact_score": 1.0~10.0 사이 숫자 (소수점 1자리, 영향도와 일관성 유지),
-  "impact_domain": "영향받는 한투 사업영역 (최대 20자)",
+  "impact_domain": "영향받는 한투 사업영역 (최대 20자). 아래 표준 표현 중 가장 가까운 것 사용:\n연금 / 연금저축 / 디지털자산 / 해외주식 / ETF / ISA / MTS플랫폼 / 공모주 / 수수료 / 자산관리\n퇴직연금·IRP·DC·DB는 모두 '연금'으로 시작할 것. 예) '연금·퇴직연금' '연금·IRP'",
   "threat_type": "신규진출/기능강화/수수료경쟁/제휴·지분/플랫폼확장 중 반드시 택1. 모르면 가장 근접한 것 선택. '-' 입력 금지.",
   "summary": "기사 핵심 요약 (본문에 명시된 수치·사실·행위 주체 중심으로 2문장 이내 60자. 추측 금지. 예: '키움증권이 6월1일 퇴직연금 출시, 10년내 점유율 10% 목표. WM잔고 5개월 만에 11조 돌파.' / '미래에셋이 싱가포르 UOB Kay Hian과 외국인 통합계좌 계약 체결, 동남아 4조 규모 자금 유입 기대.')",
   "impact_tags": {{
@@ -785,14 +785,19 @@ JSON only, 다른 텍스트 없이:
         if extracted and extracted != "-" and not KIS_EXCLUDE_RE.search(extracted):
             art["_company"] = extracted
 
-        # ── event_key 정규화 — 빈값/누락 시 폴백 생성
+        # ── event_key 정규화 — 날짜 부분을 코드에서 강제 현재 월로 교정
+        # AI가 기사 내 날짜(출시 예정일 등)를 보고 과거/미래 날짜를 넣는 문제 방지
+        from datetime import datetime as _dt
+        ym_now = _dt.now(KST).strftime("%Y%m")
         event_key = analysis.get("event_key","").strip()
         if not event_key or len(event_key) < 5:
-            from datetime import datetime as _dt
-            ym = _dt.now(KST).strftime("%Y%m")
             co = extracted if (extracted and extracted != "-") else art.get("_company","미확인")
             th = analysis.get("threat_type","기능강화")[:6]
-            event_key = f"{co}_{th}_{ym}"
+            event_key = f"{co}_{th}_{ym_now}"
+        else:
+            # 날짜 6자리 부분을 현재 월로 강제 교체 (패턴: _YYYYMM 말미)
+            import re as _re
+            event_key = _re.sub(r'_\d{6}$', f'_{ym_now}', event_key)
         analysis["event_key"] = event_key[:40]
 
         if not analysis.get("impact_domain","").strip():
@@ -1519,11 +1524,11 @@ def main():
             if ekey in seen.get("events", set()):
                 print(f"  [사건중복-3일] {result.get('_company','')} | {result.get('title','')[:45]} (키: {ekey})")
                 continue
-            # ① 폴백: 회사명+위협유형+월 조합으로도 seen 체크 (event_key 불일치 대비)
-            co_for_key  = (an.get("company_name","") or result.get("_company","")).strip()
-            threat_key  = an.get("threat_type","")
-            ym          = datetime.now(KST).strftime("%Y%m")
-            fallback_key = f"{co_for_key}::{threat_key}::{ym}"
+            # ① 폴백: 회사명+도메인앞부분+월 조합으로도 seen 체크 (위협유형은 AI 표현 변동 큼)
+            co_for_key   = (an.get("company_name","") or result.get("_company","")).strip()
+            domain_short = an.get("impact_domain","").split("·")[0].split("/")[0].split("(")[0].strip()[:6]
+            ym           = datetime.now(KST).strftime("%Y%m")
+            fallback_key = f"{co_for_key}::{domain_short}::{ym}"
             if fallback_key in seen.get("events", set()):
                 print(f"  [사건중복-폴백] {result.get('_company','')} | {result.get('title','')[:45]} (키: {fallback_key})")
                 continue
@@ -1681,8 +1686,9 @@ def main():
             co = an.get("company_name","") or a.get("_company","")
             ekey = f"{co}::{an.get('threat_type','')}"
         new_events.add(ekey)
-        co_fb = (an.get("company_name","") or a.get("_company","")).strip()
-        new_events.add(f"{co_fb}::{an.get('threat_type','')}::{ym}")
+        co_fb        = (an.get("company_name","") or a.get("_company","")).strip()
+        domain_fb    = an.get("impact_domain","").split("·")[0].split("/")[0].split("(")[0].strip()[:6]
+        new_events.add(f"{co_fb}::{domain_fb}::{ym}")
     save_seen(seen, sent_urls=sent_urls,
               new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
               new_events=new_events)
