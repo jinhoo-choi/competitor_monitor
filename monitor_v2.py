@@ -255,6 +255,13 @@ def _valid_event_days() -> set:
     now = datetime.now(KST)
     return {(now - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(3)}
 
+def _domain_key(domain: str) -> str:
+    """폴백 키용 도메인 앞부분 — 연금 계열 전체 '연금'으로 통일"""
+    d = domain.split("·")[0].split("/")[0].split("(")[0].strip()
+    if any(k in d for k in ("연금", "IRP", "퇴직", "ISA", "절세")):
+        return "연금"
+    return d[:8]
+
 def load_seen() -> dict:
     """
     구조:
@@ -1526,7 +1533,7 @@ def main():
                 continue
             # ① 폴백: 회사명+도메인앞부분+월 조합으로도 seen 체크 (위협유형은 AI 표현 변동 큼)
             co_for_key   = (an.get("company_name","") or result.get("_company","")).strip()
-            domain_short = an.get("impact_domain","").split("·")[0].split("/")[0].split("(")[0].strip()[:6]
+            domain_short = _domain_key(an.get("impact_domain",""))
             ym           = datetime.now(KST).strftime("%Y%m")
             fallback_key = f"{co_for_key}::{domain_short}::{ym}"
             if fallback_key in seen.get("events", set()):
@@ -1687,7 +1694,7 @@ def main():
             ekey = f"{co}::{an.get('threat_type','')}"
         new_events.add(ekey)
         co_fb        = (an.get("company_name","") or a.get("_company","")).strip()
-        domain_fb    = an.get("impact_domain","").split("·")[0].split("/")[0].split("(")[0].strip()[:6]
+        domain_fb    = _domain_key(an.get("impact_domain",""))
         new_events.add(f"{co_fb}::{domain_fb}::{ym}")
     save_seen(seen, sent_urls=sent_urls,
               new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
