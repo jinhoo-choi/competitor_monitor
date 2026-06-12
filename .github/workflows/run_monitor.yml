@@ -35,7 +35,7 @@ jobs:
           GMAIL_USER:          ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD:  ${{ secrets.GMAIL_APP_PASSWORD }}
           RECIPIENTS:          ${{ secrets.RECIPIENTS }}
-          RECIPIENTS_HIGH:     ${{ secrets.RECIPIENTS_HIGH }}
+          RECIPIENTS_CC:       ${{ secrets.RECIPIENTS_CC }}
           NO_RESULT_RECEIVER:  ${{ secrets.NO_RESULT_RECEIVER }}
         run: python monitor_v2.py
 
