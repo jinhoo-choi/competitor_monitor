@@ -8,7 +8,7 @@ KIS 경쟁사 영향 탐지봇 v2
 - 대응방안 4요소 강제 (확인대상·점검항목·트리거·우선순위)
 - 할루시네이션 방어 (본문 명시 내용만, 빈값 → '-')
 - 경쟁사별 위협 프레임 컨텍스트
-- 수신자 2그룹 분리 (RECIPIENTS_HIGH / RECIPIENTS_ALL)
+- 수신자 2그룹 분리 (RECIPIENTS_ALL / RECIPIENTS_CC)
 - 발신자명 displayname 설정
 - 매체 티어 배지 (1군/2군)
 - table 기반 640px 이메일 (Outlook·모바일 호환)
@@ -37,10 +37,10 @@ ANTHROPIC_API_KEY   = os.environ["ANTHROPIC_API_KEY"]
 GMAIL_USER          = os.environ["GMAIL_USER"]
 GMAIL_APP_PASSWORD  = os.environ["GMAIL_APP_PASSWORD"]
 
-# 수신자 2그룹: 영향도 상 발생 시 HIGH도 함께 발송
-RECIPIENTS_ALL  = os.environ.get("RECIPIENTS",      GMAIL_USER).split(",")
-RECIPIENTS_HIGH = os.environ.get("RECIPIENTS_HIGH", "").split(",")
-RECIPIENTS_HIGH = [r for r in RECIPIENTS_HIGH if r.strip()]
+# 수신자 2그룹: TO는 항상 발송, CC는 항상 참조
+RECIPIENTS_ALL = os.environ.get("RECIPIENTS",    GMAIL_USER).split(",")
+RECIPIENTS_CC  = os.environ.get("RECIPIENTS_CC", "").split(",")
+RECIPIENTS_CC  = [r for r in RECIPIENTS_CC if r.strip()]
 
 SENDER_NAME     = "✅ eBiz 인사이트봇"
 KST             = timezone(timedelta(hours=9))
@@ -1301,10 +1301,7 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
 def send_email(html: str, analyzed: list[dict], raw_count: int):
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
     subject = f"✅ [eBiz 인사이트] {now_str} 기준"
-
-    high_count = sum(1 for a in analyzed
-                     if a.get("analysis") and a["analysis"].get("impact_level") == "상")
-    cc = RECIPIENTS_HIGH if high_count > 0 and RECIPIENTS_HIGH else None
+    cc = RECIPIENTS_CC if RECIPIENTS_CC else None
     _smtp_send(subject, html, RECIPIENTS_ALL, cc)
     print(f"  ✅ 발송 완료 | {subject}")
 
