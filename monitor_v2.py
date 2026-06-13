@@ -1676,7 +1676,13 @@ def main():
     # ── 6) 저장 및 발송
     print(f"\n[6/6] 메일 발송 중...")
     html = build_email_html(analyzed, len(raw), len(relevant))
-    send_email(html, analyzed, len(raw))
+
+    if not analyzed:
+        # 탐지 기사 없으면 담당자에게만 발송
+        subj = f"✅ [eBiz 인사이트] {now_str} — 해당 기사 없음"
+        send_email_no_result(subj, html)
+    else:
+        send_email(html, analyzed, len(raw))
 
     # ── 저장 — event_key + 폴백 키(회사명::위협유형::월) 함께 저장
     sent_urls  = {a.get("link","") for a in analyzed}
