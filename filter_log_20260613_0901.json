@@ -1,0 +1,249 @@
+{
+  "time": "2026-06-13T09:01:33.105193+09:00",
+  "total": 34,
+  "sent": 2,
+  "hard_excl": 1,
+  "excl_stats": {
+    "[새 판 짜는 거래소①]": 2
+  },
+  "entries": [
+    {
+      "hash": "dc4a9330",
+      "title": "[가상자산거래소 지배구조 점검] ② 빗썸, IPO 앞두고 체질 정비...내부...",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "584e60c5",
+      "title": "삼성증권, 연금저축·중개형ISA 고객 대상 이벤트…순금·유전자검사 키...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "896279f5",
+      "title": "삼성증권, 연금저축·ISA 가입자 대상 '절세 종합검진 이벤트' 진행",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2c69019a",
+      "title": "[새 판 짜는 거래소①] 카카오 지우고 금융권 품었다…두나무, 웹3 금융...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[새 판 짜는 거래소①]"
+    },
+    {
+      "hash": "3eeddd6b",
+      "title": "[IPO챗] 6월 셋째주 공모주 청약 2곳·수요예측 2곳",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3118ddc3",
+      "title": "[코스피 주식선물 옵션] AI·전력망·방산 삼각동맹 형성…선물 시장 판...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "468f9f68",
+      "title": "[VC’s Pick]국산 혈관계 의료기기, ’엔벤트릭‘ 프리 IPO 유치",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9e95b7b5",
+      "title": "바이낸스 스페이스X·삼전 주식 토큰 하루 거래액, 웬만한 '중소기업' 시...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "73a377cc",
+      "title": "젠슨 황은 \"반도체 주식 사라\"고 했는데 증권가선 '피크아웃' 가능성 거...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b06e5674",
+      "title": "현대차 ETF 늘어나는데…로봇 밸류체인 ETF도 등장[ETF언박싱]",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "869b9c54",
+      "title": "[증권업계기상도]6월 둘째 주 ‘맑음’ 우세…리테일·WM·IB 고른 실적 ...",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "65464011",
+      "title": "막힌 뇌혈관 뚫는 '국산 카테터'…바이오 투자 '보릿고개'도 뚫었다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "57119c5e",
+      "title": "[IMA가 바꾸는 증권업/상]'수수료 장사' 넘어 IMA 경쟁 본격화",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d5e0a354",
+      "title": "[현장+] 한국금융산학학회 '2026 하반기 금융시장 진단' 포럼…고금리 ...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c50f7667",
+      "title": "스트라드비젼 \"모빌리티 넘어 로보틱스·피지컬AI 정조준\" [IPO현미경]",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "abc2ca67",
+      "title": "[주간 거래소 기관] 삼성전자 2조원 던졌다…기관 자금, 뜻밖의 종목으...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "09ab918a",
+      "title": "한국거래소, 우주·인프라 테마 ETF와 안정 채권 ETF 동시 상장",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b8c50ed0",
+      "title": "SK하이닉스 8% 떨어졌는데 레버리지 ETF '50% 폭등'…사건의 전말은[전예...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cf3350d6",
+      "title": "신한카드, 대만 포모사본드 4억 달러 공모 발행···국내 카드사 중 최...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "87276668",
+      "title": "\"상장 대신 품었다\"···1조2700억 베팅, 신세계가 SSG닷컴 완전 장악한...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d98c51c6",
+      "title": "[IPO 돋보기] 코스닥 도전 나선 '빅웨이브로보틱스'...부진한 현금흐름...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "42403bf2",
+      "title": "미래에셋증권, 스페이스X 상장서 231만주 확보… 글로벌 네트워크 강화",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "1a7aa41e",
+      "title": "미래에셋증권, 스페이스X IPO 물량 4751억 확보",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "adf86d3e",
+      "title": "스페이스X 공모주 한국에 3억弗 배정 … 미래에셋 통해 국내 공급",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "2e800c14",
+      "title": "ISA 중개형 800만명 근접…30대 계좌·5060 돈 몰린다",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c534e132",
+      "title": "[외환-마감] '外人 주식 순매수 vs 결제 수요'에 팽팽한 수급…9.10원↓",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9f9d4cf2",
+      "title": "스페이스X(SPCX), IPO와 동시에 '솔라나(SOL)'서도 등장",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a6f25c5e",
+      "title": "솔라나, 스페이스X 토큰화 주식 출시로 RWA 분야 선도",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d45cad81",
+      "title": "ISA 가입자 잡아라…증권사, '현금 리워드·수수료 면제' 내걸고 고객 쟁...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "059a0ea0",
+      "title": "‘코스피 2중대’ 벗어나려면…거래소에서 완전 독립 필요",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2ec0d0c8",
+      "title": "메타플래닛, 증권사 인수로 제도권 진격...비트코인(BTC) 채권 시대 열리...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e33e4b15",
+      "title": "증권사들, 하반기 투자 세미나 잇달아 개최… 고객 확보 경쟁",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f4059f83",
+      "title": "씨티, 비상장사 주식 블록체인 마켓플레이스 출시",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2c69019a",
+      "title": "[새 판 짜는 거래소①] 카카오 지우고 금융권 품었다…두나무, 웹3 금융...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[새 판 짜는 거래소①]"
+    }
+  ]
+}
