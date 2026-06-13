@@ -1,0 +1,214 @@
+{
+  "time": "2026-06-13T16:01:15.895499+09:00",
+  "total": 29,
+  "sent": 0,
+  "hard_excl": 1,
+  "excl_stats": {
+    "[새 판 짜는 거래소①]": 2
+  },
+  "entries": [
+    {
+      "hash": "0442dd04",
+      "title": "[주목 e-금융] '발행어음' 사업 신흥 증권社 순위…\"키움vs하나vs신한\"",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "b79f645f",
+      "title": "‘증권사 AI’가 PB 된다…투자 조언도 자산관리도 척척[AI, 회사를 다시...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "4512de2b",
+      "title": "소금으로 배터리를 만든다고?…GM 상용화 결정에 혜택받는 한국 주식은...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ada746c1",
+      "title": "[증권가 중계] 삼성증권, iM증권, DB증권 등",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a1a47606",
+      "title": "코스닥 IPO 기대감 상승: 스트라드비젼·져스텍 등 청약 돌입",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "465d94d3",
+      "title": "[주간 IPO] 져스텍·스트라드비젼 일반청약…메리츠2호스팩 19일 상장",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3eeddd6b",
+      "title": "[IPO챗] 6월 셋째주 공모주 청약 2곳·수요예측 2곳",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "468f9f68",
+      "title": "[VC’s Pick]국산 혈관계 의료기기, ’엔벤트릭‘ 프리 IPO 유치",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "65464011",
+      "title": "막힌 뇌혈관 뚫는 '국산 카테터'…바이오 투자 '보릿고개'도 뚫었다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b06e5674",
+      "title": "현대차 ETF 늘어나는데…로봇 밸류체인 ETF도 등장[ETF언박싱]",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9e95b7b5",
+      "title": "바이낸스 스페이스X·삼전 주식 토큰 하루 거래액, 웬만한 '중소기업' 시...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c50f7667",
+      "title": "스트라드비젼 \"모빌리티 넘어 로보틱스·피지컬AI 정조준\" [IPO현미경]",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1a7db409",
+      "title": "미래에셋증권, 스페이스X 공모주 물량 배정 불발... “전액 환불 처리”",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7f720765",
+      "title": "스페이스X 공모주, 미래에셋 배정 전량 취소…국내 청약 무산",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b101d523",
+      "title": "역대급 IPO 스페이스X 남의 잔치됐다…미래에셋 '환불 엔딩'",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "02da7389",
+      "title": "미래에셋증권, 스페이스X 공모주 배정 물량 전량 삭감",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f0beecfa",
+      "title": "미래에셋증권, 스페이스X 공모주 배정 물거품…운용사들도 날벼락",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "16134a5e",
+      "title": "스페이스X 공모주 청약 불발…국내 자산운용사 ETF 전략 차질",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d98c51c6",
+      "title": "[IPO 돋보기] 코스닥 도전 나선 '빅웨이브로보틱스'...부진한 현금흐름...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fdc2c0f8",
+      "title": "스페이스엑스 공모주 기회 놓친 한국 자산운용사, ETF 편입 지연 불가피",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "695a86db",
+      "title": "“스페이스X 주식 1주도 못 줘”···골드만삭스의 ‘코리아패싱’ 대...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d45cad81",
+      "title": "ISA 가입자 잡아라…증권사, '현금 리워드·수수료 면제' 내걸고 고객 쟁...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9f9d4cf2",
+      "title": "스페이스X(SPCX), IPO와 동시에 '솔라나(SOL)'서도 등장",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2c69019a",
+      "title": "[새 판 짜는 거래소①] 카카오 지우고 금융권 품었다…두나무, 웹3 금융...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[새 판 짜는 거래소①]"
+    },
+    {
+      "hash": "8f60d93f",
+      "title": "스페이스X 공모주 사태로 드러난 국내 투자 불확실성",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "eec51c7b",
+      "title": "미래에셋증권, 스페이스X 공모주 한 주도 못받았다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c7469ca7",
+      "title": "“한주도 못 받아”…미래에셋증권, 스페이스X 공모주 물량 전량 삭감",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "186bef3c",
+      "title": "블랙록, 19개 펀드 정리…알라딘·인프라·신규 ETF로 확장 병행",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2c69019a",
+      "title": "[새 판 짜는 거래소①] 카카오 지우고 금융권 품었다…두나무, 웹3 금융...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[새 판 짜는 거래소①]"
+    }
+  ]
+}
