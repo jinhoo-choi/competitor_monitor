@@ -1,0 +1,195 @@
+{
+  "time": "2026-06-14T09:01:25.124783+09:00",
+  "total": 26,
+  "sent": 1,
+  "hard_excl": 3,
+  "excl_stats": {
+    "고객패널": 2,
+    "고객 행사": 2,
+    "기업금융": 2
+  },
+  "entries": [
+    {
+      "hash": "e3485a15",
+      "title": "[공모주달력]활기도는 IPO 시장…레몬헬스케어·레메디 코스닥 도전장",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "38cca785",
+      "title": "금융지주 증권사, 덩치키운다…자본확충 잇따라",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9fcaddcf",
+      "title": "이번주 공모주 청약, 빅웨이브로보틱스 등 3개사",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "18c0fe06",
+      "title": "증권가, '외국인 통합계좌' 물살…글로벌 개미 한국 주식 직구 물꼬",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "221838b6",
+      "title": "[이번주 IPO]6월 셋째 주 수요예측·청약 일정",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5631b5a9",
+      "title": "빅파마 계약 체결에 술렁… 큐리옥스, 표준 플랫폼 도약 신호탄",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9642cd18",
+      "title": "[N2 포커스] ‘반도체 슈퍼사이클’ 기대 재점화…ETF로 몰리는 투자자...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9f519ca7",
+      "title": "증권사 실적 폭발, 매도대금담보대출 이자수익 급증",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b96633f1",
+      "title": "신한은 ‘슈퍼SOL’, 삼성은 ‘모니모’… 금융권 원앱 경쟁 재점화",
+      "company": "KB증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "f7cedb3e",
+      "title": "중국의 워런 버핏은 왜 지금 팝마트 주식을 살까",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b02968de",
+      "title": "KB증권, '깨비 소비자 포럼' 개최…고객 목소리 듣는다",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "고객패널"
+    },
+    {
+      "hash": "c2547083",
+      "title": "거리응원부터 투자강연까지… 증권사, 고객 접점 넓힌다",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "고객 행사"
+    },
+    {
+      "hash": "7adc5f37",
+      "title": "KB증권, 6월 둘째주 NAVER 등 10종목 매수 추천",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "70f21957",
+      "title": "K-우주 산업부터 우량 채권까지…ETF 3종목 신규 상장",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "33ef40ef",
+      "title": "우주항공·우주데이터센터·특수채 [이주의 상장ETF]",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "927f89d0",
+      "title": "미래에셋 '스페이스X 공모주 대란'…231만주 배정 예정이었다가 한 주도...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e0ad15ad",
+      "title": "'한주도 못 받아'···미래에셋증권, 스페이스X 공모주 청약 무산",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1f8e2807",
+      "title": "일본 투자자들 전체 규모의 2.9% 배정…미래에셋, 스페이스X IPO 참여의 ...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8e80957a",
+      "title": "가상자산 거래소, 특금법 완화에도 부담 여전...생존 가르는 'AML 체력'",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0522055e",
+      "title": "'체코전 승리'에 금융권 월드컵 마케팅 주목, 특화상품·응원전으로 '고...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ba0e47ab",
+      "title": "보험사 넘어 금융지주로…신창재가 그리는 교보의 다음 30년",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "f2c5e66e",
+      "title": "온도 파이낸스 \"스페이스X IPO, 증시·암호화폐 시장 간 대규모 자금 이...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5780dc90",
+      "title": "\"5억달러 청약했는데 0주\"…미래에셋, 스페이스X 공모주 전량 삭감",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b02968de",
+      "title": "KB증권, '깨비 소비자 포럼' 개최…고객 목소리 듣는다",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "고객패널"
+    },
+    {
+      "hash": "c2547083",
+      "title": "거리응원부터 투자강연까지… 증권사, 고객 접점 넓힌다",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "고객 행사"
+    },
+    {
+      "hash": "ba0e47ab",
+      "title": "보험사 넘어 금융지주로…신창재가 그리는 교보의 다음 30년",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    }
+  ]
+}
