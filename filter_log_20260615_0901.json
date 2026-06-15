@@ -1,0 +1,257 @@
+{
+  "time": "2026-06-15T09:01:21.831067+09:00",
+  "total": 35,
+  "sent": 2,
+  "hard_excl": 2,
+  "excl_stats": {
+    "토스뱅크": 2,
+    "생산적 금융": 2
+  },
+  "entries": [
+    {
+      "hash": "b91e9ae0",
+      "title": "“개미들만 몰랐네”…삼전·하이닉스 20조 던진 외국인, 뒤에선 ETF ‘핑...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7b5af86e",
+      "title": "잠잠하던 IPO 시장, 청약 러시…빅웨이브로보틱스 등 출격",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "38deecf3",
+      "title": "[레메디 IPO] 고평가 시선 속 KB증권, 신뢰 회복 '시험대' 놓여",
+      "company": "KB증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "f9312bc0",
+      "title": "[IPO 워치] 스트라드비젼·져스텍·빅웨이브로보틱스 청약 돌입",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e3c6eb99",
+      "title": "[기특 거품] [올리패스] 매출달성률 1%, 공모 주관사는 책임 없나",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "061661a6",
+      "title": "예·적금 빼서 투자… ‘머니무브’ 타고 ‘국민재테크’로 자리매김 [...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "96b35d3f",
+      "title": "[오늘의 투자전략] FOMC·휴전 협상·스페이스X 수급…금리와 외국인이...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0d6fe5fb",
+      "title": "[창간 6주년 특별기획 포용금융]우리금융,서민금융부터 전통시장 상생까...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "962b9b2b",
+      "title": "증권사 자본 확충 러시…대규모 유상증자 줄이어",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "63eca6e2",
+      "title": "KB자산운용, ‘K-성장과 지배구조50 목표전환4호 펀드’ 출시",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bdd9d4f1",
+      "title": "[주간IPO] 메리츠제2호스팩, 오는 19일 코스닥 상장",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "64f36151",
+      "title": "신한·키움·BNK자산운용, ETF 3종 16일 코스피 상장",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5dbf1219",
+      "title": "은행 안가는 고액자산가들, PB는 찾는다",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "054547e5",
+      "title": "[Invest]앤트로픽·오픈AI 청약은 더 어렵다…줄 잇는 초대형 IPO에 증시...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "77e94fa0",
+      "title": "국민성장 정책성펀드 2차 출자전 흥행…VC·PE·증권사 65곳 출사표",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "62dcd08e",
+      "title": "NH투자증권, 크로스보더 딜 확대…글로벌 대표주선 역량 부각 [글로벌 선...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "12d20a86",
+      "title": "[증시키워드] 삼성전자·SK하이닉스 질주⋯미래에셋증권, '스페이스X 0주...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4ea94670",
+      "title": "[비즈人워치]\"1000개 넘는 ETF 뭘 골라야 할지 고민이라면\"",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1c98d2ce",
+      "title": "[오늘의 경제뉴스] 스페이스X 국내 배정 결국 '0주'…미래에셋 제외 왜...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "55155dd6",
+      "title": "[대경초대석] 윤승식 타이거리서치 센터장 “전통금융-디지털자산 경계...",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "669a08ab",
+      "title": "미래에셋 스페이스X 청약 불발...금감원 \"배정 과정 집중 조사\"",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5ce56074",
+      "title": "스페이스X '0주' 충격…오픈AI·앤트로픽 IPO도 안심 못 한다",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7ae7fad9",
+      "title": "스페이스X 공모주 ‘0주’ 후폭풍…미래에셋發 해외 IPO 투자자보호 시...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8912909c",
+      "title": "\"스페이스X 후폭풍 지속\"…미래에셋, '코리아 패싱' 논란 속 남은 과제는",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "75250737",
+      "title": "예대마진 한계 온 인뱅…은행에서 플랫폼으로 '진화 중'",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "9b7d8166",
+      "title": "[이재명 정부 1주년] '성장과 포용' 금융 국정과제 가시화",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적 금융"
+    },
+    {
+      "hash": "7a2d0f0a",
+      "title": "[중국증시 주간 포인트] ②아마존 'Leo 유럽 3호', 반도체 2개사 IPO, 홍콩...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "372c0ef2",
+      "title": "[Invest]2차 판매 앞둔 국민성장펀드…지선 이후에도 흥행 이어갈까",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0138dcfe",
+      "title": "\"주식 계좌 없이 주식 투자?\"…해외 코인거래소 몰리는 서학개미",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c46c2549",
+      "title": "[신문로] 퇴직연금 시장의 대전환, 보험사는 살아남을 수 있을까",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ed99db58",
+      "title": "[필드뒷얘기] 임종룡의 증권업 승부수, 이번에도 통할까",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9cd79d08",
+      "title": "창사 이래 첫 각자대표 체제 전환 '시험대'...NH투자증권, 물갈이 인사태...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "29b711ed",
+      "title": "[더벨][성장금융 출범 10년] 사무국에서 11조 모펀드 운용사로…모험자...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "75250737",
+      "title": "예대마진 한계 온 인뱅…은행에서 플랫폼으로 '진화 중'",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "9b7d8166",
+      "title": "[이재명 정부 1주년] '성장과 포용' 금융 국정과제 가시화",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적 금융"
+    }
+  ]
+}
