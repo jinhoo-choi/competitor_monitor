@@ -48,6 +48,9 @@ SEEN_FILE       = "seen_articles.json"
 TITLE_SIM_THRESHOLD = 80   # rapidfuzz 유사도 임계값 (88→80 완화)
 MAX_AI_FAILS        = 3    # circuit breaker
 
+# 전역 Anthropic client — 함수마다 중복 생성 방지 + build_email_html에서도 참조 가능
+client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+
 # ═══════════════════════════════════════════════
 # 하드필터 — AI 전 차단 (비용·노이즈 절감)
 # ═══════════════════════════════════════════════
@@ -79,7 +82,7 @@ HARD_EXCLUDE_PATTERNS = [
     r"파트너데이", r"고객\s*행사", r"고척돔", r"야구장",
     # 칼럼·기고·오피니언·인물 기획
     r"\[칼럼\]", r"칼럼\]", r"\[기고\]", r"기고\]", r"\[오피니언\]", r"\[특별기고\]",
-    r"금융人\]", r"\[금융人", r"금융인\]", r"의\s*금융",
+    r"금융人\]", r"\[금융人", r"금융인\]", r"\[금융인",
     # 복합 업계 성과 나열 기사
     r"금융.*플랫폼.*외식", r"누적\s*성과\s*잇따라",
     # 실적·순이익 기사
@@ -99,7 +102,7 @@ HARD_EXCLUDE_PATTERNS = [
     r"항공\s*금융", r"선박\s*금융",
     # 금융권 전반 이벤트·행사 묶음 기사
     r"금융권.{0,10}이벤트\s*전개", r"금융권.{0,10}맞이.{0,5}이벤트",
-    r"금융권.{0,10}행사", r"6월\s*맞이.{0,10}금융",
+    r"금융권.{0,10}행사", r"[0-9]{1,2}월\s*맞이.{0,10}금융",
     # 인터넷은행 — 토스뱅크·케이뱅크·카카오뱅크 기사 (증권사 오분류 방지)
     r"토스뱅크", r"케이뱅크", r"카카오뱅크", r"인터넷은행", r"인뱅\s*[0-9]인자",
     # 글로벌 마케팅·홍보 기사
@@ -115,17 +118,21 @@ FINANCE_RE = re.compile(
     r"키움|토스|미래에셋|메리츠|신한투자|NH투자|나무증권|카카오페이증권|대신|한화투자"
 )
 
-def hard_filter(articles: list[dict]) -> list[dict]:
-    passed, blocked = [], 0
+def hard_filter(articles: list[dict]) -> tuple[list[dict], list[dict]]:
+    """하드필터 적용. (통과 기사 목록, 제외 기사 목록) 튜플 반환.
+    제외 기사에는 _excl_reason 필드 추가."""
+    passed, excluded = [], []
     for art in articles:
         text = art.get("title","") + art.get("description","")
-        if HARD_EXCLUDE_RE.search(text):
-            blocked += 1
+        m = HARD_EXCLUDE_RE.search(text)
+        if m:
+            art["_excl_reason"] = m.group()
+            excluded.append(art)
         else:
             passed.append(art)
-    if blocked:
-        print(f"  → 하드필터 제외: {blocked}건")
-    return passed
+    if excluded:
+        print(f"  → 하드필터 제외: {len(excluded)}건")
+    return passed, excluded
 
 # ═══════════════════════════════════════════════
 # 매체 티어
@@ -138,13 +145,16 @@ TIER1_PRESS = {
 
 def get_press_tier(art: dict) -> tuple[str, str]:
     press = art.get("originallink","")
+    link  = art.get("link","")
     for name in TIER1_PRESS:
-        if name in press or name in art.get("description",""):
+        if name in press or name in link:
             return name, "1군"
-    # 링크에서 추출 시도
-    link = art.get("link","")
+    # 링크에서 소문자 비교
+    press_lower = press.lower()
+    link_lower  = link.lower()
     for name in TIER1_PRESS:
-        if name.lower().replace(" ","") in link.lower():
+        norm = name.lower().replace(" ","")
+        if norm in press_lower or norm in link_lower:
             return name, "1군"
     return "기타", "2군"
 
@@ -261,6 +271,51 @@ def _domain_key(domain: str) -> str:
     if any(k in d for k in ("연금", "IRP", "퇴직", "ISA", "절세")):
         return "연금"
     return d[:8]
+
+# 제목에서 파트너사/서비스명 고유명사 추출용 패턴
+# 동일 사건이 다른 제목으로 재보도될 때 event_key·폴백 키가 달라지는 문제 보완
+# ⚠️ 순서 중요: 구체적 고유명사 먼저, 일반 패턴은 후순위
+_ENTITY_PATTERNS = [
+    # 구체적 외국 파트너사·플랫폼 (최우선)
+    r'트레이딩뷰|TradingView|trading\s*view',
+    r'UOB|UOB\s*Kay\s*Hian',
+    r'블랙록|BlackRock',
+    r'피델리티|Fidelity',
+    r'뱅가드|Vanguard',
+    # 국내 핀테크·플랫폼 (구체적)
+    r'두나무|업비트|빗썸|코빗|코인원',
+    r'온도파이낸스|온도(?!파이낸스)',  # '온도' 단독도 잡되 '온도파이낸스' 우선
+    r'무신사|카카오페이|네이버페이|토스페이|네이버파이낸셜',
+    r'두올|파운트|핀트|에임|쿼터백',
+    # 은행 (일반)
+    r'우리은행|신한은행|하나은행|국민은행|기업은행|농협은행',
+]
+_ENTITY_RE = re.compile("|".join(_ENTITY_PATTERNS), re.IGNORECASE)
+
+def _extract_entity_key(title: str, company: str) -> str:
+    """
+    기사 제목에서 파트너사/서비스명 고유명사를 추출해 엔티티 폴백 키 반환.
+    예) '키움증권, 트레이딩뷰와 국내 첫 거래 연동' → '키움증권::트레이딩뷰'
+    동일 사건이 다른 제목으로 반복 보도될 때 event_key와 별개로 중복을 잡아냄.
+    주체 회사명과 동일한 매칭은 제외. 고유명사가 없으면 빈 문자열 반환.
+    """
+    # 제목에서 주체 회사명 제거 후 검색 (자사명이 패턴에 걸리는 오탐 방지)
+    title_stripped = title or ""
+    if company:
+        # 회사명 앞 2~6자 제거 (예: '미래에셋자산운용' → 제목에서 해당 부분 제외)
+        title_stripped = title_stripped.replace(company, "")
+    m = _ENTITY_RE.search(title_stripped)
+    if not m:
+        return ""
+    entity = re.sub(r'\s+', '', m.group(0))  # 공백 제거 정규화
+    # 영문 → 한글 정규화
+    entity = re.sub(r'(?i)tradingview|trading\s*view', '트레이딩뷰', entity)
+    entity = re.sub(r'(?i)blackrock', '블랙록', entity)
+    entity = re.sub(r'(?i)fidelity', '피델리티', entity)
+    entity = re.sub(r'(?i)vanguard', '뱅가드', entity)
+    entity = re.sub(r'(?i)ondo', '온도', entity)
+    entity = re.sub(r'(?i)UOB\s*Kay\s*Hian', 'UOB', entity)
+    return f"{company}::{entity}"
 
 def load_seen() -> dict:
     """
@@ -511,13 +566,14 @@ def collect_articles(seen: dict) -> list[dict]:
                     raw_text  = raw_title + raw_desc
                     if KIS_EXCLUDE_RE.search(raw_title) or KIS_EXCLUDE_RE.search(raw_text):
                         continue
-                    # ── 금융 무관 기사 제외 — 제목 기준
-                    if not FINANCE_RE.search(raw_title):
+                    # ── clean_html 먼저 적용 (is_duplicate에서 title_norm 정확히 생성하기 위해)
+                    for field in ("title","description"):
+                        art[field] = clean_html(art.get(field,""))
+                    # ── 금융 무관 기사 제외 — clean_html 후 제목 기준
+                    if not FINANCE_RE.search(art.get("title","")):
                         continue
                     if is_duplicate(art, seen):
                         continue
-                    for field in ("title","description"):
-                        art[field] = clean_html(art.get(field,""))
                     art["_company"]     = company
                     art["_source_type"] = source_type
                     press, tier = get_press_tier(art)
@@ -541,8 +597,6 @@ def filter_relevant_articles(articles: list[dict]) -> list[dict]:
     global _ai_fail_count
     if not articles or _ai_fail_count >= MAX_AI_FAILS:
         return []
-
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
     batch = "\n".join([
         f"[{i}] ({a['_company']}) {a['title']} | {a['description'][:120]}"
         for i, a in enumerate(articles)
@@ -715,8 +769,6 @@ def analyze_article(art: dict) -> dict:
     if _ai_fail_count >= MAX_AI_FAILS:
         return {**art, "analysis": None}
 
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-
     # 본문 크롤링 결과 우선, 없으면 description 사용
     body_text    = art.get("_body") or art.get("description","")
     body_failed  = art.get("_body_failed", False)
@@ -752,7 +804,7 @@ def analyze_article(art: dict) -> dict:
 JSON only, 다른 텍스트 없이:
 {{
   "company_name": "기사의 실제 행위 주체 증권사명. 수집 키워드와 무관하게 본문에서 직접 추출. 모르면 '-'",
-  "event_key": "이 기사가 나타내는 사건의 고유 식별자. 형식: {{증권사명}}_{{핵심행위}}_{{YYYYMM}}. 30자 이내.\n\n★★★ event_key 생성 핵심 규칙 ★★★\n아래 4단계를 반드시 순서대로 따르세요:\nstep1: 기사의 실제 주체 증권사명 추출 (수집 키워드 무시)\nstep2: 핵심 행위를 5자 이내로 압축 (예: UOB제휴 / 퇴직연금출시 / 두나무지분 / STO플랫폼)\nstep3: YYYYMM 형식 날짜 추가\nstep4: 세 요소를 _로 연결\n\n① 동일 사건의 후속기사·재송고·인터뷰·분석기사는 반드시 완전히 동일한 event_key 생성\n② 기사 제목이 달라도, 언론사가 달라도, 표현이 달라도 같은 사건이면 같은 event_key\n③ 사건 판단 기준: 같은 회사가 같은 행위를 한 것 = 같은 사건\n예) '미래에셋_싱가포르UOB외국인계좌_202606' 이 키는 아래 기사 모두에 동일 적용:\n  - '미래에셋증권, 싱가포르 UOB와 외국인 통합계좌 개시'\n  - '미래에셋증권도 외국인 통합계좌 개시…싱가포르 제휴'\n  - '미래에셋, UOB Kay Hian과 외국인 통합계좌 계약'\n  - '동남아 자금 유입 길 열렸다…미래에셋 4조 규모 UOB'\n예) '삼성증권_두나무지분취득_202606':\n  - '삼성증권·SDS·카드, 두나무 지분 4% 인수'\n  - '삼성증권, 두나무 지분 2% 취득'\n예) '메리츠증권_해진공선박조각투자_202606':\n  - '해진공, 선박 조각투자 9월 출시'\n  - '안병길 해진공 사장 \"9월 선박 조각투자 상장\"'",
+  "event_key": "이 기사가 나타내는 사건의 고유 식별자. 형식: {{증권사명}}_{{핵심행위}}_{{YYYYMM}}. 30자 이내.\n\n★★★ event_key 생성 핵심 규칙 ★★★\n아래 4단계를 반드시 순서대로 따르세요:\nstep1: 기사의 실제 주체 증권사명 추출 (수집 키워드 무시)\nstep2: 핵심 행위를 8자 이내로 압축. 반드시 아래 우선순위 적용:\n  [최우선] 파트너사·서비스명이 있으면 반드시 포함 (예: 트레이딩뷰제휴 / UOB외국인계좌 / 두나무지분 / 온도MOU)\n  [차선] 파트너사 없으면 행위 중심 (예: 퇴직연금출시 / ISA중개형 / STO플랫폼)\n  ⚠️ 파트너사명을 누락하면 같은 사건의 다른 기사와 event_key가 달라져 중복 탐지 실패!\nstep3: YYYYMM 형식 날짜 추가\nstep4: 세 요소를 _로 연결\n\n① 동일 사건의 후속기사·재송고·인터뷰·분석기사는 반드시 완전히 동일한 event_key 생성\n② 기사 제목이 달라도, 언론사가 달라도, 표현이 달라도 같은 사건이면 같은 event_key\n③ 사건 판단 기준: 같은 회사가 같은 행위를 한 것 = 같은 사건\n예) '키움증권_트레이딩뷰제휴_202606' 이 키는 아래 기사 모두에 동일 적용:\n  - '키움증권, 글로벌 핀테크 영토 확장…트레이딩뷰와 국내 첫 거래 연동'\n  - '키움증권, 글로벌 최대 차트 플랫폼 트레이딩뷰 국내 첫 제휴'\n  - '키움증권·트레이딩뷰 제휴…HTS 차트 분석 업그레이드'\n  ← 파트너사 '트레이딩뷰'를 공통으로 넣었기 때문에 동일 키 보장\n예) '미래에셋_UOB외국인계좌_202606':\n  - '미래에셋증권, 싱가포르 UOB와 외국인 통합계좌 개시'\n  - '동남아 자금 유입 길 열렸다…미래에셋 4조 규모 UOB'\n예) '삼성증권_두나무지분취득_202606':\n  - '삼성증권·SDS·카드, 두나무 지분 4% 인수'\n  - '삼성증권, 두나무 지분 2% 취득'",
   "impact_level": "상/중/하 중 택1",
   "impact_score": 1.0~10.0 사이 숫자 (소수점 1자리, 영향도와 일관성 유지),
   "impact_domain": "영향받는 한투 사업영역 (최대 20자). 아래 표준 표현 중 가장 가까운 것 사용:\n연금 / 연금저축 / 디지털자산 / 해외주식 / ETF / ISA / MTS플랫폼 / 공모주 / 수수료 / 자산관리\n퇴직연금·IRP·DC·DB는 모두 '연금'으로 시작할 것. 예) '연금·퇴직연금' '연금·IRP'",
@@ -794,8 +846,7 @@ JSON only, 다른 텍스트 없이:
 
         # ── event_key 정규화 — 날짜 부분을 코드에서 강제 현재 월로 교정
         # AI가 기사 내 날짜(출시 예정일 등)를 보고 과거/미래 날짜를 넣는 문제 방지
-        from datetime import datetime as _dt
-        ym_now = _dt.now(KST).strftime("%Y%m")
+        ym_now = datetime.now(KST).strftime("%Y%m")
         event_key = analysis.get("event_key","").strip()
         if not event_key or len(event_key) < 5:
             co = extracted if (extracted and extracted != "-") else art.get("_company","미확인")
@@ -803,8 +854,7 @@ JSON only, 다른 텍스트 없이:
             event_key = f"{co}_{th}_{ym_now}"
         else:
             # 날짜 6자리 부분을 현재 월로 강제 교체 (패턴: _YYYYMM 말미)
-            import re as _re
-            event_key = _re.sub(r'_\d{6}$', f'_{ym_now}', event_key)
+            event_key = re.sub(r'_\d{6}$', f'_{ym_now}', event_key)
         analysis["event_key"] = event_key[:40]
 
         if not analysis.get("impact_domain","").strip():
@@ -854,14 +904,16 @@ def _card_low(art: dict) -> str:
     # 점수 + 바 (우측)
     score_str = ""
     try:
-        s   = max(1.0, min(10.0, float(an.get("impact_score", 0))))
-        bar = "█" * round(s) + "░" * (10 - round(s))
-        score_str = (
-            f'<div style="font-size:10px;font-weight:700;color:#888;font-family:Arial,sans-serif;'
-            f'text-align:right;white-space:nowrap;">{s:.1f}</div>'
-            f'<div style="font-size:8px;color:#bbb;font-family:\'Courier New\',monospace;'
-            f'letter-spacing:-1px;text-align:right;">{bar}</div>'
-        )
+        raw_score = an.get("impact_score")
+        if raw_score is not None:
+            s   = max(1.0, min(10.0, float(raw_score)))
+            bar = "█" * round(s) + "░" * (10 - round(s))
+            score_str = (
+                f'<div style="font-size:10px;font-weight:700;color:#888;font-family:Arial,sans-serif;'
+                f'text-align:right;white-space:nowrap;">{s:.1f}</div>'
+                f'<div style="font-size:8px;color:#bbb;font-family:\'Courier New\',monospace;'
+                f'letter-spacing:-1px;text-align:right;">{bar}</div>'
+            )
     except Exception:
         pass
 
@@ -1269,6 +1321,10 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
 # ═══════════════════════════════════════════════
 NO_RESULT_RECEIVER = os.environ.get("NO_RESULT_RECEIVER", "").strip()
 
+def _admin_receivers() -> list[str]:
+    """담당자 수신자 목록 반환. NO_RESULT_RECEIVER 미설정 시 GMAIL_USER로 폴백."""
+    return [NO_RESULT_RECEIVER] if NO_RESULT_RECEIVER else [GMAIL_USER]
+
 def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
     """SMTP 지수 백오프 재시도 (최대 3회)"""
     import time as _time
@@ -1307,7 +1363,7 @@ def send_email(html: str, analyzed: list[dict], raw_count: int):
 
 def send_email_no_result(subject: str, html: str):
     """탐지 결과 없을 때 담당자에게만 발송"""
-    receiver = [NO_RESULT_RECEIVER] if NO_RESULT_RECEIVER else [GMAIL_USER]
+    receiver = _admin_receivers()
     try:
         _smtp_send(subject, html, receiver)
         print(f"  결과없음 메일 → {receiver}")
@@ -1318,7 +1374,7 @@ def send_email_error(error_msg: str, trace: str):
     """런타임 오류 시 담당자에게 오류 내용 발송"""
     from html import escape as _esc
     now_str  = datetime.now(KST).strftime("%Y년 %m월 %d일 %H:%M")
-    receiver = [NO_RESULT_RECEIVER] if NO_RESULT_RECEIVER else [GMAIL_USER]
+    receiver = _admin_receivers()
     html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="font-family:Arial,sans-serif;padding:20px;">
   <h2 style="color:#c0392b;">🚨 경쟁사 영향봇 — 런타임 오류</h2>
@@ -1340,8 +1396,12 @@ def send_email_error(error_msg: str, trace: str):
 # ═══════════════════════════════════════════════
 # 필터링 로그 저장
 # ═══════════════════════════════════════════════
-def save_filter_log(raw: list, hard_excluded: list, ai_filtered: list, final: list):
-    """어떤 기사가 어디서 걸렸는지 JSON 로그 저장 (최근 30개 보존)"""
+def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: list, final: list):
+    """어떤 기사가 어디서 걸렸는지 JSON 로그 저장 (최근 7개 보존)
+    articles_passed: 하드필터 통과본
+    hard_excluded: 하드필터 제외본
+    → 합산(all_arts)이 실제 전체 수집 건수
+    """
     import hashlib as _h
     now = datetime.now(KST)
     log_path = f"filter_log_{now.strftime('%Y%m%d_%H%M')}.json"
@@ -1357,7 +1417,8 @@ def save_filter_log(raw: list, hard_excluded: list, ai_filtered: list, final: li
     sent_titles      = {a.get("title","") for a in final}
     hard_excl_map    = {a.get("title",""): a.get("_excl_reason","") for a in hard_excluded}
     ai_filtered_set  = {a.get("title","") for a in ai_filtered}
-    all_arts         = raw + hard_excluded
+    # 통과본 + 제외본 = 전체 수집 건수
+    all_arts         = articles_passed + hard_excluded
 
     from collections import Counter
     entries = []
@@ -1447,19 +1508,7 @@ def main():
 
     # ── 2) 하드필터
     print("\n[2/6] 하드필터 적용 중...")
-    hard_excluded = []
-    articles_kept = []
-    for a in raw:
-        excl, reason = False, ""
-        text = a.get("title","") + a.get("description","")
-        if HARD_EXCLUDE_RE.search(text):
-            excl, reason = True, HARD_EXCLUDE_RE.search(text).group()
-        if excl:
-            a["_excl_reason"] = reason
-            hard_excluded.append(a)
-        else:
-            articles_kept.append(a)
-    articles = articles_kept
+    articles, hard_excluded = hard_filter(raw)
     print(f"  → 통과: {len(articles)}건 (제외: {len(hard_excluded)}건)")
 
     if not articles:
@@ -1477,7 +1526,7 @@ def main():
         subj = f"✅ [eBiz 인사이트] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
-        save_filter_log(raw, hard_excluded, [], [])
+        save_filter_log(articles, hard_excluded, [], [])
         return
 
     # ── 4) 본문 크롤링 (병렬)
@@ -1528,20 +1577,31 @@ def main():
             if ekey in seen.get("events", set()):
                 print(f"  [사건중복-3일] {result.get('_company','')} | {result.get('title','')[:45]} (키: {ekey})")
                 continue
-            # ① 폴백: 회사명+도메인앞부분+월 조합으로도 seen 체크 (위협유형은 AI 표현 변동 큼)
+            # ② 폴백1: 회사명+도메인앞부분+월 조합 (위협유형은 AI 표현 변동 큼)
             co_for_key   = (an.get("company_name","") or result.get("_company","")).strip()
             domain_short = _domain_key(an.get("impact_domain",""))
             ym           = datetime.now(KST).strftime("%Y%m")
             fallback_key = f"{co_for_key}::{domain_short}::{ym}"
             if fallback_key in seen.get("events", set()):
-                print(f"  [사건중복-폴백] {result.get('_company','')} | {result.get('title','')[:45]} (키: {fallback_key})")
+                print(f"  [사건중복-폴백1] {result.get('_company','')} | {result.get('title','')[:45]} (키: {fallback_key})")
                 continue
-            # ② 런타임 중복 체크 — 이번 실행에서 이미 분석한 사건
+            # ③ 폴백2: 회사명+파트너사/서비스명 고유명사 — event_key 핵심행위가 달라도 잡아냄
+            # 예) '키움증권::트레이딩뷰' → 제목이 달라도 동일 파트너사면 차단
+            entity_key = _extract_entity_key(result.get("title",""), co_for_key)
+            if entity_key and entity_key in seen.get("events", set()):
+                print(f"  [사건중복-폴백2(엔티티)] {result.get('_company','')} | {result.get('title','')[:45]} (키: {entity_key})")
+                continue
+            # ④ 런타임 중복 체크 — 이번 실행에서 이미 분석한 사건
             if ekey in runtime_events or fallback_key in runtime_events:
                 print(f"  [런타임중복] {result.get('_company','')} | {result.get('title','')[:45]}")
                 continue
+            if entity_key and entity_key in runtime_events:
+                print(f"  [런타임중복-엔티티] {result.get('_company','')} | {result.get('title','')[:45]}")
+                continue
             runtime_events.add(ekey)
             runtime_events.add(fallback_key)
+            if entity_key:
+                runtime_events.add(entity_key)
         analyzed.append(result)
         if an:
             new_title_norms.append(_normalize_title(art.get("title","")))
@@ -1589,11 +1649,15 @@ def main():
             print(f"  → '{ekey}' {len(group)}건 → 대표기사 1건 (score={sc(rep):.1f})")
 
         # 폴백: event_key 달라도 동일 회사+threat 2건 이상이면 점수 낮은 것 드롭
+        # 추가: entity_key(파트너사명) 기반으로도 동일 그룹핑
         from collections import defaultdict as _dd2
         co_threat_map = _dd2(list)
         for a in kept:
             an2 = a.get("analysis") or {}
-            k2 = (a.get("_company",""), an2.get("threat_type",""))
+            co2 = a.get("_company","")
+            # entity_key가 있으면 파트너사 기반으로 그룹핑 (threat_type 표현 변동 무관)
+            ek2 = _extract_entity_key(a.get("title",""), co2)
+            k2  = (co2, ek2 if ek2 else an2.get("threat_type",""))
             co_threat_map[k2].append(a)
         kept2 = []
         for k2, grp in co_threat_map.items():
@@ -1685,7 +1749,7 @@ def main():
         send_email(html, analyzed, len(raw))
 
     # ── 저장 — event_key + 폴백 키(회사명::위협유형::월) 함께 저장
-    sent_urls  = {a.get("link","") for a in analyzed}
+    sent_urls  = {a.get("link","") for a in analyzed if a.get("link","")}
     new_events = set()
     ym = datetime.now(KST).strftime("%Y%m")
     for a in analyzed:
@@ -1699,6 +1763,10 @@ def main():
         co_fb        = (an.get("company_name","") or a.get("_company","")).strip()
         domain_fb    = _domain_key(an.get("impact_domain",""))
         new_events.add(f"{co_fb}::{domain_fb}::{ym}")
+        # 엔티티 폴백 키 저장 — 파트너사/서비스명 기반
+        entity_fb = _extract_entity_key(a.get("title",""), co_fb)
+        if entity_fb:
+            new_events.add(entity_fb)
     save_seen(seen, sent_urls=sent_urls,
               new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
               new_events=new_events)
@@ -1710,7 +1778,7 @@ def main():
     except Exception:
         print("  [WARN] seen_articles.json 저장 확인 실패")
 
-    save_filter_log(raw, hard_excluded, ai_filtered_list, analyzed)
+    save_filter_log(articles, hard_excluded, ai_filtered_list, analyzed)
 
     high = sum(1 for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="상")
     mid  = sum(1 for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="중")
