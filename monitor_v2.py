@@ -1187,9 +1187,10 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
     </td></tr>"""
         cards_html += low_block
 
-    # 분석 실패
+    # 분석 실패 — 이메일에서 제외, 건수만 로그 출력
     if no_an:
-        cards_html += "".join(_card(a) for a in no_an)
+        print(f"  [분석실패 제외] {len(no_an)}건 이메일 미포함: " +
+              " / ".join(a.get('title','')[:30] for a in no_an))
 
     if not cards_html:
         cards_html = (
@@ -1667,7 +1668,13 @@ def main():
             kept2.append(grp[0])
             for dup in grp[1:]:
                 print(f"  [폴백중복] {dup.get('_company','')} | {dup.get('title','')[:45]}")
-        return kept2 + no_analysis
+
+        # 분析 실패 기사 — 이메일 미포함, 건수만 로그
+        if no_analysis:
+            print(f"  [분析실패 제외] {len(no_analysis)}건 이메일 미포함:")
+            for a in no_analysis:
+                print(f"    · {a.get('_company','')} | {a.get('title','')[:50]}")
+        return kept2
 
     analyzed = _dedup_same_event(analyzed)
 
@@ -1730,7 +1737,7 @@ def main():
             continue
         # 제목 유사도 중복 (15자 초과 + 80점 이상)
         if HAS_RAPIDFUZZ and len(title) > 15:
-            if any(fuzz.ratio(title, prev) >= 75 for prev in seen_final_titles):
+            if any(fuzz.ratio(title, prev) >= 70 for prev in seen_final_titles):
                 print(f"  [최종중복-제목] {a.get('_company','')} | {a.get('title','')[:45]}")
                 continue
         if link: seen_final_links.add(link)
