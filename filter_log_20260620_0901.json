@@ -1,0 +1,193 @@
+{
+  "time": "2026-06-20T09:01:09.901561+09:00",
+  "total": 26,
+  "sent": 0,
+  "hard_excl": 1,
+  "excl_stats": {
+    "케이뱅크": 1
+  },
+  "entries": [
+    {
+      "hash": "5c46c2d9",
+      "title": "삼성증권, 져스텍 공모주 청약 흥행…경쟁률 2783.89대 1 기록",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "00774b50",
+      "title": "[DCM] 호텔롯데, 공모채 1000억 발행…실적 개선에도 차입부담 '여전'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d99573b7",
+      "title": "“하이닉스 진짜 끝물” 3조 팔아치웠는데 또 신고가…‘밈 주식’ 주의...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "24816dcd",
+      "title": "스페이스X가 띄운 우주 테마…韓 우주 밸류체인 ETF로 타볼까[ETF언박싱...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8c59ae8f",
+      "title": "증시 활황에 MTS 또 멈췄다…증권사 전산 체력 시험대",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3d574d5b",
+      "title": "정부 'AI 국가대표' 키운다...국민성장펀드, 퓨리오사AI에 8000억 베팅",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e03b85ba",
+      "title": "9000피 이끈 '276만닉스'…증권가 \"100만원은 더 오른다\"",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d09687b5",
+      "title": "오픈AI도 상장하는데…K-반도체 랠리 더 즐겨도 될까요[계좌부활전]",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4c7dc727",
+      "title": "[증권 뉴스브리핑] 검찰, '주가조작 패가망신 1호' 증권사 3곳 압색/SK하...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3dbfa620",
+      "title": "KLPGA '인카금융 더 헤븐 마스터즈' 1R, 이글 '두방'에 서교림 선두올라...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "71ad7be4",
+      "title": "신한은행, 비대면 자녀 펀드 가입 서비스 '우리아이 펀드 만들기' 출시",
+      "company": "신한투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "92680665",
+      "title": "\"스페이스X 담아라\" 우주 ETF 경쟁 속 수익률 '흔들'",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5b52c267",
+      "title": "NH투자증권, 연금자산 20조원 돌파…4년 만에 3배 성장",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "ff118a18",
+      "title": "[주간 IPO] 매드업·레몬헬스케어 청약 돌입…IPO 일정 본격화",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2c8f3d4d",
+      "title": "시장 홀린 스페이스X…청약 놓친 투자자 '부글부글'",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bcfa5050",
+      "title": "[채권-마감] 약세 스티프닝…外人 매도·환율 주시",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0beb09cb",
+      "title": "기관자금·디지털자산 잇는 ‘파운더스 테이블’…비공개 네트워크 주목",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "df508dbd",
+      "title": "찰스 슈왑, S&P500 예측형 옵션 출시 추진…예측 시장 본격 진입",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "894dca17",
+      "title": "'오전 7시 주식거래' 결국 내년 말로…거래소 프리마켓 또 연기",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7a5fdca0",
+      "title": "ETF 실시간 매매하려면, 퇴직금 증권사로 옮겨야",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "da9f0e22",
+      "title": "코스피 9,000선 돌파, 상승 기대에 투자 자금 급증",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ac8ffca1",
+      "title": "코스피 9000 돌파에 개인투자자 예탁금·빚투 동반 증가",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7827e415",
+      "title": "[다음주 한국은행 및 금융위·금감원 일정]",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3d3c49ff",
+      "title": "다음주 금융당국 일정",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d487a217",
+      "title": "美증권사 찰스슈왑, 시카고옵션거래소와 협력해 예측시장 진출",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0e3900a8",
+      "title": "[주간 거래소 기관] SK하이닉스 삼성전자 사들이고 한미반도체 현대차는...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "케이뱅크"
+    }
+  ]
+}
