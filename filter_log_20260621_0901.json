@@ -1,0 +1,123 @@
+{
+  "time": "2026-06-21T09:01:18.337642+09:00",
+  "total": 16,
+  "sent": 2,
+  "hard_excl": 1,
+  "excl_stats": {
+    "취약계층": 1
+  },
+  "entries": [
+    {
+      "hash": "2f03ca71",
+      "title": "퇴직연금 500조 시대…AI가 고객자산 굴린다",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "40ca458b",
+      "title": "[금융체크] NH농협금융 '자산운용·IB 인재 양성' 추진, 삼성금융, '한진...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "851c66d5",
+      "title": "증권사 콕 찍은 종목만 샀는데…최근 1년 급등장선 '대반전' [투자톡]",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b1b457f4",
+      "title": "[주간금융이슈 ] '금리 19%' 청년미래적금 22일 출격",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a8bce5dd",
+      "title": "[이번주 IPO]6월 넷째 주 수요예측·청약 일정",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "016b7f87",
+      "title": "이번주 공모주 청약, 매드업·레몬헬스케어 2개사",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a6f2c75f",
+      "title": "코스피 9000 돌파했는데 “닷컴버블 후반부와 닮았다”…증권가 분석은",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fcb415a2",
+      "title": "[기자수첩]메리츠·IBK투자증권 등 증권사 리포트 믿으면 안 되는 이유",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "951c84e2",
+      "title": "[금융 Pick] 우리·농협금융, 영웅을 지키고, 금융 인재를 키운다",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "563c4dfa",
+      "title": "이건 정말 뜻밖이다... 주식 수익률 가장 높은 연령대, 30대 아니었다",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "570ec566",
+      "title": "\"비금융출신 기획자도 OK\"…신한금융 통합앱 '락인 강화' 속도",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cd84e2c8",
+      "title": "보폭 넓히는 증권사… 서비스 확장에 경계란 없다",
+      "company": "하나증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "cf9e5728",
+      "title": "'미토스5·페이블5' 쇼크, 한국형 소버린 AI의 방향을 다시 묻다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "279d91fd",
+      "title": "서학개미 '원픽'된 스페이스X… 정작 국내 우주ETF는 찬밥",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a4de90fa",
+      "title": "증권업계, 해외 개인투자자 고객유치 경쟁 본격화",
+      "company": "하나증권, 삼성증권, 미래에셋증권, 키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "e7b008fd",
+      "title": "대신증권, ESOP·자사주 소각 실시 外",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "취약계층"
+    }
+  ]
+}
