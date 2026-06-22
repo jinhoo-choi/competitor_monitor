@@ -770,9 +770,16 @@ def analyze_article(art: dict) -> dict:
         return {**art, "analysis": None}
 
     # 본문 크롤링 결과 우선, 없으면 description 사용
-    body_text    = art.get("_body") or art.get("description","")
-    body_failed  = art.get("_body_failed", False)
-    body_note    = " (※ 본문 미수집. description만 사용. summary는 30자 이내로 작성 후 끝에 [본문 미수집] 표기.)" if body_failed else ""
+    body_text         = art.get("_body") or art.get("description","")
+    body_failed       = art.get("_body_failed", False)
+    body_from_similar = art.get("_body_from_similar", False)
+
+    if body_from_similar:
+        body_note = " (※ 원문 미수집. 유사 기사 본문을 참고하여 분석. summary 끝에 [유사기사 참고] 표기.)"
+    elif body_failed:
+        body_note = " (※ 본문 미수집. description만 사용. summary는 30자 이내로 작성 후 끝에 [본문 미수집] 표기.)"
+    else:
+        body_note = ""
     # 본문이 충분히 있으면 800자, 아니면 전체 사용
     body_input   = body_text[:800] if len(body_text) > 200 else body_text
 
@@ -863,6 +870,19 @@ JSON only, 다른 텍스트 없이:
         VALID_THREATS = {"신규진출","기능강화","수수료경쟁","제휴·지분","플랫폼확장"}
         if analysis.get("threat_type","") not in VALID_THREATS:
             analysis["threat_type"] = "기능강화"
+
+        # ② 끝까지 본문 미수집(유사기사 보완도 실패) → 점수/등급 강제 하향
+        # description만으로 분석한 결과는 신뢰도가 낮으므로 보수적으로 처리
+        if art.get("_body_failed") and not art.get("_body_from_similar"):
+            orig_lvl   = analysis.get("impact_level","하")
+            orig_score = analysis.get("impact_score", 3.0)
+            # 상 → 중, 중 → 하, 하 → 하 유지
+            level_down = {"상": "중", "중": "하", "하": "하"}
+            analysis["impact_level"] = level_down.get(orig_lvl, "하")
+            # 점수 상한 4.9 (하 영역 유지)
+            analysis["impact_score"] = min(float(orig_score), 4.9)
+            print(f"    [본문미수집 하향] {art.get('_company','')} | {orig_lvl}→{analysis['impact_level']} / {orig_score}→{analysis['impact_score']}")
+
         _ai_fail_count = 0
         return {**art, "analysis": analysis}
     except Exception as e:
@@ -1539,11 +1559,38 @@ def main():
         link = art.get("originallink") or art.get("link","")
         if link:
             body = fetch_article_body(link)
-            art["_body"] = body if body else art.get("description","")
-            art["_body_failed"] = not bool(body)
-        else:
-            art["_body"] = art.get("description","")
-            art["_body_failed"] = True
+            if body:
+                art["_body"] = body
+                art["_body_failed"] = False
+                return art
+
+        # ── 본문 크롤링 실패 → Naver 유사 기사 검색으로 보완
+        title = art.get("title","")
+        if title:
+            # 제목에서 핵심어 추출 (회사명 + 핵심동사 2~3단어)
+            import unicodedata as _ud
+            kw_clean = re.sub(r'[\[\]「」『』【】〔〕〈〉《》…]', '', title)
+            kw_clean = re.sub(r'\s+', ' ', kw_clean).strip()
+            search_kw = kw_clean[:40]  # Naver API 쿼리 길이 제한
+            try:
+                similar = fetch_naver_news(search_kw, display=3)
+                # 현재 기사와 다른 URL의 유사 기사 본문 크롤링
+                for sim in similar:
+                    sim_url = sim.get("originallink") or sim.get("link","")
+                    if sim_url and sim_url != link:
+                        sim_body = fetch_article_body(sim_url)
+                        if sim_body and len(sim_body) > 100:
+                            art["_body"] = sim_body
+                            art["_body_failed"] = False
+                            art["_body_from_similar"] = True  # AI 프롬프트용 플래그
+                            print(f"    [본문보완] {art['_company']} | 유사기사로 본문 수집 성공")
+                            return art
+            except Exception as e:
+                print(f"    [본문보완 실패] {e}")
+
+        # ── 끝까지 실패 → description만 사용, 플래그 설정
+        art["_body"] = art.get("description","")
+        art["_body_failed"] = True
         return art
 
     with ThreadPoolExecutor(max_workers=4) as ex:
