@@ -1,0 +1,541 @@
+{
+  "time": "2026-06-22T16:02:00.020436+09:00",
+  "total": 75,
+  "sent": 2,
+  "hard_excl": 6,
+  "excl_stats": {
+    "[금융 브리핑]": 1,
+    "[증권가로수]": 1,
+    "분기 순이익": 1,
+    "[금융권 이모저모]": 1,
+    "토스뱅크": 1,
+    "취약계층": 1
+  },
+  "entries": [
+    {
+      "hash": "25856f98",
+      "title": "'휴젤' 투자 5년, 엑시트 미룬 최대주주 셈법",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5dcef198",
+      "title": "6월 19일 주식시장 주요공시",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "99d5f584",
+      "title": "\"하루 종일 안 닫는 앱\"...금융권, 단일 플랫폼 전쟁 2라운드",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "0c617918",
+      "title": "[Epic Why] 삼성금융 5社 수장, 왜 한진그룹 만남에 다 나섰나",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "808b9d6e",
+      "title": "“금값 떨어진 지금이 사모을 때”…부자아빠도 증권가도 찬스라는데",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "eb52b8cb",
+      "title": "원리금 보장 넘어 ETF·TDF로…미래에셋증권 연금자산 성장",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "adaedb2e",
+      "title": "[기업家] 대한항공 ⑤ㅣ 통합·AI·금융 협력 등 글로벌 도약 가속",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "ebc63a0f",
+      "title": "[가상자산 거래소 격변기] 1위 쫓는 빗썸…금융권 합종연횡 연내 정조준",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "8690af15",
+      "title": "미래에셋증권, 연금자산 80조 돌파…2위 삼성과 격차 2배 벌려",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9605da04",
+      "title": "에르코스, 하반기 오프라인 매장·건기식 확장…\"성장 기대\"-키움",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d43ecaf7",
+      "title": "[#증권톡톡] KB증권 'MCP 허브 기반 AI 개발 환경' 구축·유안타증권 'AI...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ec075bda",
+      "title": "증권사 투자정보 경쟁…LS증권, 로보스토어 이벤트",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b69265f8",
+      "title": "삼전·하닉 레버리지 ETF가 수익률 '싹쓸이'…우주 ETF는 마이너스",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4754a0d1",
+      "title": "[여의도 단신] KB증권·유안타증권·NH투자증권·키움증권",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6c38ca76",
+      "title": "KB증권, AI 개발환경 구축 및 금융보안원 AI 보안대책 평가 통과 내용은...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a904faf7",
+      "title": "KB증권, 생성형 AI 개발환경 구축…금융보안원 보안대책 평가 '적합'",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6232d2c2",
+      "title": "KB증권, 금융권 첫 MCP 허브 기반 '생성형 AI 개발환경' 구축",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bc2c3dc9",
+      "title": "[더밸류 브리핑] 오늘의 KB 소식...KB국민은행·KB증권",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c7b9a0c8",
+      "title": "이번주 공모주 청약, 매드업·레몬헬스케어 2개사 나선다",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "621e2ee8",
+      "title": "레버리지 ETF 14조·사내대출 5억… 이찬진 \"규제 우회·투기 과열 심각...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9ac01cb2",
+      "title": "공정위, 두나무·네이버 결합에 증권가 견제구…'디지털금융 공룡' 탄생...",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "585682fa",
+      "title": "[더벨]메리츠·토스, 해외주식 MTS 1위 자리 놓고 '치열'",
+      "company": "메리츠증권, 토스증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "7feb6e0d",
+      "title": "[Who Is ?] 조정호 메리츠금융지주 회장",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9320c652",
+      "title": "[증권 Pick] AI 활용 고도화한 플랫폼·서비스 오픈",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a46679e5",
+      "title": "교보증권, KB금융 기초자산 월지급식 ELB 공모…연 최대 5.4% 수익",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "42dd0da9",
+      "title": "교보증권, KB금융 기반 ELB 436회 공모 시작",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "59376b33",
+      "title": "메리츠 \"HD현대마린, FDC·엔진 MRO 성장 기대…목표가 30만원 상향\"",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e2f942eb",
+      "title": "요양원 대신 실버타운 택한 현대해상…시니어 사업 승부수",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "07b3208a",
+      "title": "[박혜린 기자의 내돈내굴] 무작정 '쪼개기'는 금물, 자산배분의 1원칙 \"...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4caf8884",
+      "title": "원금지급형 상품 찾는 투자자…교보증권, KB금융 ELB 출시",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c5efeb7b",
+      "title": "NH투자증권, 'THE100리포트' 발간…퇴직연금 500조원 시대 진단",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c2b3b539",
+      "title": "[오늘의 증권] 신한투자증권·교보증권·NH투자증권·대신증권",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "287b9b7d",
+      "title": "[2026 상반기 금융권]① 역대 최대 실적 쓴 금융지주…비은행이 성장 공...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "431adf21",
+      "title": "[미래에셋벤처투자 공매도]③ 대량보유자, 스페이스X 주관사와 연결?",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f4b5d7f4",
+      "title": "미래에셋證, 연금자산 80조원 돌파",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "56b07e79",
+      "title": "미래에셋증권, 23일부터 엔비디아 신규 외화채권 중개... 2~30년물 7종",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "98a5303d",
+      "title": "미래에셋증권 연금자산 80조 돌파…국내 증권업계 최초",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "cb7b01a3",
+      "title": "이찬진 금감원장 \"단일종목 레버리지 증권사만 배불려...적절한지 의문...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "61a220a4",
+      "title": "미래에셋, 연금자산 80조원 돌파…\"국내 증권사 중 처음\"",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3423b8b6",
+      "title": "안도걸 의원, 디지털자산 입법 시동…원화 스테이블코인 제도화 논의",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9cc253da",
+      "title": "이찬진 “증권사만 ‘뽀찌’로 배불러”…단일종목 레버리지 ETF 경고",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ab1fb895",
+      "title": "이찬진 “단일종목 레버리지 ETF, 증권사만 배불려…반성하고 있다”",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4ed5dbb5",
+      "title": "“맞춤형 포트폴리오 제안”…미래에셋증권 퇴직연금 로보어드바이저 ...",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "706f5c93",
+      "title": "금감원장 \"단일종목 레버리지 과열 우려…증권사만 배부리는 구조\"",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "487db992",
+      "title": "이찬진 \"단일종목 레버리지 증권사만 배불려…수수료 최대 10조\"",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1976523d",
+      "title": "이찬진 \"단일종목 레버리지 증권사 배만 불려…투자자 보호장치 강구\"",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "48a218b9",
+      "title": "비금융출신까지 인재찾는 신한... 재탄생 슈퍼쏠, 록인 서비스 강화",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b63ae0a0",
+      "title": "'반쪽' 책무구조도…서민 밀접 GA·대부·상호금융 등 사각지대",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8c8186dd",
+      "title": "“레버리지 상품 출시로 주가 변동성 커져… 장기적 안목으로 자산 배분...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cc37c689",
+      "title": "[머니人터뷰] 김항주 피에코 대표 \"강남 호텔도 전 세계가 함께 투자하...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f0e29dba",
+      "title": "국내 가상자산 거래소, 해외로 눈 돌린다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c92fbe24",
+      "title": "하나증권 “은행주, 중앙미디어그룹 워크아웃 신청 2Q 실적 영향 매우 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "aa0dd236",
+      "title": "미래에셋증권, 연금자산 80조원 돌파…국내 증권사 첫 '연금 빅플레이어...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d412989f",
+      "title": "미래에셋증권 연금자산 80조원 돌파…퇴직·개인연금 동반 성장",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "46c8b4d4",
+      "title": "미래에셋증권, 연금자산 80조원 돌파…올해 43만명 신규 유입",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "25625d26",
+      "title": "\"연금 판도 바꾼 투자전략\"…미래에셋證, 연금자산 80조원 시대 열어",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d1fa9282",
+      "title": "미래에셋증권, 연금자산 '80조 시대' 열었다…\"업계 1위, 최고의 파트너...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ee1662cb",
+      "title": "\"연금은 역시 미래에셋\"…80조원 돌파, 증권사 중심 연금시장 재편 이끈...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ffbe0ea2",
+      "title": "\"도박판 판돈 떼이는 형국\" … 이찬진 금감원장, 삼전닉스 레버리지 ETF...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6c46f712",
+      "title": "\"투자 전문가 향한 신뢰의 증명\"…미래에셋증권, 연금자산 80조 원 시대...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bcebd2a4",
+      "title": "\"금융을 넘어 그룹사 동맹으로\"…우리은행, 최고 연 8.0% '우리 청년미래...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ebd7ccf6",
+      "title": "[이슈체크] 키움증권, JTBC 전단채 상환 차질에 책임론 대두…개인투자...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7b74f619",
+      "title": "‘AUM 9조 돌파’ 타임폴리오, 차문현 대표 선임…액티브 ETF 리더십 굳힌...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a15bf1a8",
+      "title": "미래에셋증권, 연금자산 '80조 시대' 열었다...퇴직연금 시장 선도",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "554d00ac",
+      "title": "NH투자증권 “연금자산 20조 돌파…배경은 상품경쟁력∙고객관리”",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "078774d9",
+      "title": "이찬진, \"삼전닉스 레버리지 ETF 드러누워서라도 막았어야\" … 신용융자...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "58427181",
+      "title": "‘클로드 미토스5’ 운영 중단 사태 끝나나…트럼프, 앤스로픽에 유화적...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4d4d5ed6",
+      "title": "[윤만호의 금융포커스]디지털자산 시대를 본격 준비하라",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c03ac4a6",
+      "title": "'삼전닉스' 랠리에 해외 코인거래소 상장한 무기한선물도 거래 폭증",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5436d3bd",
+      "title": "[금융 브리핑] KB증권·키움증권·한국투자증권·LS증권",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융 브리핑]"
+    },
+    {
+      "hash": "7d67b324",
+      "title": "[증권가로수] NH증권/KB증권/키움증권/유안타증권/마스턴운용/NH아문디운...",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[증권가로수]"
+    },
+    {
+      "hash": "14e4ad5d",
+      "title": "[비즈 인사이트] '반도체 랠리' 덕분에 증권사들 1분기 대박 터졌다",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "분기 순이익"
+    },
+    {
+      "hash": "3cde6bf2",
+      "title": "[금융권 이모저모]KB증권, 금융권 최초 생성형 AI 개발환경 구축 外",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융권 이모저모]"
+    },
+    {
+      "hash": "f236b51b",
+      "title": "토스뱅크-솔라나 재단, 차세대 송금 인프라 구축 ‘맞손’",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "72729876",
+      "title": "이찬진 금감원장 \"금리 인상 취약계층 지원…민생 금융범죄 대응도 강화...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "취약계층"
+    }
+  ]
+}
