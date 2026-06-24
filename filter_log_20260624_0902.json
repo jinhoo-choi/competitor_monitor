@@ -1,0 +1,314 @@
+{
+  "time": "2026-06-24T09:02:21.347582+09:00",
+  "total": 43,
+  "sent": 2,
+  "hard_excl": 3,
+  "excl_stats": {
+    "기업금융": 1,
+    "[금융브리핑]": 1,
+    "자산운용사": 1
+  },
+  "entries": [
+    {
+      "hash": "811bb942",
+      "title": "디지털자산發 빅뱅, 은행·카드·증권 경계 뒤흔든다",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "532fa415",
+      "title": "[가상자산 거래소 격변기] '5위' 고팍스, 라이선스 프리미엄 빛 볼까",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "a7828823",
+      "title": "신한 슈퍼SOL, 토스증권 UI·UX 따라갔나…MTS 닮은꼴 논란",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "29130b82",
+      "title": "[2026 100대 CEO] 박종문 삼성증권 사장, ‘1조 클럽’ 위상 공고",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "2bb828f9",
+      "title": "‘삼전닉스 부자’ 늘어났나? 증권사, 초고액자산가 모시기 경쟁 ‘후끈...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "10c16a02",
+      "title": "주식 리워드 효과…카카오페이증권 채널 친구 100만명 넘었다",
+      "company": "카카오페이증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "f880bf30",
+      "title": "[2026 100대 CEO] 엄주성 키움증권 사장, 리테일 1위의 영토 확장",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "31d19856",
+      "title": "급락 뇌관 '대차잔고' 사상 최대인데… 고객 유치 열올리는 증권사",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0241084c",
+      "title": "레버리지가 만든 ‘롤러코스피’...증시 변동성은 금융위기 수준 웃돌아",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "50af6668",
+      "title": "점유율 1위 뺏긴 키움증권…또 전산장애, 업계 민원 85% 차지",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "35a13406",
+      "title": "해외주식 마케팅 중단 영향?…투자열기 뜨거운데 증권사 광고비는 ‘감...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "70a6d4b9",
+      "title": "상폐 증권주 나올까… '동전주' 신세 못면하는 상상인증권",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "423ef717",
+      "title": "'양방향 의료데이터' 레몬헬스케어 IPO 주목할 점 세 가지",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9f668f73",
+      "title": "신한, 은행 기반으로 슈퍼쏠 재단장…금융지주 디지털 경쟁 재시동",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "04cd73d8",
+      "title": "'의료데이터 플랫폼' 레몬헬스케어, 일반공모 돌입[오늘 청약]",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "dbc9dd3e",
+      "title": "레몬헬스케어, 일반공모 돌입…공모가 1만원[오늘 청약]",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "688e0252",
+      "title": "[김보형의 뷰파인더]나홀로 실적 꺾인 우리금융임종룡 회장, 묘수인가 ...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c5de1da7",
+      "title": "미래에셋증권, 모든 세대 아우르는 VIP 자산관리 경쟁력 부각 外",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "75082479",
+      "title": "메리츠증권, 삼정KPMG와 M&A 자문 업무협약",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "8175730f",
+      "title": "메리츠증권·삼정KPMG, M&A 자문 협력 MOU…전과정 지원",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "ebcb1b0e",
+      "title": "\"AI 투자 확대에 반도체 장기계약 잇달아… 호황 길어질것\" [반도체 슈퍼...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2c92b0bd",
+      "title": "[MSCI 불발] 국민연금 매도 못 받는다…외인자금 44조 유입 기대 좌절",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1390a1a2",
+      "title": "미래에셋증권 연금자산 80조 돌파…돈이 몰린 이유는",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "e14edbcc",
+      "title": "100억 이상 자산가들, 삼전닉스 보다 더 산 종목이 있었네",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "e0743ae6",
+      "title": "레버리지 ETF 과열에 스페이스X 논란까지...잘나가던 금투업계 '초긴장...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8dc7ea0a",
+      "title": "‘삼전닉스 2배 ETF’ 어제 25% 폭락… 수수료에 증권사만 배불려",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "63cd1ccb",
+      "title": "마이크론·앤트로픽 협약에 韓증권사도 촉각 \"AI 자금순환, 반도체서 밸...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bd47217a",
+      "title": "[투자를IT다] 2026년 6월 3주차 IT기업 주요 소식과 시장 전망",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a3af961b",
+      "title": "[아침밥] 하나증권 \"DL이앤씨, 사우디 부과 과세 8533억 과도한 우려\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8fd15e2e",
+      "title": "\"한우·음원보다는 SK하이닉스…토큰화 본질은 상품 수요와 국경 허물기...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9cc9b7a7",
+      "title": "카카오페이證 카톡 채널 100만 돌파…3개월 만에 증권사 1위",
+      "company": "카카오페이증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "09043350",
+      "title": "카카오페이증권, 카톡 채널 친구 100만 돌파…증권사 중 '최다'",
+      "company": "카카오페이증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "b9c12802",
+      "title": "[N2 모닝 경제 브리핑-6월 24일] 美 증시, 3대 지수 일제히 하락…AI 투자...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b7fafe29",
+      "title": "[현장] “스테이블코인은 시작일 뿐이었다”…한국 디지털자산 전략이...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "75089e1f",
+      "title": "\"오늘 주식 팔면, 내일 입금\" 결제주기 단축안 10월 발표",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "abc821aa",
+      "title": "메타, 예측시장 플랫폼 개발 추진…스포츠베팅株 '출렁'",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7c2741ed",
+      "title": "연금저축 200조 눈앞인데…증권사 수익률 공세에 밀리는 보험업계",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b580245b",
+      "title": "'삼전·닉스 2배 베팅' 하루 만에 25% 증발…190조 몰린 레버리지 ETF의 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8ca8c35d",
+      "title": "[STO 시대]②국경 없는 자산 거래…한국거래소, 글로벌 무한경쟁 참전",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f573115e",
+      "title": "금투협회장 \"전국민이 투자에 눈 벌겋다…삼전닉스 레버리지 염려\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "20dc8d89",
+      "title": "메리츠증권, 삼정KPMG와 맞손…M&A·재무 자문 강화",
+      "company": "메리츠증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "cf50eb9f",
+      "title": "[금융브리핑] 글로벌 영토 확장하고 AI·상생 금융 입히는 금융권, 체질...",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융브리핑]"
+    },
+    {
+      "hash": "cab367bb",
+      "title": "금융규제 당국 시각·시장 시각 모두 갖춰",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    }
+  ]
+}
