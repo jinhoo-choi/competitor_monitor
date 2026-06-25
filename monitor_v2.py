@@ -802,7 +802,7 @@ def analyze_article(art: dict) -> dict:
 규칙:
 - 기사 본문에 명시된 수치·날짜·고유명사를 최대한 활용하세요.
 - 확인 불가 내용은 "-" 기입. 추론·추측 금지.
-- company_name: 기사 본문에서 증권사명 직접 추출. 여러 개면 주된 1개만.{body_note}
+- company_name: 기사 본문에서 행위 주체 증권사명 직접 추출. 여러 개면 주된 1개만. 수집 키워드({art['_company']})와 다를 수 있음 — 반드시 본문 기준으로 판단. 본문 주체가 증권사가 아니면(스타트업·운용사·거래소 등) '-' 입력.{body_note}
 - summary: 본문의 구체적 수치(금액·기간·건수·목표치)와 행위 주체를 포함해 작성.
 
 <<BODY>>
@@ -1157,7 +1157,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
     low   = [a for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="하"]
     no_an = [a for a in analyzed if not a.get("analysis")]
 
-    # 헤더 한줄 요약 — Claude API로 40자 이내 단일 문장 생성
+    # 헤더 한줄 요약 — Claude API로 50자 이내 단일 문장 생성
     top_arts = high + mid
     summary_list = ""
     if top_arts:
@@ -1169,15 +1169,26 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
             )
             res = client.messages.create(
                 model="claude-haiku-4-5-20251001",
-                max_tokens=80,
+                max_tokens=100,
                 messages=[{"role":"user","content":
-                    f"아래 오늘의 경쟁사 인사이트 현황을 보고, 전체 흐름을 40자 이내 한 문장으로만 작성하세요.\n"
-                    f"문장 외 다른 내용 일절 금지. 경쟁사명·핵심 사건을 균형있게 반영.\n"
+                    f"아래 오늘의 경쟁사 인사이트 현황을 보고, 전체 흐름을 한 문장으로만 작성하세요.\n"
+                    f"규칙: ① 반드시 완성된 문장으로 끝낼 것 (문장 중간에 끊기지 않도록) "
+                    f"② 50자 이내 ③ 경쟁사명·핵심 사건 균형있게 반영 ④ 문장 외 다른 내용 일절 금지\n"
                     f"예: '키움 퇴직연금 진출·미래에셋 UOB 제휴, 연금·해외주식 경쟁 심화'\n\n"
                     f"{titles_text}"
                 }]
             )
-            one_line = res.content[0].text.strip()[:50]
+            one_line = res.content[0].text.strip()
+            # 문장 중간 잘림 방지 — 마지막 완성 문장까지만 사용
+            if len(one_line) > 55:
+                # 마침표·줄임표 기준 자르기
+                for sep in ['。', '.', '…', '·']:
+                    idx = one_line.rfind(sep, 0, 55)
+                    if idx > 20:
+                        one_line = one_line[:idx+1]
+                        break
+                else:
+                    one_line = one_line[:50]
             summary_list = (
                 f'<p style="margin:0;font-size:11px;color:#95d5b2;font-family:Arial,sans-serif;'
                 f'line-height:1.6;word-break:keep-all;">{one_line}</p>'
