@@ -1,0 +1,503 @@
+{
+  "time": "2026-06-26T16:01:46.172990+09:00",
+  "total": 69,
+  "sent": 2,
+  "hard_excl": 16,
+  "excl_stats": {
+    "삼성자산운용": 1,
+    "[증권단신]": 1,
+    "[증권가로수]": 1,
+    "카카오뱅크": 3,
+    "[금융권 이모저모]": 2,
+    "키움투자자산운용": 1,
+    "신한자산운용": 1,
+    "사회공헌": 1,
+    "자산운용사": 4,
+    "구도운용": 1
+  },
+  "entries": [
+    {
+      "hash": "73973feb",
+      "title": "7월 달라지는 증권사 수수료...토스·NH는 종료, 우리·대신은 계속",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3a60e802",
+      "title": "국내 투자자, 7일간 스페이스X 3조원 '폭풍' 순매수···테슬라·엔비디...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "512bc622",
+      "title": "토스증권, 투자자 보호 차별화…미수거래부터 보안까지 안전장치",
+      "company": "토스증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "73e391e1",
+      "title": "해외주식 편의성 경쟁 세분화…NH투자증권, 일본·홍콩 주문 개선",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "600f744a",
+      "title": "개미 자금, 코스피 급등 이후 ETF로 집중",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7af52ddc",
+      "title": "[더벨]하나증권, MTS 새판 짠다…AI로 무장",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "af90a0f7",
+      "title": "니어스랩, 증권신고서 제출…연내 코스닥 상장 목표",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a1e115df",
+      "title": "니어스랩, 증권신고서 제출…드론 첫 코스닥 상장 도전",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c793571b",
+      "title": "'피지컬 AI 드론' 니어스랩, 코스닥 상장 공모 절차 돌입",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2a251c26",
+      "title": "[권가림의 금만세] 증권사 파트너 찾은 코인원·두나무…빗썸에도 러브...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "900d7982",
+      "title": "美, 클래리티법 내달 상원통과 ‘가속’… “韓도 디지털자산법 하반기...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "e6b55bd9",
+      "title": "밸류업 목표 1년 앞당겨...키움증권, ROE·PBR·주주환원 '3관왕' [2026년...",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "8a7750d6",
+      "title": "[더벨]유안타증권 '유동원 랩', 일임자산 합계 3조 돌파",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c6c6a208",
+      "title": "345억 투자받은 엔벤트릭…이번엔 유니콘브릿지 선정",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f91e712b",
+      "title": "[증권사 해외투자 명암]③키움證, 해외주식과 함께 커진 '외화 변수'",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5023d162",
+      "title": "프리즘 투자자문-월천재테크, 금융-부동산 통합컨설팅 업무협약 체결",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "596131a8",
+      "title": "[증권가 NOW!] 하나증권·KB증권·한국투자·NH투자·미래에셋...\"서비스...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "48ab9b0b",
+      "title": "[#증권톡톡]NH투자증권 일본주식 1주-홍콩주식 시장가 주문 서비스·한국...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fa751220",
+      "title": "레메디, 공모가 최상단 2만700원 확정… 주관사 KB증권",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8922d515",
+      "title": "[경제소식] 하나증권, 전주금융센터 새롭게 이전 개점",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3ca6b7bd",
+      "title": "레메디, 공모가 최상단 2만700원 확정…수요예측 경쟁률 1,146대 1",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7ae6612f",
+      "title": "[굿모닝! 금융지식] IPO는 어떻게 이뤄질까…상장은 왜 하는 걸까",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4966985b",
+      "title": "티엘비, 메모리 업사이클 수혜에 'AI 프리미엄'까지…\"투자 매력도 높아...",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "759518c1",
+      "title": "[특징주] 삼성전기, 美 MLCC ETF 편입 기대에 4%대 강세",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "675002cd",
+      "title": "티엘비, AI향 고부가제품 출하 확대 지속-메리츠",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6e3f881d",
+      "title": "[증권 & Now] NH투자증권, 일본·홍콩 해외주식 주문 서비스 도입 등",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3e1180c3",
+      "title": "도요타도 1주씩 산다…NH투자증권, 美 넘어 일본·홍콩 공략",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "702187e7",
+      "title": "NH투자증권, 해외주식 주문 서비스 개선…국가별 거래 불편 줄인다",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "2058a4e3",
+      "title": "NH증권, 日주식 1주 단위·홍콩주식 시장가 주문 도입",
+      "company": "NH투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "c988716f",
+      "title": "[더밸류 브리핑] 오늘의 NH금융 소식...NH투자증권·NH선물",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6cf51583",
+      "title": "미래에셋증권, 투자센터여의도WM 이전 기념 ‘고객 세미나’ 개최",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f98a339e",
+      "title": "\"공격 투자도 안정적으로\"…1兆 PI운용팀장 출신 김명진 미래에셋證 PB[...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3808f171",
+      "title": "[더벨][퇴직연금 Radar] KB금융, 증권행 머니무브 대응법 '더블카운팅'",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "27b8d6fc",
+      "title": "예금 보다 높은 수익률에 원금 보장도… 미래에셋증권 IMA 주목",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c1260c73",
+      "title": "주식 부담스럽고 예금은 아쉽다면… NH투자증권 “중위험·중수익 IMA가...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "50f1d622",
+      "title": "[MD포커스] “태우고 또 태운다” 미래에셋증권, 3000억 소각 이어 ‘1억...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d6d775ea",
+      "title": "미래에셋증권, 합병 자사주 소각 검토…주주환원 강화 속도",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "35d40bed",
+      "title": "'퇴직연금 강자' 하나은행, '실시간 ETF 거래' 영향은?",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0ebc9337",
+      "title": "[퇴직연금 쟁점(中)] 뜨거운 감자 부상한 ‘ETF 실시간 매매’",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "136b0cf3",
+      "title": "서클, 노무라와 손잡고 일본 외환 결제 플랫폼 추진",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fc05a045",
+      "title": "[머니픽] 한화생명, 동남아 금융사업 '박차'…베트남·인니 성장축으로...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f05a70f3",
+      "title": "알스퀘어, 플랫폼 'RA' 고도화…맞춤형 분석 기능 강화",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e3101218",
+      "title": "[Invest]IPO 가뭄에 코스닥 주관 쟁탈전 격화…'계약 빼오기' 불문율도 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "dace539f",
+      "title": "\"국민연금 등 거대 기관금융 싹쓸이한다\"… 하나증권, 전주금융센터 전...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c8ed8266",
+      "title": "[Invest]단일종목 레버리지 '후폭풍'…\"투자 수요 억제만으론 부족\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b1f83cfd",
+      "title": "해외주식 투자 문턱 낮아진다…NH투자증권, 일본 1주 거래·홍콩 시장가...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a9c6327a",
+      "title": "한양증권, 틱톡 채널 개설해 Z세대 접점 확대…“디지털 소통 강화”",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b55178ad",
+      "title": "달러 흔들리자 위안화 띄우는 中…첫 ‘금융 기본법’ 꺼냈다 [정다은의...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0b53e3e0",
+      "title": "“이제 ‘계좌 없는 사람’이 없는 시장…1억 계좌 시대의 역설”",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2a6b7474",
+      "title": "‘삼전닉스 레버리지’ 열풍에…감사원, 금융위·금감원 감사",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "459f5d26",
+      "title": "현대차증권, PF 줄이고 미래 성장동력 키운다...기업가치 제고 전략 가속",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "70fc59fb",
+      "title": "[긴급진단] 미 '클래리티법' 상원 통과 임박… 한국 디지털 자산 시장 '...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ac206fa0",
+      "title": "\"엠에프씨, 신사업 성과로 성장 모멘텀 강화\" - 하나증권",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "778ff9f1",
+      "title": "\"금융과 항공이 만났다\"… 삼성금융네트웍스·한진그룹, 국경 없는 '핵심...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "삼성자산운용"
+    },
+    {
+      "hash": "edde7374",
+      "title": "[증권단신] NH투자증권·하나증권·KB증권·신한운용",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[증권단신]"
+    },
+    {
+      "hash": "7578a21d",
+      "title": "[증권가로수]KB증권/NH증권/하나증권/한양증권/신한운용/타임폴리오",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[증권가로수]"
+    },
+    {
+      "hash": "83d0bd48",
+      "title": "카카오뱅크, '인뱅 최초' 캐피탈 진출…예적금·대출 너머 종합금융 플...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "카카오뱅크"
+    },
+    {
+      "hash": "c161847b",
+      "title": "[금융권 이모저모]우리은행, 녹색금융 지원 확대 外",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융권 이모저모]"
+    },
+    {
+      "hash": "b6339ce8",
+      "title": "[더밸류 브리핑] 오늘의 운용사 소식...신한·키움투자자산운용",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "키움투자자산운용"
+    },
+    {
+      "hash": "83af134a",
+      "title": "[증권 Pick] 이번주 신상품 모아보기",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한자산운용"
+    },
+    {
+      "hash": "1fc26edc",
+      "title": "23억 적자 마스턴캐피탈 품은 카카오뱅크의 계산법···할부금융 승부...",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "카카오뱅크"
+    },
+    {
+      "hash": "784182fb",
+      "title": "[금융 HOT 뉴스] 카카오뱅크, 마스턴캐피탈 인수 추진…\"캐피탈업 진출...",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "카카오뱅크"
+    },
+    {
+      "hash": "88bd2f90",
+      "title": "KB증권, 장애인 일자리 생산품 기부 \"자립준비청년 홀로서기 돕는다\"",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "사회공헌"
+    },
+    {
+      "hash": "dbcd46cc",
+      "title": "알스퀘어, 데이터 플랫폼 'RA'에 ESG·투자분석 기능 강화",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    },
+    {
+      "hash": "e1f674f3",
+      "title": "알스퀘어 RA, 데이터 조회 플랫폼에서 투자 의사결정 플랫폼으로",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    },
+    {
+      "hash": "451965f7",
+      "title": "알스퀘어, 상업용 부동산 분석 플랫폼 RA 개편",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    },
+    {
+      "hash": "249c5219",
+      "title": "상업용 부동산 데이터 경쟁 격화...알스퀘어, ESG·투자분석 기능 확대",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    },
+    {
+      "hash": "bf030cc2",
+      "title": "[금융권 이모저모]금융투자협회, 하반기 지표금리 보고회사 선정 外",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융권 이모저모]"
+    },
+    {
+      "hash": "25404c44",
+      "title": "[더벨][인사이드 헤지펀드] 구도운용, '웨일펀드' 750억 모집…연타석 ...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "구도운용"
+    }
+  ]
+}
