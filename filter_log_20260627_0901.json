@@ -1,0 +1,245 @@
+{
+  "time": "2026-06-27T09:01:28.176924+09:00",
+  "total": 33,
+  "sent": 1,
+  "hard_excl": 8,
+  "excl_stats": {
+    "생산적 금융": 2,
+    "분기 순이익": 1,
+    "기업금융": 4,
+    "PF 부실": 1
+  },
+  "entries": [
+    {
+      "hash": "5dfa3f74",
+      "title": "[증권 NOW] NH투자증권·KB증권",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "2448843c",
+      "title": "\"고액자산가 특별관리합니다\"…은행 WM 경쟁 '박차'",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c8b8d75f",
+      "title": "단타 치던 30대 “투자 인사이트 얻었다, 이제 장기투자”",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8c771e26",
+      "title": "KB증권, 1조원 유상증자 추진...초대형 IB 성장동력 확보",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b6067de5",
+      "title": "전북청년허브센터-NPS-KB금융그룹, '전북 취업 다 MOA' 성황리 개최",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a77a3617",
+      "title": "[증권가 중계] NH투자증권 'AI 컨설턴트 서아인 공개', KB증권 '자립준비...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bb6f15da",
+      "title": "주식·원자재·비상장주까지 무기한 선물의 무한 확장...한국은?[엠블록...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e8abfce9",
+      "title": "해외주식부터 AI·틱톡·토큰증권까지… 증권사 디지털 전쟁",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "dfd31644",
+      "title": "NH證, 日 주식 '1주 시장가' 주문 도입…홍콩주식 자동지정가도 선봬",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "51104910",
+      "title": "NH투자증권, 일본·홍콩 해외주식 거래 서비스 개선...투자 편의성 강화",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "27632eaa",
+      "title": "NH투자증권, 일본·홍콩 주식 투자 진입 장벽 낮춘 혁신 서비스 출시",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "b7c98f78",
+      "title": "[증권 이모저모] 하나증권, 전주금융센터 새롭게 이전 개점 \"전북 지역...",
+      "company": "하나증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "af7b7c3a",
+      "title": "올해만 1.7조 실탄 장전한 KB증권...'IMA 4호' 도전",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ad041a8a",
+      "title": "KB증권, 1조 규모 유상증자 결정…IMA 진출 발판 마련",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fe6be08c",
+      "title": "KB증권, 1조원 유상증자 결정…\"IMA 등 미래 성장사업 기반 확보\"",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "28e65750",
+      "title": "미래에셋증권, 투자센터여의도 WM 이전 오픈",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f11ba07a",
+      "title": "[IPO 뜯어보기] [빅웨이브로보틱스] PER 808배 논란…금감원도 두 번 '제...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "62cf75ec",
+      "title": "[주간 거래소 외국인] 삼성전자 SK하이닉스 차익실현 지속... HD현대중공...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3ae929d3",
+      "title": "소노인터내셔널, 유가증권시장 상장 준비 돌입… 레저·숙박업계 주목",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "59464a03",
+      "title": "KB증권, 1조원 유상증자…'발행어음·IMA' 정조준",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8487e0ab",
+      "title": "ADR이 바꾸는 SK하이닉스 수급지도… “ETF·패시브 자금 유입 기대\"",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "efda7e59",
+      "title": "KB증권, 1조 규모 유상증자 결정 外",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e37bd288",
+      "title": "KB증권, 1조 규모 유증...\"IMA 등 미래 성장사업 기반 마련\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c0e0a3ba",
+      "title": "[책마을] '모닝루틴' 진행자가 전하는 돈버는 투자 루틴",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2c67f4d5",
+      "title": "[ ABC AI금융시대 = 박춘원 전북은행장] AI와 디지털 자산의 결합,   '크...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "be75aff0",
+      "title": "KB증권, 1조 규모 유상증자 결정…IMA·생산적 금융 드라이브",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적 금융"
+    },
+    {
+      "hash": "2f7a4a4b",
+      "title": "반도체만이 아니다…증권가가 꼽은 'AI 다음 수혜주' 10개",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "분기 순이익"
+    },
+    {
+      "hash": "12937e3a",
+      "title": "KB증권, 1조 원 유상증자로 종합투자계좌(IMA) 진출 가속화",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "76a4e6b8",
+      "title": "KB증권, 1조원 유상증자…IMA 진출·생산적 금융 속도",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적 금융"
+    },
+    {
+      "hash": "ac2f9e80",
+      "title": "KB증권, 1조원 유상증자 결정… IMA·발행어음 사업 속도",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "5aa8f445",
+      "title": "PF 부실 덜어낸 캐피탈… 금융권 M&A 시장 '인기 매물' 부상",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "PF 부실"
+    },
+    {
+      "hash": "4d370e62",
+      "title": "넥스트증권, 싱가포르 현지법인 설립…글로벌 IT 거점 구축",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "55c7ad9e",
+      "title": "남기천 우리투자증권 대표, IB로 키우고 디지털로 넓힌다",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    }
+  ]
+}
