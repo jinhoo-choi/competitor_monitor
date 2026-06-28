@@ -1558,7 +1558,7 @@ def main():
 
     if not relevant:
         print("  한투 영향 기사 없음.")
-        subj = f"✅ [eBiz 인사이트] {now_str} — 해당 기사 없음"
+        subj = f"[eBiz 인사이트] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
         save_filter_log(articles, hard_excluded, [], [])
@@ -1811,7 +1811,7 @@ def main():
 
     if not analyzed:
         # 탐지 기사 없으면 담당자에게만 발송
-        subj = f"✅ [eBiz 인사이트] {now_str} — 해당 기사 없음"
+        subj = f"[eBiz 인사이트] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, html)
     else:
         send_email(html, analyzed, len(raw))
