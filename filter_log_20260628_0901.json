@@ -1,0 +1,116 @@
+{
+  "time": "2026-06-28T09:01:09.267652+09:00",
+  "total": 15,
+  "sent": 1,
+  "hard_excl": 1,
+  "excl_stats": {
+    "아문디자산운용": 1
+  },
+  "entries": [
+    {
+      "hash": "a2bfa7dd",
+      "title": "M7은 끝났다고?…“빅테크 지금도 너무 싸다”는 이유 [투자360]",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3826e1c7",
+      "title": "증권가, AI 도입 잰걸음…AX 전환 박차",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "42f916d8",
+      "title": "110조 커진 액티브 ETF… 운용사 액티브 운용 키운다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4200eba1",
+      "title": "증권사 유상증자 릴레이…'실탄 확보' 경쟁 치열",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fa349938",
+      "title": "이번주 공모주 청약, 레메디 1개사",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6cb23c7f",
+      "title": "[STO 시대]⑤'KB 브랜드의 힘'…회사채·PF·신탁 '우량자산' 토큰화 역량",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7ee3abd7",
+      "title": "일주일간 '서킷브레이커' 두 번…증권가 7월 기대하는 이유 [주간전망]",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "32ad2826",
+      "title": "증시 호황에 고액자산가 급증…금융권, WM 시장경쟁 '치열'",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c6b930a9",
+      "title": "고객 선택이 증명했다, 미래에셋증권 퇴직연금의 경쟁력",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5b4ed64c",
+      "title": "[임종룡의 관치금융 역설] 보험·증권 품었지만 순익은 '나홀로 후퇴'…...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f213e489",
+      "title": "'2배'에 혹한 개미들 초단타 놀이터 됐다…증권사만 '배불리기'[레버리...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f1b8305a",
+      "title": "\"주식 팔면 다음날 돈 들어온다\"… 10월 '결제주기 T+1 단축' 로드맵 나...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7ba4aaac",
+      "title": "나스닥100 ETF 수수료 전쟁… 인베스코 독점 구조 균열 조짐",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5e198b9f",
+      "title": "코스피 150배·삼전닉스 50배에 투자...\"무법지대 도박판\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "daf709f9",
+      "title": "농협금융, 전북에 금융허브 조성…은행·보험·증권·자산운용 모은다",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "아문디자산운용"
+    }
+  ]
+}
