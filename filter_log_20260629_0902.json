@@ -1,0 +1,331 @@
+{
+  "time": "2026-06-29T09:02:07.820084+09:00",
+  "total": 45,
+  "sent": 2,
+  "hard_excl": 9,
+  "excl_stats": {
+    "사회공헌": 1,
+    "자산운용": 4,
+    "토스뱅크": 1,
+    "자산운용사": 1,
+    "[창간 24주년 기획②]": 1,
+    "구도운용": 1
+  },
+  "entries": [
+    {
+      "hash": "cf31796c",
+      "title": "국내 반도체 ETF, 시장 변동성 논란 속 8조원 돌파",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1afe51bd",
+      "title": "승객·물류·공공 한 플랫폼에…기아, PV5 생태계 구축 본격화",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5a087dbc",
+      "title": "국내 증권사들 서양개미 유치전…“새 먹거리 찾았다” [‘서양개미’가...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "06a39b78",
+      "title": "시행령까지 고쳐 ETF는 풀고…코스닥은 상폐 칼날 [레버리지 ETF 출시 한...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "aefe2036",
+      "title": "삼성증권, 초부유층 자산관리 노하우 입증..30억 이상 고객 1만명 돌파",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1ec7258b",
+      "title": "삼성증권, 업계 최초 '초고액자산가' 1만명 시대 개막…자산관리 시장 ...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "621bb65b",
+      "title": "삼성증권, 금융자산 30억 이상 고객 업계 첫 1만명 돌파",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9e01f240",
+      "title": "[카드] 키움증권, ETF 검색부터 비교·주문까지 'ETF 탐색 서비스' 출시",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "b0e94f76",
+      "title": "키움증권, 'ETF 탐색 서비스' 출시",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "41967fee",
+      "title": "키움證, ETF 탐색·비교·주문 원스톱 서비스 출시",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "257ade01",
+      "title": "\"ETF 쉽게 찾고 3종 비교 한번에\"…키움證, ETF 탐색 서비스 개시",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "f72f26c9",
+      "title": "키움증권, ETF 투자 편의성 높인 '탐색 서비스' 오픈…원스톱 매매 환경...",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "222b7e4d",
+      "title": "\"검색부터 주문까지 쉽게\"...키움증권, ETF 탐색 서비스 선봬",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "21446577",
+      "title": "키움증권, 'ETF 탐색 서비스' 출시…검색부터 주문까지 원스톱으로",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "7271a3df",
+      "title": "제도화 전에 인프라 짠다...금융권 '디지털자산 동맹' 확산",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "24b87902",
+      "title": "6월 26일 주식시장 주요공시",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8bfc159b",
+      "title": "\"계열사 고른 실적\" 호평 하나금융지주 5월 관심도 1위…우리·KB금융지...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b23823d1",
+      "title": "신한금융 '롯데손보' 인수로 종합금융 퍼즐 완성할까",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c14dd209",
+      "title": "하반기 바이오 IPO, 의료 플랫폼·기기·신약까지 '다양'",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "41bd2756",
+      "title": "출범 30주년인데 ‘초상집 코스닥’… 해외선 코스피 150배 파생상품 출...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "802546e5",
+      "title": "서양개미 길 열렸는데...외국인 통합계좌 ‘게임체인저’ 될까 [‘서양...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "18f9fb21",
+      "title": "연 7% 특판부터 美국채까지…대신증권 진승욱 체제, 초대형 IB 앞두고 리...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ea4aec93",
+      "title": "삼전·닉스만 허용한 게 패착?... 미국과 다른 단일종목 레버리지 ETF",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "aa510221",
+      "title": "NH투자증권, 가족친화 경영 강화",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8d5710dc",
+      "title": "ISA·연금저축·IRP…절세계좌가 자산관리 판 바꿨다",
+      "company": "NH투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "09b61f90",
+      "title": "코스닥 우울한 30살… ETF에도 밀려 시총 비중 27년 만에 최저",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "89d5567a",
+      "title": "코스피 롤러코스터의 진짜 범인은 '레버리지 ETF' 그리고 국민연금",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "42ad1dcd",
+      "title": "엄주성號 키움증권, 리테일 강점으로 글로벌 공략 [글로벌 선발대 빅5 증...",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "619d6316",
+      "title": "[금융그룹 AX] 직접 개발하고 함께 키운다…하나금융의 AX 투트랙 전략",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6f92645e",
+      "title": "[스페이스X IPO가 쓴 ‘성공 공유’ 신화] “머스크, 인류 첫 조만장자”...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "679366aa",
+      "title": "금융규제 샌드박스 제도 개선에도…\"너무 늦었다\" 문 닫는 STO 사업자들",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1b837ff5",
+      "title": "취임 1년 앞둔 이찬진 금감원장, 레버리지 ETF· 홍콩ELS·지배구조 개선...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "027a4ca2",
+      "title": "대신증권, 카사 인수 3년 만에 '미래 먹거리' STO 사업 손떼나",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "25b2e1de",
+      "title": "[STO 시대]⑥각자도생 대신 '협력모델'…NH투자증권 'STO비전그룹' 주도",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e25d7dcb",
+      "title": "[Invest]금융권, '컨설팅 검사' 확대에 한숨 돌렸지만…금감원 내부에서...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fbae8f81",
+      "title": "코스피에 150배 베팅…해외 코인거래소로 번지는 '규제 사각지대'",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0b4d214c",
+      "title": "금융권, 혁신-포용-사회공헌으로 미래 경쟁력 강화",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "사회공헌"
+    },
+    {
+      "hash": "ea59c45c",
+      "title": "개미, 투자 정보도 AI로 찾는다…증권사 AX 속도전",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "9d4c9c6f",
+      "title": "KB자산운용, 국내 자산 중심 한국형 TDF 출시…소비자 관심도↑",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "07e3e16b",
+      "title": "KB자산운용, '한국형 연금 솔루션' KB 코리아포커스 적격TDF 출시",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "6922a120",
+      "title": "KB자산운용, 국내 자산 중심 ‘코리아포커스 적격TDF’ 출시",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "a441f4ce",
+      "title": "인뱅 3사, 비은행서 승부수…캐피탈·펀드·디지털자산까지",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "e74ae682",
+      "title": "[금융이슈] '교보' 동력 얻은 SBI저축은행...내부통제·수익성 과제 남았...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    },
+    {
+      "hash": "eed5fc66",
+      "title": "[창간 24주년 기획②] 금융의 한 축으로… 보험산업 24년의 변화",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[창간 24주년 기획②]"
+    },
+    {
+      "hash": "80052a20",
+      "title": "[더벨][인사이드 헤지펀드] 구도운용, '웨일펀드 4호' VVIP로 고객 압축",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "구도운용"
+    }
+  ]
+}
