@@ -1,0 +1,345 @@
+{
+  "time": "2026-07-01T09:01:53.145513+09:00",
+  "total": 47,
+  "sent": 4,
+  "hard_excl": 6,
+  "excl_stats": {
+    "[ETF웩더독③]": 1,
+    "기업금융": 1,
+    "[기획]": 1,
+    "부동산금융": 1,
+    "카카오뱅크": 1,
+    "[우주미아 미래에셋⑤]": 1
+  },
+  "entries": [
+    {
+      "hash": "33f26002",
+      "title": "키움증권·빗썸도 손잡나…디지털자산법 기대감에 ‘협업’ 확대",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "87f136c2",
+      "title": "[Who Is ?] 함영주 하나금융지주 대표이사 회장",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "76dc527d",
+      "title": "거래소 품는 증권사들… '온체인 금융' 뭐길래",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "608e4fc9",
+      "title": "증시 활황 타고…증권사 '몸집 불리기' 경쟁",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6832a7f2",
+      "title": "일 거래대금 100조원에도 증권주는 소외…“순환매 땐 다시 볼 때”",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0a44178b",
+      "title": "STO·스테이블코인 시대 앞두고…증권사들, 거래소 선점 '속도전'",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "0c1caaa4",
+      "title": "[증권 & Now] 미래에셋증권, 대한민국 100대 브랜드 12위 등",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "12b7aad8",
+      "title": "삼성증권, 반도체 우수기업IR 행사 'KSS IR Day' 성료 外",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "56324c98",
+      "title": "[더벨]빗썸, 프리IPO격 투자유치 추진 '비덴트 영향력 줄이기'",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "f8612da5",
+      "title": "압도적인 실적에도 미래에셋증권 주가 73% 상승 그쳐...불장에도 대신증...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "b3df6659",
+      "title": "[증권가 중계] 한국투자증권, 키움증권, SK증권 등",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "78be1248",
+      "title": "[오늘의 투자전략] \"코스피, 고변동성 소화 후 상승 궤도 복귀 전망\"",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c81fe7be",
+      "title": "중고거래 '삼자 사기' 급증…키움증권 \"신분증·카톡 요구하면 주의\"",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8088b014",
+      "title": "\"코스피 상승세 이어갈까\" 국민연금, 리밸런싱 복귀 변수",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "025830c3",
+      "title": "미래에셋증권, 금융 마이데이터 브랜드평판 2026년 7월...1위",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "627d6e32",
+      "title": "[금융 슈퍼앱 전쟁] [KB] 통합앱 부재에도 '끊김 없는 경험'",
+      "company": "KB증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "9f1d5ec2",
+      "title": "[비즈톡톡] 군대·AI글래스·뷰티까지… 무신사, ‘협업 플랫폼’으로 ...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "289db3d2",
+      "title": "불장에 커지는 야망…증권사 ‘유상증자 러시’",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7f8ec66a",
+      "title": "[금융 슈퍼앱 전쟁] [KB] 시중은행 앱 최대 MAU…KB스타뱅킹의 선점 전략",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "259fb500",
+      "title": "[금융포커스]보험사 사고 저축은행 품고…금융권 M&A 진짜 이유",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "87e341fa",
+      "title": "증시 강세에 커진 고액자산가 시장···증권사들 '큰손 잡기' 경쟁",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3e30e692",
+      "title": "미래에셋증권, 금융 마이데이터 브랜드평판 7월 빅데이터 1위...KB국민·...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ca9198ab",
+      "title": "4700조 '3대 메가' 투자…\"고용유발효과 700만명\"",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "656d7e37",
+      "title": "증권사 체급별 ‘유증 셈법’…몸집불려 사업기회 확대한다",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2040b7f2",
+      "title": "\"키워드는 딱 두개\"...상반기 ETF 수익 상위권 봤더니",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9c4ef50c",
+      "title": "올 상반기 ETF 수익률 '반도체+레버리지'가 끌어올렸다",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "89111d20",
+      "title": "올해 상반기 ETF 수익률 키워드는 '반도체+레버리지'",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "031928a6",
+      "title": "농협금융, 전북에 ‘금융허브’ 구축…균형성장 뒷받침",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5ab46240",
+      "title": "NH투자증권 작년 온실가스 배출량 8.8%↓..K-RE100 이행률 19%",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cb41e0d1",
+      "title": "미래에셋, 삼성전자·SK하이닉스 레버리지 줄인다..최소 증거금률 20%→...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0d5f4023",
+      "title": "우리은행 65% 급등했지만 안심 못한다…금융 데이터 경쟁 격화",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0589d6d4",
+      "title": "'0주 배정' 초유의 사태…\"미래에셋, 美월가 주문관례 오해해 청약 자체...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4e722434",
+      "title": "DB증권, 왜 '두레이' 선택했나…AI 업무혁신 본격화",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d1ca039e",
+      "title": "[하반기 달라지는 것] 외환시장 24시간 열린다 … 육아휴직 일주일 단위...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1c13737b",
+      "title": "삼성증권, 30억 이상 고객 1만명 시대…'시간이 만든 신뢰' 통했다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ea372584",
+      "title": "“화장품만 팔던 시대 끝났다”…실리콘투·올리브영, ‘K-뷰티 플랫폼...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "58b4e6e6",
+      "title": "'집 팔아 주식 투자?' 알고 보니...개미 투자금 출처는",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "09ceb456",
+      "title": "개미 투자금 97조 어디서 왔나…“예금·해외주식서 이동, 부동산 자금...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "82113d0e",
+      "title": "1∼5월 국내증시 개인 순매수 97조…투자금 어디서 나왔나 보니",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a933918c",
+      "title": "개인 투자자 자금, 국내 증시에 100조원 육박 유입",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c0b1dd0c",
+      "title": "[글로벌 특징주] ASML 등 반도체 장비주 일제히 급등…삼성·SK 투자 계획...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6af2939e",
+      "title": "[ETF웩더독③] 운용사 경쟁에 휘둘리는 증권사 LP들",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[ETF웩더독③]"
+    },
+    {
+      "hash": "f939af51",
+      "title": "삼성증권, 반도체 IR 데이 개최…AI 시대 유망기업 투자 연결",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "01bc16a7",
+      "title": "[기획] 460억이상 보유 '韓 슈퍼리치' 잡아라…증권사 '관리의 질' 차별...",
+      "company": "메리츠증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[기획]"
+    },
+    {
+      "hash": "57785ffb",
+      "title": "메리츠증권, 'PF 명가' 넘어 WM·IPO로 체질 바꿀까",
+      "company": "메리츠증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "부동산금융"
+    },
+    {
+      "hash": "1db23e3d",
+      "title": "캐피탈사 인수에 꽂힌 금융권...왜?",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "카카오뱅크"
+    },
+    {
+      "hash": "f18e1258",
+      "title": "[우주미아 미래에셋⑤] 박현주의 도저한 '중국편애', 펀드 몰박아넣기에...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[우주미아 미래에셋⑤]"
+    }
+  ]
+}
