@@ -1,0 +1,110 @@
+{
+  "time": "2026-07-05T09:01:25.362285+09:00",
+  "total": 14,
+  "sent": 1,
+  "hard_excl": 2,
+  "excl_stats": {
+    "[가상자산 거래소 재편③]": 1,
+    "미래에셋자산운용": 1
+  },
+  "entries": [
+    {
+      "hash": "fbb1e13a",
+      "title": "\"1살이라도 어릴 때 미리\"…요즘 직장인 돈 굴리는 공식 [김연지의 연금...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c70d56b3",
+      "title": "삼성증권, DBS와 글로벌 자산관리 협력 업무협약 체결",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "c411d5f7",
+      "title": "“반토막 났는데, 저가 매수 기회”라는 ‘이 주식’…증권가, AI 쏠림에...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0a89cb2d",
+      "title": "코스피, 해외 거래소에서 초고위험 150배 레버리지 상품 등장",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2cab6d1b",
+      "title": "국내는 고위험 경고·해외선 코스피 150배…투자자 보호 '구멍'",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bc1a50f7",
+      "title": "'74조' 매도?…국민연금 리밸런싱 재개 첫 사흘 '폭탄'은 없었다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8f4638fd",
+      "title": "[공모주달력]레몬헬스케어 코스닥 상장…에이치엘지노믹스 수요예측",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b44f0e12",
+      "title": "[N2포커스] AI 품은 증권사, 상담 넘어 WM·리스크관리까지 간다",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cf50c92a",
+      "title": "해외서도 K주식 산다…유진투자증권의 '이 서비스'는?",
+      "company": "유진투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "61f43894",
+      "title": "컬리·무신사 '상장 시계' 째깍째깍…수익성은 증명, IPO 언제",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f5090606",
+      "title": "[주간금융이슈] 외환시장 24시간 개방, 환율 안정 vs 변동성 확대",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "931d94ae",
+      "title": "한미약품, 오픈이노베이션 확대…바이오벤처 투자 생태계 구축",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "429a73a7",
+      "title": "지분투자·신사업으로 활로 모색[가상자산 거래소 재편③]",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[가상자산 거래소 재편③]"
+    },
+    {
+      "hash": "3c258e8e",
+      "title": "NH투자증권, OCIO본부 전면 개편…쇄신 나서",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "미래에셋자산운용"
+    }
+  ]
+}
