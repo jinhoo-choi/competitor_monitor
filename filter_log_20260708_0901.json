@@ -1,0 +1,344 @@
+{
+  "time": "2026-07-08T09:01:51.382299+09:00",
+  "total": 47,
+  "sent": 0,
+  "hard_excl": 6,
+  "excl_stats": {
+    "분기 순이익": 2,
+    "취약계층": 1,
+    "삼성자산운용": 1,
+    "미래에셋자산운용": 1,
+    "자산운용": 1
+  },
+  "entries": [
+    {
+      "hash": "f59606d2",
+      "title": "NH증권 \"증권업종, 2분기 실적호조…방어력 갖춘 종목 찾아야\"",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c0a99a50",
+      "title": "미래에셋證, 2분기도 순익 1조 기대… '스페이스X' 효과, 언제까지",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "868a94d8",
+      "title": "야놀자, 2조 투자 받고도 나스닥 상장 5년째 '안갯속'…IPO 핵심 임원 줄...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3579a950",
+      "title": "나스닥 꿈꾸던 야놀자 IPO 좌초 위기…핵심 임원 줄퇴사",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "102a2102",
+      "title": "'ROE 72%' 토스증권, 밑천보다 잘 버는 '위험한 질주' 언제까지",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b95fd945",
+      "title": "[더벨][기도산업 IPO] 제조 본업만 남긴 밸류, 할인율 적용 후 PER 7배 안...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d88cd58a",
+      "title": "키움證 “현대차, 내러티브보다 펀더멘털 회복 가능성 주목⋯목표가 70...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9626f9cf",
+      "title": "키움증권, 점유율 감소세에 주가 부진…목표가도 하향",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cd7f3f84",
+      "title": "35년 금융·전략통 조좌진, 하나투어 새 수장으로",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7a76060c",
+      "title": "[우리금융 임종룡 체제 2기] ⑤ 또 뚫린 우리금융…줄줄 새는 개인정보...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "14d828cc",
+      "title": "금융사 임원 103명, 자사주식 138억 샀지만…'큰손'일수록 쓴맛",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "252e1d8e",
+      "title": "나스닥100 들어가는 스페이스X…국내 ETF·미래에셋 웃을까 外 [한강로 ...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d788aed7",
+      "title": "우리은행·신한카드 유출서 드러난 정보보호 허점…금융사 곳곳서 ‘투...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "818b5a73",
+      "title": "닻 올린 '모험자본 플랫폼', 삼성·메리츠는 없었다",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "72f88448",
+      "title": "한국금융지주, '순수 체급'으로만 '영업이익 3조원'…\"투자 매력 높은 증...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3fc94136",
+      "title": "영업이익 3兆 바라보는 한국금융지주[클릭e종목]",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bcc788c4",
+      "title": "네이버페이, 모험자본 투자 플랫폼 'Npay 스타트업' 출범",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "9a5be19f",
+      "title": "[업앤다운]증권주 3% 하락, 메리츠금융지주↑·미래에셋증권↓",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "c6972692",
+      "title": "‘삼전닉스 레버리지’ 상폐론 나오지만… 규정 없고 투자 손실도 문제",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "faa217be",
+      "title": "[더벨]미네타브룩벤처스, IPO 후보 3곳 확보…글로벌 지원 성과",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "011e400d",
+      "title": "주가 오르는데 왜 굳이 팔까?…국민연금 ‘리밸런싱’ 의미는",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "35c604c9",
+      "title": "[증권 Pick] 삼성자산, 연금 TDF 하이브리드 전략 제시…미래에셋자산, ...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3a80e68c",
+      "title": "김현도 미래에셋證 팀장 \"국채는 안정성 높은 연 8% 수익 상품\"",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6aac9edb",
+      "title": "89조 벌었는데 주가 '뚝'...\"55만전자 간다\" \"비중 늘릴 때\" 증권가 조언",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "526185ca",
+      "title": "SK하이닉스 미국 상장 흥행 조짐… 투자社 3곳 “70억달러어치 인수”",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1be34d0b",
+      "title": "고환율에 증권사 외환 리스크 커질까",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "29e9487d",
+      "title": "[N2 포커스] IPO 한파에도 존재감 드러낸 NH투자증권…공모총액 30% 차지",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3de9d709",
+      "title": "'AI와 수다떨듯'…쉽고 빠른 모험자본 투자",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b0110813",
+      "title": "네이버페이, 모험자본 플랫폼 출범..\"벤처-투자자 연결\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "17b433ee",
+      "title": "“투자 정보는 한곳에서”…네이버페이, 스타트업 투자 플랫폼 ‘Npay 스...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3f72fd2b",
+      "title": "[더벨]이공이공, 300억 SI 투자 유치…2027년 IPO 채비",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "5dd6241f",
+      "title": "LS증권, 외국인 고객 이메일 해킹 피해 당국 신고…경찰 수사 착수",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6ab6c697",
+      "title": "본인 확인 없이 해킹 이메일 믿고 주문냈다 고객돈 수십억 날린 LS증권....",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0adfa7db",
+      "title": "\"주식 팔고 출금해줘\" LS증권, '가짜 이메일'에 속아…외국인 투자자 수...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ac32018f",
+      "title": "LS증권, '해킹 메일' 속아 수십억 무단 인출 사고…경찰 수사 착수",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c0266f18",
+      "title": "LS증권, '해킹 이메일' 속아 주식 주문···투자자 수십억 피해",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f2cfba12",
+      "title": "카이아, 일본 토큰증권협회 합류…日 RWA 시장 공략",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "eb89d822",
+      "title": "[Invest]'콜 100% CB'까지 담는 코스닥벤처펀드...투자처 '품귀' 심화",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "227d81b6",
+      "title": "[현장] 임종룡號 우리금융, 디노랩부터 IPO까지…스타트업 ‘원스톱 성...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4c4e2aa9",
+      "title": "[美증시 특징주] 반도체 급락속 IBM 7일째 홀로 급등...0.7나노칩+증권사...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "40aa9e03",
+      "title": "제약바이오 하반기 전략, 국민성장펀드와 비만·ADC 주목",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a25f66d5",
+      "title": "여의도 증권가 2분기 3.7조 '잭팟' 전망…채권 손실 비웃은 수수료·우주...",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "분기 순이익"
+    },
+    {
+      "hash": "2b8bfac0",
+      "title": "[증권 뉴스브리핑] '모험자본 투자플랫폼' 출범/금감원 퇴직자 재취업 ...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "취약계층"
+    },
+    {
+      "hash": "8cd0d78a",
+      "title": "'명불허전' 한국금융지주, 2분기 순이익 7800억 전망",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "분기 순이익"
+    },
+    {
+      "hash": "5e973f84",
+      "title": "삼성자산운용, 변동성 대비 글로벌TDF-코리아EMP TDF 하이브리드 전략 제...",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "삼성자산운용"
+    },
+    {
+      "hash": "c249c9e4",
+      "title": "유진투자증권, 리테일 넘어 글로벌 브로커리지로 뛴다",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "미래에셋자산운용"
+    },
+    {
+      "hash": "a230c96c",
+      "title": "우리금융, 디노랩부터 IPO까지…9조원 모험자본 생태계 구축",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    }
+  ]
+}
