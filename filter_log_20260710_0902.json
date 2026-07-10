@@ -1,0 +1,350 @@
+{
+  "time": "2026-07-10T09:02:12.187164+09:00",
+  "total": 48,
+  "sent": 3,
+  "hard_excl": 4,
+  "excl_stats": {
+    "생산적금융": 1,
+    "토스뱅크": 1,
+    "자산운용": 1,
+    "법인영업": 1
+  },
+  "entries": [
+    {
+      "hash": "0277d0c1",
+      "title": "뷰티 테크에서 뷰티 플랫폼으로…에이피알 '성공 방식'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c23135dd",
+      "title": "공정위, 미래에셋의 코빗 인수 승인",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "27981693",
+      "title": "미래에셋 ‘코빗’ 인수 승인…‘금가분리’ 깬 공정위",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "f371afe6",
+      "title": "7월 9일 주식시장 주요공시",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "afe40f19",
+      "title": "[핀포인트] [키움증권] 브로커리지 경쟁력 '흔들'…MTS 오류도 '발목'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d06badc1",
+      "title": "[더벨][PE 포트폴리오 엿보기] 레버런트, 네추럴웨이 IPO 저울질…바이...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ea4e1afd",
+      "title": "해외 개인투자자 한국 주식 주문 잡아라…증권사 외국인 통합계좌 경쟁",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "bd15a1a6",
+      "title": "STO 장외거래소 출범 초읽기… '상품 다양화' 관건",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "6b6f17f1",
+      "title": "거래소 재편 속 바이낸스도 韓 사업 채비…규제 대응 총괄 CISO 채용",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0ce365e9",
+      "title": "기아, 2분기 판매 늘었지만 전기차 비중 확대에 수익성 둔화 전망-키움...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8cd2e4de",
+      "title": "[핀포인트] [키움증권] 존재감 없는 해외법인, 미국선 다를까",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4d08639f",
+      "title": "\"24만원 간다\" 증권가도 깜짝 전망…기아에 대체 무슨 일이 [종목+]",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c9ab6f82",
+      "title": "거래대금 폭증에 웃은 증권사…2분기 실적 눈높이 더 높아졌다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b8fd811a",
+      "title": "[더벨][피알앤디컴퍼니 IPO] 상장 앞두고 '헤이딜러'로 사명 변경 고심",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "797b5603",
+      "title": "[Invest]SK하이닉스, 단기자금 투자처로 증권사 낙점…유동성 큰손 기대...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e1b7d888",
+      "title": "'AI 전면 배치'…비은행 영토 확장도 총력[하반기 금융 리부트]",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "79e21001",
+      "title": "KB증권 \"한화에어로, 2분기 영업익 기대치 밑돌 것…목표가↓\"",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e68f49a8",
+      "title": "KB증권 \"한화에어로, 2분기 영업익 컨센서스 하회 전망…목표가 20%↓\"",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "67b9ae1f",
+      "title": "OK금융, 예별손보 우협 선정…보험업 진출 본격화",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "df9e7678",
+      "title": "대덕벤처, 국민성장펀드 지역리그 유일 지방 VC '눈길'",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "363c78fa",
+      "title": "[#증권톡톡] LS증권 '개인투자자 세미나' 25일 개최·NH증권 '인도 초이...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fda729fb",
+      "title": "'호남권 반도체 패싱' 쓴맛 안긴 이원택호 전북도정, '제3금융중심지'로...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3a3bb50f",
+      "title": "NH투자증권, 인도 초이스증권에 1423억 투자",
+      "company": "NH투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "071351b9",
+      "title": "발행어음 후발 3사, 첫 분기 성적표…‘리테일 강자’ 키움증권 선두 질...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ec116b7c",
+      "title": "‘음의 복리’ 덫 삼전닉스 레버리지 ETF…퇴출론까지 번졌다",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "04e7675d",
+      "title": "NH투자증권, 인도 금융시장에 1,423억원 투자…초이스 인터내셔널과 전...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "87634647",
+      "title": "NH투자증권, 인도 초이스증권 전략적 지분투자…신흥 거점 확보",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "975f3842",
+      "title": "NH투자증권, 신재욱·배광수 체제 첫 승부수… 인도 증권사 전략 투자",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "9762814e",
+      "title": "[증권가 중계] NH투자증권, iM증권, 교보증권",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cd0d39d9",
+      "title": "[금융] NH투자증권 노령연금 감액 분석 리포트",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7564becf",
+      "title": "미래에셋증권, '2026 Korea Bond Market Forum' 성료 外",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "24292230",
+      "title": "[뉴욕증시포커스] 반도체주 강세에 일제히 상승…AI 투자 기대감 재점화",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "75fe64b1",
+      "title": "\"오르다가 급락\" 개미들 패닉....'2배 ETF' 증시 변동성 2배 뛰었다",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "71df83fc",
+      "title": "공정위, 미래에셋컨설팅의 코빗 인수 승인",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "4bdd4c5b",
+      "title": "미래에셋, 코빗 품고 가상자산 사업 넓힌다",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "00ae8136",
+      "title": "코빗 인수 승인 받은 미래에셋…디지털자산 협업, ‘제도’에 달려",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "ded01a11",
+      "title": "NH투자증권, 인도 거점 확보…초이스증권 2대주주로",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "35053337",
+      "title": "수수료 무료라는 환상의 역설? 로빈후드가 바꾼 월가의 규칙",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "41e08e3d",
+      "title": "[Invest]레버리지 ETF, 상폐 대신 증권사에 칼날?...LP부터 조인다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9f2c6efc",
+      "title": "NH투자증권, 인도 초이스증권 전략적 투자...글로벌 사업 거점 확대",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "04fe8797",
+      "title": "‘ㅋㅋㅋ’ 댓글 폭발… ‘약 빤 증권사’ 인스타, 이 사람이 만듭니다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5dec8dc5",
+      "title": "공정위, 미래에셋 코빗 인수 승인…전통금융·가상자산 대융합 첫발",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0aefde6f",
+      "title": "공정위 승인 받은 '코빗 인수', 금융권·거래소 접점 넓어지나",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "88862206",
+      "title": "증시 훈풍에도 끝나지 않은 PF…한화투자증권의 과제",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "46e2933e",
+      "title": "[Invest]생산적금융 성적표 된 해상풍력…은행권, 서남권 2.4GW 조달전 본...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적금융"
+    },
+    {
+      "hash": "c6ed2beb",
+      "title": "토스뱅크 '펀드' 판다",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "5fb475e2",
+      "title": "미래에셋, 코빗 품고 가상자산판 진입…전통금융 첫 거래소 인수 가시권",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "0a30414d",
+      "title": "NH투자증권, 인도 초이스그룹 증권사에 지분투자…현지 공략 본격화",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "법인영업"
+    }
+  ]
+}
