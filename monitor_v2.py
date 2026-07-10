@@ -827,9 +827,9 @@ JSON only, 다른 텍스트 없이:
   "action_point": "현실적인 수준의 대응 방안. 1문장 40자+1문장 40자, 총 80자 이내. 부서명 없이. 번호 매기지 말 것."
 }}"""
 
-    try:
+    def _call_and_parse(model: str) -> dict:
         res = client.messages.create(
-            model="claude-haiku-4-5-20251001",
+            model=model,
             max_tokens=500,
             messages=[{"role":"user","content":prompt}]
         )
@@ -846,7 +846,18 @@ JSON only, 다른 텍스트 없이:
                     break
         if end_idx > 0:
             raw_text = raw_text[:end_idx]
-        analysis = json.loads(raw_text)
+        return json.loads(raw_text)
+
+    try:
+        # 1차: Haiku로 스코어링 (전량, 저비용)
+        analysis = _call_and_parse("claude-haiku-4-5-20251001")
+
+        # 2차: impact_score 5.0 이상만 Sonnet 재분석 (고비용, 고정밀)
+        try:
+            if float(analysis.get("impact_score", 0)) >= 5.0:
+                analysis = _call_and_parse("claude-sonnet-5")
+        except Exception as e:
+            print(f"    [WARN] Sonnet 재분석 실패, Haiku 결과 유지: {e}")
 
         # ── company_name 기반 _company 갱신 — targeted/broad 공통
         # 수집 키워드 회사명(삼성증권)이 달라도 실제 기사 주체(미래에셋)로 교정
