@@ -221,6 +221,59 @@ COMPETITORS = {
     "토스증권":     ["토스증권 서비스", "토스증권 출시", "토스증권 진출", "토스증권 기능", "토스증권 수수료"],
 }
 
+# ═══════════════════════════════════════════════
+# 레이어5 — 엔티티 별칭 정규화 (dedup 키 생성 직전에만 적용)
+# AI가 같은 회사를 실행마다 다른 이름으로 추출하면 event_key가 어긋나
+# 중복 탐지가 무력화됨 (예: "미래에셋" vs "미래에셋증권" vs "미래에셋대우")
+# ⚠️ 이 매핑은 dedup 키 생성에만 쓰고, 카드 표시명(art["_company"]) 등
+#    사용자에게 보이는 값에는 적용하지 않는다.
+# ═══════════════════════════════════════════════
+ALIAS_MAP = {
+    "삼성": "삼성증권", "삼성증권(주)": "삼성증권",
+    "키움": "키움증권", "키움證": "키움증권",
+    "KB": "KB증권", "국민증권": "KB증권", "KB Securities": "KB증권",
+    "메리츠": "메리츠증권",
+    "신한투자": "신한투자증권", "신한금융투자": "신한투자증권", "신한證": "신한투자증권",
+    "NH": "NH투자증권", "나무증권": "NH투자증권", "NH투자": "NH투자증권",
+    "미래에셋": "미래에셋증권", "미래에셋대우": "미래에셋증권",
+    "토스": "토스증권",
+}
+
+def canonicalize_company(entity: str) -> str:
+    """dedup 키 생성 직전에만 사용 — 회사명 별칭을 대표명으로 통일"""
+    e = (entity or "").strip()
+    return ALIAS_MAP.get(e, e)
+
+# ═══════════════════════════════════════════════
+# 레이어4 — 새 국면(Next-Stage) 판정: event_key가 같아도
+# 사건이 실질적으로 진전됐으면 억제하지 않고 재발송 허용
+# ⚠️ 중의성 함정 방지 — 단어 단위가 아닌 구체적 구문 단위로 등록
+# ═══════════════════════════════════════════════
+NEW_STAGE_KEYWORDS = [
+    "정식 출시", "정식출시", "가입자", "누적", "돌파", "1위", "선점",
+    "인가 획득", "인가 완료", "승인 완료", "MOU 체결", "본계약", "정식 계약",
+    "서비스 개시", "오픈", "런칭 완료", "지분 확정", "인수 완료", "상장",
+]
+RESOLVE_KEYWORDS = [
+    "무산", "철회", "보류", "연기", "중단", "취소", "제동", "불발",
+]
+ALWAYS_NEW_KEYWORDS = [
+    # RESOLVE와 섞여 있어도(예: "제휴 검토 무산 대신 인가 획득") 살려야 하는 확정적 신규 이벤트
+    "정식 출시", "가입자", "돌파", "인가 획득", "본계약", "서비스 개시", "상장",
+]
+
+def is_new_stage(title: str, desc: str) -> bool:
+    """event_key/폴백키가 동일해도, 실질적 국면 진전이면 True (억제 예외)"""
+    text = (title or "") + (desc or "")
+    hits = [kw for kw in NEW_STAGE_KEYWORDS if kw in text]
+    if any(rk in text for rk in RESOLVE_KEYWORDS):
+        # 해소·좌절 표현이 섞여 있으면, 확정적 신규 이벤트만 남기고 나머지는 폐기
+        hits = [h for h in hits if h in ALWAYS_NEW_KEYWORDS]
+        if not hits:
+            return False
+    return len(hits) > 0
+
+
 # 광범위 키워드 — {키워드: display 건수} 형태
 # 핵심 키워드(제휴·MOU·출시)는 10건, 일반은 5건, 보조는 3건
 BROAD_KEYWORDS: dict = {
@@ -869,8 +922,12 @@ JSON only, 다른 텍스트 없이:
         # AI가 기사 내 날짜(출시 예정일 등)를 보고 과거/미래 날짜를 넣는 문제 방지
         ym_now = datetime.now(KST).strftime("%Y%m")
         event_key = analysis.get("event_key","").strip()
+        # 레이어5 — event_key 선두의 회사명 별칭을 대표명으로 통일 (dedup 키 생성용)
+        extracted_canon = canonicalize_company(extracted)
+        if extracted and extracted_canon != extracted and event_key.startswith(extracted):
+            event_key = extracted_canon + event_key[len(extracted):]
         if not event_key or len(event_key) < 5:
-            co = extracted if (extracted and extracted != "-") else art.get("_company","미확인")
+            co = extracted_canon if (extracted and extracted != "-") else canonicalize_company(art.get("_company","미확인"))
             th = analysis.get("threat_type","기능강화")[:6]
             event_key = f"{co}_{th}_{ym_now}"
         else:
@@ -1645,29 +1702,38 @@ def main():
         result = analyze_article(art)
         an = result.get("analysis")
         if an:
+            title_txt = result.get("title","")
+            desc_txt  = result.get("description","")
+            # 레이어4 — 새 국면 판정: True면 아래 3단 억제를 모두 우회(예외 통과)
+            new_stage = is_new_stage(title_txt, desc_txt)
+
             ekey = an.get("event_key","").strip()
             if not ekey:
                 co = an.get("company_name","") or result.get("_company","")
-                ekey = f"{co}::{an.get('threat_type','')}"
+                ekey = f"{canonicalize_company(co)}::{an.get('threat_type','')}"
             # ① seen events 체크 — event_key 기준 3일 차단
-            if ekey in seen.get("events", set()):
+            if ekey in seen.get("events", set()) and not new_stage:
                 print(f"  [사건중복-3일] {result.get('_company','')} | {result.get('title','')[:45]} (키: {ekey})")
                 continue
             # ② 폴백1: 회사명+도메인앞부분+월 조합 (위협유형은 AI 표현 변동 큼)
-            co_for_key   = (an.get("company_name","") or result.get("_company","")).strip()
+            # 레이어5 — 회사명 별칭을 대표명으로 통일해 키 불일치 방지
+            co_for_key   = canonicalize_company((an.get("company_name","") or result.get("_company","")).strip())
             domain_short = _domain_key(an.get("impact_domain",""))
             ym           = datetime.now(KST).strftime("%Y%m")
             fallback_key = f"{co_for_key}::{domain_short}::{ym}"
-            if fallback_key in seen.get("events", set()):
+            if fallback_key in seen.get("events", set()) and not new_stage:
                 print(f"  [사건중복-폴백1] {result.get('_company','')} | {result.get('title','')[:45]} (키: {fallback_key})")
                 continue
             # ③ 폴백2: 회사명+파트너사/서비스명 고유명사 — event_key 핵심행위가 달라도 잡아냄
             # 예) '키움증권::트레이딩뷰' → 제목이 달라도 동일 파트너사면 차단
-            entity_key = _extract_entity_key(result.get("title",""), co_for_key)
-            if entity_key and entity_key in seen.get("events", set()):
+            entity_key = _extract_entity_key(title_txt, co_for_key)
+            if entity_key and entity_key in seen.get("events", set()) and not new_stage:
                 print(f"  [사건중복-폴백2(엔티티)] {result.get('_company','')} | {result.get('title','')[:45]} (키: {entity_key})")
                 continue
-            # ④ 런타임 중복 체크 — 이번 실행에서 이미 분석한 사건
+            if new_stage and (ekey in seen.get("events", set()) or fallback_key in seen.get("events", set())
+                               or (entity_key and entity_key in seen.get("events", set()))):
+                print(f"  [새국면-예외통과] {result.get('_company','')} | {result.get('title','')[:45]}")
+            # ④ 런타임 중복 체크 — 이번 실행에서 이미 분석한 사건 (새 국면이어도 같은 실행 내 재중복은 차단)
             if ekey in runtime_events or fallback_key in runtime_events:
                 print(f"  [런타임중복] {result.get('_company','')} | {result.get('title','')[:45]}")
                 continue
