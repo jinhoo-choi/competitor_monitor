@@ -247,31 +247,47 @@ def canonicalize_company(entity: str) -> str:
 # ═══════════════════════════════════════════════
 # 레이어4 — 새 국면(Next-Stage) 판정: event_key가 같아도
 # 사건이 실질적으로 진전됐으면 억제하지 않고 재발송 허용
-# ⚠️ 중의성 함정 방지 — 단어 단위가 아닌 구체적 구문 단위로 등록
+# ⚠️ 중의성 함정 방지 — 단어 단위가 아닌 구체적 구문 단위로만 등록
+#    ("가입자"/"돌파"/"1위"/"선점"/"오픈"/"상장" 단독은 부정적 맥락에서도
+#    출현해 오탐(회귀테스트 5/5 실패) 확인 → 전량 제거, 구문·정규식으로 대체)
 # ═══════════════════════════════════════════════
 NEW_STAGE_KEYWORDS = [
-    "정식 출시", "정식출시", "가입자", "누적", "돌파", "1위", "선점",
-    "인가 획득", "인가 완료", "승인 완료", "MOU 체결", "본계약", "정식 계약",
-    "서비스 개시", "오픈", "런칭 완료", "지분 확정", "인수 완료", "상장",
+    "정식 출시", "정식출시",
+    "인가 획득", "인가 완료", "승인 완료",
+    "MOU 체결", "본계약", "정식 계약",
+    "서비스 개시", "정식 오픈", "런칭 완료",
+    "지분 확정", "인수 완료",
+    "코스피 상장", "코스닥 상장",
+]
+# 수치 마일스톤 — "가입자/누적 + 숫자 + 만/억/조" 형태만 인정 (숫자 없는 단독 언급은 제외)
+NEW_STAGE_PATTERNS = [
+    r'가입자\s*[\d,]+\s*(만|천)',
+    r'누적\s*[\d,]+\s*(만|억|조)',
+    r'[\d,]+\s*(만|억|조)\s*.{0,4}돌파',
+    r'(점유율|업계)\s*1위',
 ]
 RESOLVE_KEYWORDS = [
     "무산", "철회", "보류", "연기", "중단", "취소", "제동", "불발",
 ]
 ALWAYS_NEW_KEYWORDS = [
     # RESOLVE와 섞여 있어도(예: "제휴 검토 무산 대신 인가 획득") 살려야 하는 확정적 신규 이벤트
-    "정식 출시", "가입자", "돌파", "인가 획득", "본계약", "서비스 개시", "상장",
+    "정식 출시", "인가 획득", "본계약", "서비스 개시",
 ]
 
 def is_new_stage(title: str, desc: str) -> bool:
     """event_key/폴백키가 동일해도, 실질적 국면 진전이면 True (억제 예외)"""
     text = (title or "") + (desc or "")
-    hits = [kw for kw in NEW_STAGE_KEYWORDS if kw in text]
+    literal_hits = [kw for kw in NEW_STAGE_KEYWORDS if kw in text]
+    pattern_hit  = any(re.search(p, text) for p in NEW_STAGE_PATTERNS)
+    if not literal_hits and not pattern_hit:
+        return False
     if any(rk in text for rk in RESOLVE_KEYWORDS):
-        # 해소·좌절 표현이 섞여 있으면, 확정적 신규 이벤트만 남기고 나머지는 폐기
-        hits = [h for h in hits if h in ALWAYS_NEW_KEYWORDS]
-        if not hits:
+        # 해소·좌절 표현이 섞여 있으면, 확정적 신규 이벤트/수치 마일스톤만 남기고 폐기
+        literal_hits = [h for h in literal_hits if h in ALWAYS_NEW_KEYWORDS]
+        if not literal_hits and not pattern_hit:
             return False
-    return len(hits) > 0
+    return True
+
 
 
 # 광범위 키워드 — {키워드: display 건수} 형태
