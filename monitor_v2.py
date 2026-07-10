@@ -854,7 +854,7 @@ JSON only, 다른 텍스트 없이:
 
         # 2차: impact_score 5.0 이상만 Sonnet 재분석 (고비용, 고정밀)
         try:
-            if float(analysis.get("impact_score", 0)) >= 5.0 and not art.get("_body_failed"):
+            if float(analysis.get("impact_score", 0)) >= 5.0:
                 analysis = _call_and_parse("claude-sonnet-5")
         except Exception as e:
             print(f"    [WARN] Sonnet 재분석 실패, Haiku 결과 유지: {e}")
@@ -1631,7 +1631,10 @@ def main():
     # ── 5) AI 2차 심층 분석 (상한: MAX_ANALYZE_ARTICLES)
     print("\n[5/6] AI 2차 심층 분석 + event_key 중복제거...")
     if len(relevant) > MAX_ANALYZE_ARTICLES:
-        print(f"  ⚠️ AI 선별 {len(relevant)}건 → 상위 {MAX_ANALYZE_ARTICLES}건만 분석 (비용 상한)")
+        # 절단 전 우선순위 정렬 — 1군 언론 우선, targeted(8개사 정밀) 우선
+        # (정렬 없이 AI 1차 반환 순서로 자르면 고임팩트 기사가 점수도 못 매겨보고 유실될 수 있음)
+        relevant.sort(key=lambda a: (a.get("_tier","") != "1군", a.get("_source_type","") != "targeted"))
+        print(f"  ⚠️ AI 선별 {len(relevant)}건 → 상위 {MAX_ANALYZE_ARTICLES}건만 분석 (1군언론·정밀수집 우선, 비용 상한)")
         relevant = relevant[:MAX_ANALYZE_ARTICLES]
     ai_filtered_list = list(relevant)
     analyzed, new_title_norms, new_desc_norms = [], [], []
