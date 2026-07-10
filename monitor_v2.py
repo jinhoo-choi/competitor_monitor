@@ -854,7 +854,7 @@ JSON only, 다른 텍스트 없이:
 
         # 2차: impact_score 5.0 이상만 Sonnet 재분석 (고비용, 고정밀)
         try:
-            if float(analysis.get("impact_score", 0)) >= 5.0:
+            if float(analysis.get("impact_score", 0)) >= 5.0 and not art.get("_body_failed"):
                 analysis = _call_and_parse("claude-sonnet-5")
         except Exception as e:
             print(f"    [WARN] Sonnet 재분석 실패, Haiku 결과 유지: {e}")
