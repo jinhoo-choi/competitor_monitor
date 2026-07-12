@@ -1910,7 +1910,14 @@ def main():
         subj = f"[eBiz 인사이트] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, html)
     else:
-        send_email(html, analyzed, len(raw))
+        levels = {a["analysis"].get("impact_level") for a in analyzed if a.get("analysis")}
+        if levels <= {"하"}:
+            # 탐지됐지만 전부 '하' 등급뿐이면 전체발송 대신 담당자에게만 발송
+            subj = f"[eBiz 인사이트] {now_str} — 영향도 낮음(하)만 탐지"
+            send_email_no_result(subj, html)
+            print(f"  ℹ️ 전량 '하' 등급 — 담당자 전용 발송으로 전환")
+        else:
+            send_email(html, analyzed, len(raw))
 
     # ── 저장 — event_key + 폴백 키(회사명::위협유형::월) 함께 저장
     sent_urls  = {a.get("link","") for a in analyzed if a.get("link","")}
