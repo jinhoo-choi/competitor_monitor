@@ -1,0 +1,139 @@
+{
+  "time": "2026-07-12T10:01:51.811627+09:00",
+  "total": 18,
+  "sent": 1,
+  "hard_excl": 5,
+  "excl_stats": {
+    "기업금융": 1,
+    "미래에셋자산운용": 3,
+    "자산운용": 1
+  },
+  "entries": [
+    {
+      "hash": "a855a716",
+      "title": "\"뭘 믿고 투자하나\"…증권사, 삼전·SK하닉 목표가 2배 차이",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "034a5cf5",
+      "title": "김남길 드라마부터 사내연애 예능까지, 금융사 유튜브는 '콘텐츠' 전쟁...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "132b5c2f",
+      "title": "“큰 놈 하나 나오면 분위기 달라지지”…‘3조 소노’ 출격에 공모주 ...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c30490ae",
+      "title": "미래에셋 품으로 가는 코빗…신한은행과 ‘실명제휴’ 유지? 해제? [크립...",
+      "company": "신한투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "a42a604d",
+      "title": "크래프톤 주가 전망 [금주 주목할 게임 IT 주식]",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5cf3186e",
+      "title": "빗장 열린 '금가융합' 시대…미래에셋+코빗 다음 '네이버+두나무'는?",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "b53a1e6c",
+      "title": "코빗 품은 미래에셋…디지털 금융 판 키우나",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "c43bdc32",
+      "title": "코스피 변동성 속 인버스·레버리지 ETF 매수 열풍",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ba3c41c6",
+      "title": "'롤러코스피'에 ETF 거래량 인버스·레버리지가 상위권 양분",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "faa599fa",
+      "title": "“계좌가 녹아내린다”…널뛰는 삼전·SK하닉 레버리지에 ‘곡소리’",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9cebc148",
+      "title": "\"1000만 원으로도 못 산다\"… 일 주식 '투자 장벽' 비상에 1주 단위 거래...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5aa18a58",
+      "title": "미래에셋·코빗 승인 이후 쏠린 눈…남은 건 네이버·두나무",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ae16deaa",
+      "title": "[이슈] KT클라우드, 여의도 데이터센터 증설...초저지연 금융이 온다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1e0ae85e",
+      "title": "[4대금융 新성장축] KB·우리, 증권 2.7조 투자…하나 두나무·신한 손보...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "8a1ddbfb",
+      "title": "미래에셋그룹, 코빗 인수 뒤 과제는 '법인 온보딩'",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "미래에셋자산운용"
+    },
+    {
+      "hash": "dd24c6f6",
+      "title": "개미들 '우주 탈출'…스페이스X ETF 5천억 던졌다",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "미래에셋자산운용"
+    },
+    {
+      "hash": "07b41e38",
+      "title": "스페이스X 상장 한달…개인투자자, '우주 ETF' 5천억 매도",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "미래에셋자산운용"
+    },
+    {
+      "hash": "9d3876cb",
+      "title": "'비상장 명가' DS자산운용, ETF 첫 출사표…성장 변곡점 맞나",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    }
+  ]
+}
