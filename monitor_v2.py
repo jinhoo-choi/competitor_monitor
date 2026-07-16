@@ -1461,17 +1461,18 @@ def _addr_header(addr: str) -> str:
 
 def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
     """SMTP 지수 백오프 재시도 (최대 3회)
-    헤더 정책: To는 발신 계정 자신으로 고정(빈 To로 인한 스팸필터 회피),
-    실제 배포 대상(to/cc 인자로 들어온 전부)은 Cc로 이동해 표시명 없이 노출.
-    envelope(RCPT TO)은 실제 배포 대상 그대로 — 헤더 구조 변경과 무관하게 전달됨."""
+    헤더 정책: To는 발신 계정 자신으로 고정(빈 To로 인한 스팸필터 회피).
+    실제 배포 대상(to/cc 인자로 들어온 전부)은 숨은 참조(BCC) 처리 —
+    메시지 헤더에는 절대 기록하지 않고 SMTP envelope(RCPT TO)로만 전달.
+    → 받는 사람 화면에는 발신자/받는사람(본인 고정 주소)만 보이고,
+      다른 실제 수신자 주소는 서로에게 노출되지 않음."""
     import time as _time
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"]    = _from_header()
     msg["To"]      = _addr_header(GMAIL_USER)
+    # ⚠️ Bcc는 의도적으로 헤더에 추가하지 않는다 — 헤더에 넣는 순간 숨은참조가 아니게 됨
     real_recipients = list(to) + list(cc or [])
-    if real_recipients:
-        msg["Cc"] = ", ".join(real_recipients)
     msg.attach(MIMEText(html, "html", "utf-8"))
     all_rcpt = real_recipients
 
