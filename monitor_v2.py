@@ -19,6 +19,8 @@ import os, json, hashlib, smtplib, urllib.request, urllib.parse, re
 from datetime import datetime, timezone, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import formataddr
+from email.header import Header
 
 try:
     from rapidfuzz import fuzz
@@ -1449,17 +1451,29 @@ def _admin_receivers() -> list[str]:
     """담당자 수신자 목록 반환. NO_RESULT_RECEIVER 미설정 시 GMAIL_USER로 폴백."""
     return [NO_RESULT_RECEIVER] if NO_RESULT_RECEIVER else [GMAIL_USER]
 
+def _from_header() -> str:
+    """발신자 표시명(봇이름) — RFC 2047 인코딩. raw f-string 헤더 금지."""
+    return formataddr((str(Header(SENDER_NAME, "utf-8")), GMAIL_USER))
+
+def _addr_header(addr: str) -> str:
+    """임의 주소에 봇 표시명을 씌운 헤더 — To 전용(본인 고정 주소에만 사용)."""
+    return formataddr((str(Header(SENDER_NAME, "utf-8")), addr))
+
 def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
-    """SMTP 지수 백오프 재시도 (최대 3회)"""
+    """SMTP 지수 백오프 재시도 (최대 3회)
+    헤더 정책: To는 발신 계정 자신으로 고정(빈 To로 인한 스팸필터 회피),
+    실제 배포 대상(to/cc 인자로 들어온 전부)은 Cc로 이동해 표시명 없이 노출.
+    envelope(RCPT TO)은 실제 배포 대상 그대로 — 헤더 구조 변경과 무관하게 전달됨."""
     import time as _time
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
-    msg["From"]    = f"{SENDER_NAME} <{GMAIL_USER}>"
-    msg["To"]      = ", ".join(to)
-    if cc:
-        msg["Cc"]  = ", ".join(cc)
+    msg["From"]    = _from_header()
+    msg["To"]      = _addr_header(GMAIL_USER)
+    real_recipients = list(to) + list(cc or [])
+    if real_recipients:
+        msg["Cc"] = ", ".join(real_recipients)
     msg.attach(MIMEText(html, "html", "utf-8"))
-    all_rcpt = list(to) + (cc or [])
+    all_rcpt = real_recipients
 
     for attempt in range(3):
         try:
