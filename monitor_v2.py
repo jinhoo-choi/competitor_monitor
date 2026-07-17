@@ -19,7 +19,7 @@ import os, json, hashlib, smtplib, urllib.request, urllib.parse, re
 from datetime import datetime, timezone, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import formataddr
+from email.utils import formataddr, formatdate, make_msgid
 from email.header import Header
 
 try:
@@ -1468,9 +1468,11 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
       다른 실제 수신자 주소는 서로에게 노출되지 않음."""
     import time as _time
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
-    msg["From"]    = _from_header()
-    msg["To"]      = _addr_header(GMAIL_USER)
+    msg["Subject"]    = subject
+    msg["From"]       = _from_header()
+    msg["To"]         = _addr_header(GMAIL_USER)
+    msg["Date"]       = formatdate(localtime=True)
+    msg["Message-ID"] = make_msgid(domain="gmail.com")
     # ⚠️ Bcc는 의도적으로 헤더에 추가하지 않는다 — 헤더에 넣는 순간 숨은참조가 아니게 됨
     real_recipients = list(to) + list(cc or [])
     msg.attach(MIMEText(html, "html", "utf-8"))
