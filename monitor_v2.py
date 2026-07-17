@@ -1483,7 +1483,17 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
                 server.ehlo()
                 server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-                server.sendmail(GMAIL_USER, all_rcpt, msg.as_string())
+                # ⚠️ sendmail()은 수신자 중 1명이라도 성공하면 예외를 던지지 않는다.
+                # 거부된 수신자는 반환값(dict)으로만 알려주므로 반드시 캡처해야 함.
+                refused = server.sendmail(GMAIL_USER, all_rcpt, msg.as_string())
+            if refused:
+                print(f"  ⚠️ [SMTP 거부] {len(refused)}/{len(all_rcpt)}명 수신자 거부됨:")
+                for addr, (code, resp) in refused.items():
+                    print(f"     - {addr}: {code} {resp}")
+                if len(refused) == len(all_rcpt):
+                    # 전원 거부 = 사실상 발송 실패. "발송완료"로 오인되지 않도록 예외로 승격
+                    # (재시도 루프 → 최종 실패 시 send_email_error 경로로 전파됨)
+                    raise RuntimeError(f"SMTP 전원 거부(무음 실패): {refused}")
             return
         except smtplib.SMTPAuthenticationError:
             raise
