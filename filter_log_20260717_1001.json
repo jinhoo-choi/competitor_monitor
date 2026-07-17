@@ -1,0 +1,215 @@
+{
+  "time": "2026-07-17T10:01:54.721929+09:00",
+  "total": 29,
+  "sent": 1,
+  "hard_excl": 2,
+  "excl_stats": {
+    "KB운용": 1,
+    "[금융人": 1
+  },
+  "entries": [
+    {
+      "hash": "f192f053",
+      "title": "후발 대신증권, 알파카 손잡고 외국인 통합계좌 경쟁 합류",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "7d2e1168",
+      "title": "증권가, 신규고객 유치 이벤트 경쟁...신한 테슬라·삼성 랜덤주식 증정...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "57f61dd4",
+      "title": "'실명계좌' 계약 줄줄이 만료···가상자산거래소-은행, 합종연횡 '촉각...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "6f27d10c",
+      "title": "NH투자증권, ‘K-브랜드지수’ 증권사 부문 2→7위 ‘급락’...미래에셋...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "81e93dea",
+      "title": "‘구리선’ 가고 ‘유리선’ 온다… AI 진화에 광통신 ETF 격돌",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "21282313",
+      "title": "[VS 기획] 테크핀의 선공, 금융권의 역공… 스타트업은 거인들의 ‘킹메...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f081fb4c",
+      "title": "[종합금융 꿈꾸는 OK] 최윤 회장 숙원 '눈앞'",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "10cc7b6d",
+      "title": "디지털자산 관련 입법 속도···\"혁신·규제 균형 시급\"",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6c24a289",
+      "title": "[주간 거래소 외국인] SK하이닉스 대덕전자 삼성전자 두산에너빌리티 대...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "45d6834a",
+      "title": "월급은 스쳐갈 뿐…주식으로 한 방 노리는 2030",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8e524701",
+      "title": "우리투자證 IRP, 적립금 27% 증가에도 점유율 0.67%…외형 확장 '물음표...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b7540355",
+      "title": "HD현대일렉트릭, 'AI 전력망 투자' 본격화…성장 기반 확장 잰걸음",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1ddd6c8b",
+      "title": "증권사, 유튜브로 고객 접점 넓혀… 콘텐츠 다변화 사활",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "50f1f2e8",
+      "title": "[이윤수의 이코노믹스] 삼전닉스 레버리지 ETF, 코스피 심장에 2배 모터...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7f9441b2",
+      "title": "[SK하이닉스 ADR] 하이닉스 ADR 품은 ETF…미래·타임 등 8종 액티브 경쟁",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "99e27ccc",
+      "title": "옵티미즘, 한국 진출 확대…두나무·토스·DB증권과 협력",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "0e8f0174",
+      "title": "단일종목 레버리지 대책에 '갑론을박'…투자 문턱 높였지만, 시장은 실...",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a8cfd7bf",
+      "title": "한화證, 美 디지털에셋에 300억원 투자…블록체인 협력 강화",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "92411f36",
+      "title": "한화투자증권, 美 블록체인 기업 '디지털에셋'에 300억원 전략 투자",
+      "company": "한화투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "2ec7e4f2",
+      "title": "솔라나, 기관 투자 확대와 기술 업그레이드로 중장기 성장 기대",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1a41809f",
+      "title": "[EBN 오늘(16일) 이슈 종합] 단일종목 레버리지 ETF 신규 상장 잠정 중단...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "86bf145b",
+      "title": "금융위 \"레버리지 ETF 시총 12조→4~5조 축소 기대…출시 당시 수준으로...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7410a3dd",
+      "title": "시타델, 크립토닷컴에 5924억 원 투자…기업가치 29조원대로 뛰었다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b58c5d2c",
+      "title": "[중국 D램 CXMT 해부] ⑥국가팀∙산업팀∙증권팀 구성 '초호화 투자단'",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "741b97b7",
+      "title": "[중국 D램 CXMT 해부] ⑦3대 투자노선, A주 테마주 탐색전 본격화",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bc7ab711",
+      "title": "[빗썸 지배구조 분수령] 코빗 이어 빗썸까지?…금융권 투자 가능성 '주...",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "a7e7058f",
+      "title": "인젝티브, SEC에 트랜스퍼 에이전트 등록 신청...증권 소유권 기록 온체...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8fee05e9",
+      "title": "[ETF 언박싱] 아홉달 공들인 DB의 신상…Al데이터센터 밸류체인",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "KB운용"
+    },
+    {
+      "hash": "92d9adaa",
+      "title": "[금융人사이트] 윤호영 카카오뱅크 대표, 플랫폼 혁신 통했다…AI·글로...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융人"
+    }
+  ]
+}
