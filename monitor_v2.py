@@ -1459,51 +1459,59 @@ def _addr_header(addr: str) -> str:
     """임의 주소에 봇 표시명을 씌운 헤더 — To 전용(본인 고정 주소에만 사용)."""
     return formataddr((str(Header(SENDER_NAME, "utf-8")), addr))
 
-def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
-    """SMTP 지수 백오프 재시도 (최대 3회)
-    헤더 정책: To는 발신 계정 자신으로 고정(빈 To로 인한 스팸필터 회피).
-    실제 배포 대상(to/cc 인자로 들어온 전부)은 숨은 참조(BCC) 처리 —
-    메시지 헤더에는 절대 기록하지 않고 SMTP envelope(RCPT TO)로만 전달.
-    → 받는 사람 화면에는 발신자/받는사람(본인 고정 주소)만 보이고,
-      다른 실제 수신자 주소는 서로에게 노출되지 않음."""
+def _send_one(subject: str, html: str, addr: str) -> dict:
+    """수신자 1명에게 개별 발송. 실패 시 재시도(최대3), 최종 실패 시 {addr:(code,msg)} 반환."""
     import time as _time
     msg = MIMEMultipart("alternative")
     msg["Subject"]    = subject
     msg["From"]       = _from_header()
-    msg["To"]         = _addr_header(GMAIL_USER)
+    msg["To"]         = _addr_header(addr)   # 헤더 To == 실제 envelope 수신자 (스팸필터 회피 핵심)
     msg["Date"]       = formatdate(localtime=True)
     msg["Message-ID"] = make_msgid(domain="gmail.com")
-    # ⚠️ Bcc는 의도적으로 헤더에 추가하지 않는다 — 헤더에 넣는 순간 숨은참조가 아니게 됨
-    real_recipients = list(to) + list(cc or [])
     msg.attach(MIMEText(html, "html", "utf-8"))
-    all_rcpt = real_recipients
 
     for attempt in range(3):
         try:
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
                 server.ehlo()
                 server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-                # ⚠️ sendmail()은 수신자 중 1명이라도 성공하면 예외를 던지지 않는다.
-                # 거부된 수신자는 반환값(dict)으로만 알려주므로 반드시 캡처해야 함.
-                refused = server.sendmail(GMAIL_USER, all_rcpt, msg.as_string())
+                refused = server.sendmail(GMAIL_USER, [addr], msg.as_string())
             if refused:
-                print(f"  ⚠️ [SMTP 거부] {len(refused)}/{len(all_rcpt)}명 수신자 거부됨:")
-                for addr, (code, resp) in refused.items():
-                    print(f"     - {addr}: {code} {resp}")
-                if len(refused) == len(all_rcpt):
-                    # 전원 거부 = 사실상 발송 실패. "발송완료"로 오인되지 않도록 예외로 승격
-                    # (재시도 루프 → 최종 실패 시 send_email_error 경로로 전파됨)
-                    raise RuntimeError(f"SMTP 전원 거부(무음 실패): {refused}")
-            return
+                print(f"  ⚠️ [SMTP 거부] {addr}: {refused.get(addr)}")
+                return refused
+            return {}
         except smtplib.SMTPAuthenticationError:
             raise
         except Exception as e:
             wait = 10 * (2 ** attempt)
-            print(f"  [WARN] SMTP 오류 ({attempt+1}/3): {e} — {wait}초 후 재시도")
+            print(f"  [WARN] {addr} 발송 오류 ({attempt+1}/3): {e} — {wait}초 후 재시도")
             if attempt < 2:
-                import time as _t; _t.sleep(wait)
+                _time.sleep(wait)
             else:
-                raise
+                return {addr: (0, str(e))}
+
+def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
+    """수신자별 개별 발송(1인 1통).
+    ⚠️ 설계 변경 이력: 기존엔 단일 메일에 To=본인고정 + 실수신자는 envelope으로만
+    숨겨 보냈으나(순수 BCC), (a) 본인이 envelope에 빠져 있어 본인도 미착신,
+    (b) 헤더에 실수신자와 일치하는 To/Cc가 전혀 없는 메일은 기업 스팸 게이트웨이가
+    무음으로 차단하는 경우가 많아 실수신자도 전원 미착신 — 7/18 10시 발송 사고 원인.
+    → 수신자 한 명당 메일을 개별 발송해 헤더 To를 항상 실제 수신자와 일치시키고
+      (스팸필터 회피), 서로에게는 여전히 노출되지 않으며(원래 목적 유지),
+      본인(GMAIL_USER)도 항상 사본을 받도록 대상에 포함."""
+    real_recipients = list(to) + list(cc or [])
+    targets = list(dict.fromkeys(real_recipients + [GMAIL_USER]))  # 순서유지 중복제거
+
+    all_refused = {}
+    for addr in targets:
+        refused = _send_one(subject, html, addr)
+        all_refused.update(refused)
+
+    if all_refused:
+        if len(all_refused) == len(targets):
+            # 전원 실패 = 사실상 발송 실패. "발송완료"로 오인되지 않도록 예외로 승격
+            raise RuntimeError(f"SMTP 전원 발송 실패: {all_refused}")
+        print(f"  ⚠️ 일부 수신자 발송 실패({len(all_refused)}/{len(targets)}): {list(all_refused.keys())}")
 
 def send_email(html: str, analyzed: list[dict], raw_count: int):
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
