@@ -1,0 +1,124 @@
+{
+  "time": "2026-07-18T10:01:25.231795+09:00",
+  "total": 16,
+  "sent": 1,
+  "hard_excl": 2,
+  "excl_stats": {
+    "글로벌 마케팅": 1,
+    "자산운용": 1
+  },
+  "entries": [
+    {
+      "hash": "a68447cb",
+      "title": "삼성증권, 퇴직연금 30조 돌파 눈앞…미래 독주 체제 흔드나",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "3ca23ec4",
+      "title": "[IPO챗]'19년 흑자' 에이치엘지노믹스 24일 코스닥 입성…수요예측 2곳",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "78a668ae",
+      "title": "\"AI부터 자산관리까지\"…금융권, '맞춤형 금융교육' 전개",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "179d675e",
+      "title": "증시 출렁이지만 증권사는 ‘신났다’...거래대금 폭증",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4c7f42dc",
+      "title": "5대 증권사, 영업익 4조8871억원 전망…미래에셋만 약 2조 예상",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "dce5af35",
+      "title": "증시 호황에 '빅5' 증권사 2분기 영업익 5조 육박",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "77d22a6c",
+      "title": "“키워서 뭐 하려고?”…금융사는 왜 스타트업을 지원할까",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "725e9892",
+      "title": "\"리밸런싱, 국민연금만 하나요?\"…개미에게도 필요한 '자산배분'",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4311119c",
+      "title": "장기투자자라면…하반기 개인투자용 국채 투자해볼까 [코주부]",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "590e6165",
+      "title": "큐리오시스, 머크와 글로벌 공급계약 체결…세포 분석 플랫폼 경쟁력 입...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a36914fe",
+      "title": "금융연 \"스페이스X 청약 논란, 해외 IPO도 국문정보 제공해야\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "47cb09bf",
+      "title": "[탐사경] 부동산은 현금 부자, 주식은 예탁금 부자…정부가 만든 또 하...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1a0be676",
+      "title": "레버리지 순자산 12.4조…개인 손실, 초단타 매매 세력이 챙긴다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1ddf10ef",
+      "title": "주식 있어도 못 산다?...ETF 규칙 완전히 바뀌었다 [자막뉴스]",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4f04a305",
+      "title": "[주간 IPO] 에이치엘지노믹스 코스닥 입성…인제니아·딜리셔스 수요 예...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "글로벌 마케팅"
+    },
+    {
+      "hash": "a1db0f5f",
+      "title": "테슬라·스페이스X에 절반, 美단기채에 절반[ETF언박싱]",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    }
+  ]
+}
