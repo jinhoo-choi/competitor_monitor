@@ -1493,6 +1493,11 @@ def _send_one(subject: str, html: str, addr: str) -> dict:
                 print(f"  ⚠️ [SMTP 거부] {addr}: {refused.get(addr)}")
                 return refused
             return {}
+        except smtplib.SMTPRecipientsRefused as e:
+            # 단건발송(수신자 1명)에서 전원거부는 dict가 아니라 예외로 옴 — e.recipients에 상세정보 있음
+            # 영구거부(5xx)는 재시도해도 결과 동일하므로 즉시 확정, 재시도 생략
+            print(f"  ⚠️ [SMTP 영구거부] {addr}: {e.recipients.get(addr)}")
+            return e.recipients
         except smtplib.SMTPAuthenticationError:
             raise
         except Exception as e:
