@@ -1,0 +1,161 @@
+{
+  "time": "2026-07-19T10:46:22.115252+09:00",
+  "total": 21,
+  "sent": 0,
+  "hard_excl": 5,
+  "excl_stats": {
+    "기업금융": 1,
+    "자산운용": 1,
+    "목표주가": 1,
+    "자산운용사": 2
+  },
+  "entries": [
+    {
+      "hash": "099587af",
+      "title": "[N2 포커스] 키움증권, 회사채 흥행에도 리테일 점유율은 '숙제'",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "d3bad753",
+      "title": "역대급 ‘코스피 9000’…5대 증권사 2분기 영업이익 ‘5조원’ 넘긴다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4ae5d198",
+      "title": "국내 증권사, 2분기 영업이익 5조 돌파 전망... 거래 활성화 주요 원동력",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d5da2a96",
+      "title": "KB금융, '케이비 AX디지털자산 펀드' 1000억 규모 설립...디지털 금융 혁...",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "7f9ebf36",
+      "title": "1인 가구 804만·36% 시대…\"금융·주거·돌봄 정책 다시 짜야\"",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5abadd49",
+      "title": "SK하이닉스 미국예탁주식, 본주 대비 25% 고평가 '역 김치 프리미엄' 현...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "44e086ff",
+      "title": "연내 '디지털자산법' 나온다…발행 주체·거래소 규제 해법 '촉각'",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ce43a587",
+      "title": "\"달리는 경쟁자보다 더 빠르게\"…우리금융그룹, 90조원 규모 '미래동반...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "69180dcd",
+      "title": "\"레드퀸 효과처럼 더 빨리 뛴다\" 우리금융, 하반기 '속도전' 선언",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cd25913d",
+      "title": "美는 월가 인프라 온체인화…韓은 부동산·특허 STO부터",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fe5c4cf9",
+      "title": "[뉴욕증시-주간전망] AI 투자 시험대 오른 시장…알파벳·중동 갈등 주목",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fbe93a53",
+      "title": "솔라나 가격 박스권 움직임 속 USDC 유입과 기관 ETF 기대감",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e0967314",
+      "title": "한국 1인 가구, 예금서 투자자산으로 '초점 이동'... 주식·펀드 비중 급...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "64911c1e",
+      "title": "1인 가구 금융자산, 예·적금 줄고 주식·ETF 늘었다…'빚투'도 증가",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1eb0ea61",
+      "title": "1인가구도 '예금 탈출'…예·적금 대신 주식·ETF로 머니무브 [2026 나혼...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "25b472dd",
+      "title": "1인가구, 주식시장 급등세에 예·적금 대신 주식·ETF로 몰렸다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4ec8381e",
+      "title": "우리금융, 증권·보험 편입 맞춰 '고객 기반 확대' 총력전",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "b7a300b6",
+      "title": "美 테크부터 K-바이오까지…ETF 4종목 신규 상장",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "1e2a1dcb",
+      "title": "넷마블 주가 전망 [금주 주목할 게임 IT 주식]",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "1f3e17b5",
+      "title": "김용범 \"단일종목 레버리지 ETF 상폐 어렵다…시장에 또 충격\"",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    },
+    {
+      "hash": "f64fd5cc",
+      "title": "김용범 \"대미투자 1호, 한두어달 내 현실화 될 수 있게 준비\"",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    }
+  ]
+}
