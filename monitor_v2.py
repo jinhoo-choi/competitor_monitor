@@ -44,7 +44,7 @@ RECIPIENTS_ALL = os.environ.get("RECIPIENTS",    GMAIL_USER).split(",")
 RECIPIENTS_CC  = os.environ.get("RECIPIENTS_CC", "").split(",")
 RECIPIENTS_CC  = [r for r in RECIPIENTS_CC if r.strip()]
 
-SENDER_NAME     = "인사이트봇"
+SENDER_NAME     = "✅ eBiz 인사이트봇"
 KST             = timezone(timedelta(hours=9))
 SEEN_FILE       = "seen_articles.json"
 TITLE_SIM_THRESHOLD = 80   # rapidfuzz 유사도 임계값 (88→80 완화)
@@ -1529,7 +1529,7 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
 
 def send_email(html: str, analyzed: list[dict], raw_count: int):
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
-    subject = f"✅ [eBiz 인사이트] {now_str} 기준"
+    subject = f"✅ [인사이트] {now_str} 기준"
     cc = RECIPIENTS_CC if RECIPIENTS_CC else None
     _smtp_send(subject, html, RECIPIENTS_ALL, cc)
     print(f"  ✅ 발송 완료 | {subject}")
@@ -1674,7 +1674,7 @@ def main():
 
     if not raw:
         print("  신규 뉴스 없음.")
-        subj = f"✅ [eBiz 인사이트] {now_str} — 신규 뉴스 없음"
+        subj = f"✅ [인사이트] {now_str} — 신규 뉴스 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
         return
@@ -1696,7 +1696,7 @@ def main():
 
     if not relevant:
         print("  한투 영향 기사 없음.")
-        subj = f"[eBiz 인사이트] {now_str} — 해당 기사 없음"
+        subj = f"[인사이트] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
         save_filter_log(articles, hard_excluded, [], [])
@@ -1961,13 +1961,13 @@ def main():
 
     if not analyzed:
         # 탐지 기사 없으면 담당자에게만 발송
-        subj = f"[eBiz 인사이트] {now_str} — 해당 기사 없음"
+        subj = f"[인사이트] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, html)
     else:
         levels = {a["analysis"].get("impact_level") for a in analyzed if a.get("analysis")}
         if levels <= {"하"}:
             # 탐지됐지만 전부 '하' 등급뿐이면 전체발송 대신 담당자에게만 발송
-            subj = f"[eBiz 인사이트] {now_str} — 영향도 낮음(하)만 탐지"
+            subj = f"[인사이트] {now_str} — 영향도 낮음(하)만 탐지"
             send_email_no_result(subj, html)
             print(f"  ℹ️ 전량 '하' 등급 — 담당자 전용 발송으로 전환")
         else:
