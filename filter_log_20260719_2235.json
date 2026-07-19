@@ -1,0 +1,269 @@
+{
+  "time": "2026-07-19T22:35:18.700225+09:00",
+  "total": 36,
+  "sent": 2,
+  "hard_excl": 7,
+  "excl_stats": {
+    "투자의견": 1,
+    "미래에셋자산운용": 1,
+    "[금융권 이모저모]": 1,
+    "목표주가": 1,
+    "기업금융": 1,
+    "[기획]": 1,
+    "자산운용사": 1
+  },
+  "entries": [
+    {
+      "hash": "e088c5a7",
+      "title": "CXMT IPO에 커지는 경계론…\"메모리 3사 위협 제한적\"",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5fe1cf1d",
+      "title": "대장주만 골라 담는 ETF 뜬다…‘톱2·톱3’ 상품 잇단 흥행",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "34119733",
+      "title": "거래대금 폭증에 삼성증권 '역대급 실적'…순이익 5000억 돌파 전망",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a13ad4f6",
+      "title": "썰렁했던 상반기 IPO 시장…'소·무 효과'가 불씨 살릴까",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5be57a5d",
+      "title": "한화투자증권, Digital Asset Holdings LLC에 300억 원 규모 투자 완료 外",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0ca1f471",
+      "title": "파이는 반토막·양강은 96%…원화거래소, ‘다음 상승장’ 선점전",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "fa648ef5",
+      "title": "'9000피 랠리' 증권사 실적도 날았다…5대 증권사 영업익 5조원 넘본다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "366f9a5b",
+      "title": "'9000 시대' 최대 수혜자는 증권사..2분기 영업익 5조 눈앞",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3bc82609",
+      "title": "[특징주] 미래에셋증권, 2분기 영업익 2조 전망에도 약세…스페이스X 평...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "383bacf4",
+      "title": "관광진흥기금 부담률 인상 추진에 카지노주 급락…증권가 \"경쟁력 약화...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3cd05598",
+      "title": "나홀로족 60%가 N잡러 … 부업 뛰어 번 돈, 주식·ETF에 투자",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0228050e",
+      "title": "박터진 국민성장펀드 쟁탈전 끝…'수익성 저하' 우려도 [PE는 지금]",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "75fb5135",
+      "title": "“연금 잡아 WM 영토 넓힌다”…KB증권, 디지털 연금 4조·WM 15조 ‘성장...",
+      "company": "KB증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "7cfd8124",
+      "title": "한화證, 2027년 플랫폼 출격… 중소형사도 가상자산 ‘군침’",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "69848e9a",
+      "title": "채비 다음은 에버온…'충전 2호 IPO'의 다른 승부수[IPO 엑스레이]",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0e4ee511",
+      "title": "21일 주식시장 건전성 점검 토론회 개최…레버리지 ETF 등 논의",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "44e086ff",
+      "title": "연내 '디지털자산법' 나온다…발행 주체·거래소 규제 해법 '촉각'",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5d890e81",
+      "title": "코웨이, 롯데렌탈과 서비스 제휴 협약… 멤버스 클럽 제휴사업 확대",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cd25913d",
+      "title": "美는 월가 인프라 온체인화…韓은 부동산·특허 STO부터",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "26fcfb4a",
+      "title": "우리금융, '고객기반' 넓혀 종합금융그룹 도약 속도 올린다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ce43a587",
+      "title": "\"달리는 경쟁자보다 더 빠르게\"…우리금융그룹, 90조원 규모 '미래동반...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "69180dcd",
+      "title": "\"레드퀸 효과처럼 더 빨리 뛴다\" 우리금융, 하반기 '속도전' 선언",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d3304cb9",
+      "title": "[미리보는 이데일리 신문]화웨이 \"AI 플랫폼 성능 엔비디아 압도\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "96d44904",
+      "title": "딱딱한 증권사 SNS는 잊어라…\"투자자 '놀이터' 되겠다\"[인터뷰]",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "53b4b2cb",
+      "title": "\"현장을 가장 잘 아는 IB가 경쟁력\"…구성민 키움證 전무가 말하는 성장...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9176e29a",
+      "title": "출렁이는 삼전닉스에…퇴직연금 개미들도 한숨",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "23899c92",
+      "title": "1인가구도 '머니 무브'… 예·적금서 주식·ETF로",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b1116117",
+      "title": "1인 가구, 예금보다 투자…자산운용 방식 달라졌다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ffa4c2fa",
+      "title": "반도체 ETF 강세…AI 투자 확대 기대감 지속",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8d47379b",
+      "title": "주가 하락에도 매도 의견 전무한 증권사, '투자의견' 아닌 '목표주가'로...",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    },
+    {
+      "hash": "0d872249",
+      "title": "금융위, 베트남·호주와 금융협력 확대…결제·해외진출 지원",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "미래에셋자산운용"
+    },
+    {
+      "hash": "d20ecce7",
+      "title": "[금융권 이모저모]KB금융, 1인가구 금융자산 '예·적금에서 주식·ETF로'...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융권 이모저모]"
+    },
+    {
+      "hash": "1e2a1dcb",
+      "title": "넷마블 주가 전망 [금주 주목할 게임 IT 주식]",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "4ec8381e",
+      "title": "우리금융, 증권·보험 편입 맞춰 '고객 기반 확대' 총력전",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "3e0e8264",
+      "title": "[기획] 7달째 위원장 공백… 與 정치 일정표에 갇힌 ‘가상자산 2단계’",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[기획]"
+    },
+    {
+      "hash": "02eae9f4",
+      "title": "靑김용범 \"단일종목 레버리지 ETF 상폐 어렵다…시장 충격 우려\"",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    }
+  ]
+}
