@@ -41,7 +41,7 @@ GMAIL_APP_PASSWORD  = os.environ["GMAIL_APP_PASSWORD"]
 
 # 수신자 2그룹: TO는 항상 발송, CC는 항상 참조
 RECIPIENTS_ALL = []  # 실제 배포대상 단일화 — risk_aigent 그룹 하나만 사용
-RECIPIENTS_CC  = ["risk_aigent@googlegoups.com"]  # ⚠️ 사용자 지정 원문 그대로(오타 확인 필요, 하단 설명 참고)
+RECIPIENTS_CC  = ["risk_aigent@googlegroups.com"]  # 실제 배포대상 — 유일한 숨은참조(개별발송) 수신자
 
 SENDER_NAME     = "✅ eBiz 인사이트봇"
 KST             = timezone(timedelta(hours=9))
