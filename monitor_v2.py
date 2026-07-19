@@ -1451,19 +1451,28 @@ def _admin_receivers() -> list[str]:
     """담당자 수신자 목록 반환. NO_RESULT_RECEIVER 미설정 시 GMAIL_USER로 폴백."""
     return [NO_RESULT_RECEIVER] if NO_RESULT_RECEIVER else [GMAIL_USER]
 
+def _sanitize_header_text(text: str) -> str:
+    """헤더(Subject/표시명) 전용 새니타이저 — 기호 유니코드 제거.
+    사유: 일부 수신 게이트웨이가 '550 5.7.1 unicode character in disallowed header'로
+    거부(7/18 반송 실사례). 한글은 수개월간 정상 배달 이력이 있어 유지하고,
+    이모지·전각기호만 제거/치환한다. HTML 본문에는 적용하지 않는다."""
+    text = text.replace("—", "-").replace("–", "-")   # 전각대시 → ASCII 하이픈
+    # 한글·ASCII·공백·기본 문장부호만 남기고 이모지 등 심볼 제거
+    return re.sub(r'[^\w\s가-힣a-zA-Z0-9\[\]()\.,:/·%-]', '', text).strip()
+
 def _from_header() -> str:
     """발신자 표시명(봇이름) — RFC 2047 인코딩. raw f-string 헤더 금지."""
-    return formataddr((str(Header(SENDER_NAME, "utf-8")), GMAIL_USER))
+    return formataddr((str(Header(_sanitize_header_text(SENDER_NAME), "utf-8")), GMAIL_USER))
 
 def _addr_header(addr: str) -> str:
     """임의 주소에 봇 표시명을 씌운 헤더 — To 전용(본인 고정 주소에만 사용)."""
-    return formataddr((str(Header(SENDER_NAME, "utf-8")), addr))
+    return formataddr((str(Header(_sanitize_header_text(SENDER_NAME), "utf-8")), addr))
 
 def _send_one(subject: str, html: str, addr: str) -> dict:
     """수신자 1명에게 개별 발송. 실패 시 재시도(최대3), 최종 실패 시 {addr:(code,msg)} 반환."""
     import time as _time
     msg = MIMEMultipart("alternative")
-    msg["Subject"]    = subject
+    msg["Subject"]    = _sanitize_header_text(subject)
     msg["From"]       = _from_header()
     msg["To"]         = _addr_header(addr)   # 헤더 To == 실제 envelope 수신자 (스팸필터 회피 핵심)
     msg["Date"]       = formatdate(localtime=True)
