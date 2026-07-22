@@ -1,0 +1,342 @@
+{
+  "time": "2026-07-22T10:02:07.253417+09:00",
+  "total": 46,
+  "sent": 4,
+  "hard_excl": 15,
+  "excl_stats": {
+    "목표주가": 2,
+    "키움투자자산운용": 2,
+    "자산운용": 1,
+    "카카오뱅크": 1,
+    "KB운용": 2,
+    "기업금융": 1,
+    "신한자산운용": 1,
+    "[금융권 이모저모]": 1,
+    "[디지털 금융 대전환①]": 1,
+    "자산운용사": 3
+  },
+  "entries": [
+    {
+      "hash": "e2677370",
+      "title": "대신증권, '하반기 자동차 투자전략' 온라인 세미나 개최 外",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c1e18d73",
+      "title": "결혼 축의금도 주식으로…카카오페이증권 신혼부부 이벤트",
+      "company": "카카오페이증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "e7abaec2",
+      "title": "7월 21일 주식시장 주요공시",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "03d5326b",
+      "title": "[2026 상반기 리그테이블] ⑨KB증권, '6년 연속' DCM 지존(至尊)...20조 돌...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "68b9c73d",
+      "title": "키움證 “롯데렌탈, 하락장 방어주 부각… 목표가 4만5000원으로 상향”",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c580d943",
+      "title": "[비바100] 주식 경품서 청년 교육까지…‘고객 경험’에 사활 건 증권사",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "11739b5f",
+      "title": "\"지금이라도 투자 멈춰야\"‥\"신속히 보완\"",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8064fcd0",
+      "title": "개발자 의욕 고취...키움증권, '자동매매 프로그램' 개발 돕는 '코딩도구...",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "a313e9d9",
+      "title": "대기자금 줄고 금리 인상까지…증권주 조정 깊어지나 [종목+]",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "caaa1780",
+      "title": "[Who Is ?] 강진두 KB증권 대표이사 사장",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "91cb11ea",
+      "title": "KB증권 \"SK하이닉스, 中 ‘키미 K3' 반도체·메모리 수요 키울 것\"",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6675330b",
+      "title": "[더벨][아톤의 양자보안 개척기] 민간 PQC 시장 선봉장…금융권 수주 확...",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "d4f99554",
+      "title": "한양증권, 연 8% 특판 RP 출시…MTS 고객 유치 나서",
+      "company": "한양증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "3bd31d3a",
+      "title": "“6700 넘겨도 내일 또 홀짝?” 불안…증권가는 바닥 찍었다는데",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "32f5fd9f",
+      "title": "[시선+] 과열 원인은 ETF가 아니다",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1a0d6ee6",
+      "title": "\"퇴직연금 시장 장기 성과로 증명\"…NH투자증권, DC·IRP 수익률 독주",
+      "company": "NH투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "8e510104",
+      "title": "NH투자증권, 퇴직연금 DC·IRP 5년 수익률 증권업 1위",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "d3dca670",
+      "title": "‘홈플러스 리스크’ 안은 메리츠금융, 1500억 회사채 흥행 성공할까",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ac0e3a91",
+      "title": "“농식품산업은 미래 성장동력”…혁신기업·예비창업자 투자 머리 맞대",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "36a3c72f",
+      "title": "‘삼전·하이닉스 2배 ETF’ 국회 도마…변동성 확대 놓고 규제론 충돌",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "285fb755",
+      "title": "미래에셋증권, 사상 최대 실적 '눈앞'…스페이스X 변동성은 변수",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1eb51a0f",
+      "title": "李대통령, 레버리지ETF 추가 보완책 주문",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c6bb48ed",
+      "title": "화폐의 코페르니쿠스적 전환… 하나금융, '1조 원의 결단'으로 디지털 ...",
+      "company": "토스증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "803a4b5d",
+      "title": "“불안한 주식 대신 예금”… 5대은행 예금잔액 보름새 16조 급증",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fa51988b",
+      "title": "CJ ENM, TV광고 회복 지연에 목표가 25% 하향…\"티빙 개선세는 긍정\"-대신...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8434ced4",
+      "title": "[금융픽] 진화하는 보이스피싱 잡는다...우리금융, 경찰과 대응 세미나...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c39f00f3",
+      "title": "한양증권, 연 8% 특판 RP 출시…1000계좌 한정 판매",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2c97f74f",
+      "title": "환율에 발목 잡힌 서학개미, 그래도 유효한 미국 주식 사는 법",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "04c6a2bb",
+      "title": "금융위, 단일종목 레버리지 규제 '앞당기기'…업계 전산개발이 성패 가...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "30f04d0f",
+      "title": "대신증권, 이익 체력 키우고 자사주 태운다...주가 조정에 커진 '주주환...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "813850e6",
+      "title": "한양증권, 연 8% 약정형 RP 출시...디지털 자산 유치 가속",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "492daf5d",
+      "title": "키움證 \"롯데렌탈, 중고차 장기렌탈 성장에 방어 매력…목표주가 9.8%↑...",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "9bc4838c",
+      "title": "[하반기 ETF 설계도] 키움투자자산운용, \"다음 테마는 우주데이터센터…...",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "키움투자자산운용"
+    },
+    {
+      "hash": "d11b640d",
+      "title": "KB·VI운용, 첨단전략산업 성장산업 공모펀드 출시",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "ee7a8a59",
+      "title": "반도체·전자·방산·우주 한 번에 투자…KB자산운용 ‘코리아 첨단전략...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "카카오뱅크"
+    },
+    {
+      "hash": "01636db2",
+      "title": "KB운용, 'KB 코리아 첨단전략산업50 목표전환 펀드' 출시",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "KB운용"
+    },
+    {
+      "hash": "590a40f7",
+      "title": "[ETF 언박싱] 곽찬 영입한 KB…코스닥 액티브 커버드콜 반전 승부수",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "KB운용"
+    },
+    {
+      "hash": "b8d7d958",
+      "title": "[KB금융지주 회장 후보 프로필]④이환주, 은행·보험·지주를 모두 경험...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "e096a47c",
+      "title": "외인·기관은 빼고 개인만 틀어막나…단일종목 레버리지 ETF 규제 '실효...",
+      "company": "메리츠증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한자산운용"
+    },
+    {
+      "hash": "8384cea3",
+      "title": "CJ ENM, 티빙 성장 본격화에도…증권가 목표주가 줄하향[애널리스트의 ...",
+      "company": "메리츠증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "32834c3e",
+      "title": "국내 최초 CPU ETF, 내주 출격한다…4대장 'AMD·인텔·Arm·퀄컴 '",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "키움투자자산운용"
+    },
+    {
+      "hash": "2bb39f73",
+      "title": "[금융권 이모저모]삼성자산운용, KODEX 200커버드콜액티브 개인순매수 2...",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융권 이모저모]"
+    },
+    {
+      "hash": "eb94692c",
+      "title": "주식·코인·결제까지…‘투자 슈퍼앱’ 전쟁[디지털 금융 대전환①]",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[디지털 금융 대전환①]"
+    },
+    {
+      "hash": "e342bb09",
+      "title": "“주식 앱 지우는 사람이 승자?”…23% 폭락 뒤 뒤집힌 ‘투자 심리’ ...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    },
+    {
+      "hash": "7ff508e4",
+      "title": "이재명 대통령, \"레버리지 ETF 보완책, 시장 요구 신속하게 만들어라\"",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    },
+    {
+      "hash": "21b00361",
+      "title": "홍콩 자산운용사, 삼성·SK하이닉스 레버리지 상품으로 주목받다",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    }
+  ]
+}
