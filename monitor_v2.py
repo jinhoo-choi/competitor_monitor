@@ -330,7 +330,10 @@ BROAD_KEYWORDS: dict = {
 KIS_EXCLUDE_RE = re.compile(r"한국투자증권|한투|뱅키스|eFriend")
 
 # ═══════════════════════════════════════════════
-# seen 관리 — URL 기반(24시간) + event_key 기반(3일)
+# seen 관리 — URL 기반(24시간) + event_key 기반(7일)
+# ⚠️ 3일→7일 확장(7/24): 동일 사건(예: 분기 실적 공시)을 다른 매체가 4~6일 뒤
+# 재보도하면서 새 사건으로 오탐된 실사례 확인(7/18 삼성증권 퇴직연금 기사가
+# 7/22 다른 매체에 재보도되며 중복 발송됨) — 재발방지 위해 윈도우 확장
 # ═══════════════════════════════════════════════
 import unicodedata
 
@@ -339,9 +342,9 @@ def _valid_hour_keys() -> set:
     return {(now - timedelta(hours=i)).strftime("%Y-%m-%d %H") for i in range(24)}
 
 def _valid_event_days() -> set:
-    """event_key 3일 유효"""
+    """event_key 7일 유효 (기존 3일에서 확장 — 재보도 사이클 대응)"""
     now = datetime.now(KST)
-    return {(now - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(3)}
+    return {(now - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)}
 
 def _domain_key(domain: str) -> str:
     """폴백 키용 도메인 앞부분 — 연금 계열 전체 '연금'으로 통일"""
@@ -423,7 +426,7 @@ def load_seen() -> dict:
                 title_norms += v.get("title_norms", [])
                 desc_norms  += v.get("desc_norms", [])
 
-        # event_key 3일치 로드
+        # event_key 7일치 로드
         events = set()
         raw_events = raw.get("events", {})
         if isinstance(raw_events, dict):
@@ -445,7 +448,7 @@ def load_seen() -> dict:
 def save_seen(seen: dict, sent_urls: set = None,
               new_title_norms: list = None, new_desc_norms: list = None,
               new_events: set = None):
-    """atomic write. event_key는 날짜별로 묶어 3일 보존."""
+    """atomic write. event_key는 날짜별로 묶어 7일 보존."""
     now      = datetime.now(KST)
     cur_key  = now.strftime("%Y-%m-%d %H")
     cur_day  = now.strftime("%Y-%m-%d")
@@ -471,7 +474,7 @@ def save_seen(seen: dict, sent_urls: set = None,
         "desc_norms":  (cur.get("desc_norms",  []) + (new_desc_norms  or []))[-100:],
     }
 
-    # event_key 갱신 — 3일치만 보존
+    # event_key 갱신 — 7일치만 보존
     raw_ev = existing.get("events", {})
     event_store = raw_ev if isinstance(raw_ev, dict) else {}
     event_store = {k: v for k, v in event_store.items() if k in valid_days}
@@ -1785,9 +1788,9 @@ def main():
             if not ekey:
                 co = an.get("company_name","") or result.get("_company","")
                 ekey = f"{canonicalize_company(co)}::{an.get('threat_type','')}"
-            # ① seen events 체크 — event_key 기준 3일 차단
+            # ① seen events 체크 — event_key 기준 7일 차단
             if ekey in seen.get("events", set()) and not new_stage:
-                print(f"  [사건중복-3일] {result.get('_company','')} | {result.get('title','')[:45]} (키: {ekey})")
+                print(f"  [사건중복-7일] {result.get('_company','')} | {result.get('title','')[:45]} (키: {ekey})")
                 continue
             # ② 폴백1: 회사명+도메인앞부분+월 조합 (위협유형은 AI 표현 변동 큼)
             # 레이어5 — 회사명 별칭을 대표명으로 통일해 키 불일치 방지
