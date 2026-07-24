@@ -940,7 +940,13 @@ JSON only, 다른 텍스트 없이:
         # ── company_name 기반 _company 갱신 — targeted/broad 공통
         # 수집 키워드 회사명(삼성증권)이 달라도 실제 기사 주체(미래에셋)로 교정
         extracted = analysis.get("company_name","").strip()
-        if extracted and extracted != "-" and not KIS_EXCLUDE_RE.search(extracted):
+        if extracted and KIS_EXCLUDE_RE.search(extracted):
+            # AI가 "이 기사 주체는 한투(자사)"라고 판단 → 1차 하드필터가 놓친 자사기사
+            # (실사례 7/23: "한국투자증권, 네이버페이서 연금 상담" 기사가 "미확인" 라벨로
+            # 카드에 그대로 노출됨 — 라벨만 지우지 말고 기사 자체를 제외해야 함)
+            print(f"    [자사기사 제외] {art.get('title','')[:40]} (company_name={extracted})")
+            return {**art, "analysis": None}
+        if extracted and extracted != "-":
             art["_company"] = extracted
 
         # ── event_key 정규화 — 날짜 부분을 코드에서 강제 현재 월로 교정
