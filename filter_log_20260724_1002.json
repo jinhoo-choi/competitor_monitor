@@ -1,0 +1,393 @@
+{
+  "time": "2026-07-24T10:02:20.524623+09:00",
+  "total": 54,
+  "sent": 1,
+  "hard_excl": 9,
+  "excl_stats": {
+    "[금융그룹/삼성①]": 1,
+    "투자의견": 4,
+    "[금융권 이모저모]": 2,
+    "목표주가": 1,
+    "[연금개미의 반란①]": 1
+  },
+  "entries": [
+    {
+      "hash": "5c17ba5b",
+      "title": "[#IT라운지] 아르고 '투자유치'·네오사피엔스 '증권신고서 제출'·아키...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6a52c1a7",
+      "title": "스테이블코인 담는 삼성월렛… 디지털 금융 플랫폼으로 확장",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "fe7e5add",
+      "title": "[주식마감] 국제유가 급등 소식에 SK이터닉스 상한가... 서울식품우, 지...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "10eadd18",
+      "title": "[주간IPO] 7월 다섯째 주, 인제니아테라퓨틱스 공모청약…딜리셔스·케...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9d910de4",
+      "title": "\"알바비로 삼성전자 샀다\"… Z세대 구직자 42% 반도체주 투자",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "474a0a80",
+      "title": "'거래대금 특수' 대형 증권사만 웃었다···중소형사와 실적 격차 확대",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e0f9f1ed",
+      "title": "증권가, AX 조직개편 바람… MTS 넘어 AI 전사 혁신 경쟁",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b3d58166",
+      "title": "현대차, 목표가 줄하향에도 '매수' 유지…증권가 \"승부는 하반기\"",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "aca9aa5d",
+      "title": "하락에 2배 거는 ‘곱버스’…개인 투자자 자금 몰린다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2dcaae41",
+      "title": "\"KB금융, 올해 주주환원율 55%…ROE 전망치도 11% 넘어\"",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c66e2abe",
+      "title": "키움證 “NH투자증권, 예상 배당수익률 7.7%…배당 매력 역대 최고치 근...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f51c647c",
+      "title": "‘사상 최대’ 실적에도 3분기 적자?…스페이스X에 흔들리는 미래에셋증...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "20968d3b",
+      "title": "국내 증권사, 2분기 사상 최대 실적…코스피 급등 효과 뚜렷",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b505f0f4",
+      "title": "국내 증권사 2분기 역대 최대 실적…코스피 급등·거래대금 증가 효과",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5718f5c5",
+      "title": "하나증권, 숙원 'PBS 진출' 올해도 안갯속…'인력·인프라' 장벽 돌파할...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6ef938d2",
+      "title": "[더벨]케이스톤, '흑자전환' C&S자산관리 매각 추진",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bc6594bd",
+      "title": "[핀포인트] [메리츠증권] 기약 없는 발행어음 인가…사법리스크에 '발목...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "edfae294",
+      "title": "KB증권 \"아이폰 성장 사이클 진입, 삼성전자·SK하이닉스·LG이노텍 수혜...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "53bb2aae",
+      "title": "'AI 설비투자 피크아웃'은 기우... 돈 쓰는 빅테크, K반도체 미소",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c2b5b753",
+      "title": "KB금융 \"중장기 ROE 13% 목표\"…증권 키워 자본효율 높인다 [컨콜 돋보기...",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "e06aad45",
+      "title": "[生기업TALK] KB금융그룹, 2026년 상반기 균형 잡힌 성장 시현...비은행 ...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5c0e80ef",
+      "title": "Z세대 구직자 10명 중 4명 \"반도체 주식 샀어요\"...투자금은 어디서?",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "07345311",
+      "title": "\"예금 묶어둔 사이 66% 대박\"…퇴직연금 수익률 격차 20배 벌어졌다",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "59acb60b",
+      "title": "[위기관리리스크:실적·재무]현대차증권, 퇴직연금 5년 장기수익률 전 ...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6d452c4b",
+      "title": "“남들 연금 60% 대박 터질 때 예금 둔 나는 2%”… 퇴직연금 수익률 ‘...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9e9b1aa9",
+      "title": "퇴직연금 판 흔드는 증권사...미래에셋증권 52조 돌파, 은행 독주에 균...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "46c0e74e",
+      "title": "토스증권, 연금저축계좌 출시…\"쉽고 간편한 연금 투자\" 공략",
+      "company": "토스증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "91c73846",
+      "title": "토스증권, 연금저축계좌 출시…세액공제·ETF 투자 한눈에",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "df682e30",
+      "title": "토스증권 연금저축계좌 출시…'주식 모으기'도 제공",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "dd1ba6da",
+      "title": "토스증권, ‘연금저축계좌’ 출시…적립식 ETF 투자 지원",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "a6b106d3",
+      "title": "\"절세 리포트에 한눈에 쏙\"…토스증권, 첫 절세 상품 '연금저축계좌' 출...",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "4af8df5d",
+      "title": "토스증권, 연금저축계좌 출시…'예상 절세액'도 확인",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "a18944fe",
+      "title": "토스 행운퀴즈 정답 7월 24일",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "deed4fe1",
+      "title": "신호철 대표 \"카카오페이증권 IPO 주관사 달성에 집중\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6a2df379",
+      "title": "\"업계 최초\"…한국투자증권-인베스팅닷컴 연동",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "58377dbe",
+      "title": "[카드] 한국투자증권, 인베스팅닷컴과 투자정보·계좌개설 서비스 연계",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f4129341",
+      "title": "한국투자증권, 인베스팅닷컴 계좌개설 연동 서비스 오픈…AI 투자 콘텐...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "87bf6a59",
+      "title": "한국투자증권, 인베스팅닷컴 계좌개설 연동 \"AI 투자정보 등 제휴범위 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "398060da",
+      "title": "한국투자증권, 인베스팅닷컴과 비대면 계좌개설 연동 서비스 실시",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "595140c4",
+      "title": "[더벨][딜리셔스 IPO] MUV 점유율 91%…시장 지위·성장성 보강",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4e072366",
+      "title": "하나증권, 개인형 IRP 수익률 3개 분기 연속 증권사 1위…연금자산관리...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "aaf16696",
+      "title": "[투데이 Pick] 퇴직연금 성적표 엇갈렸다…신한은 '규모'·농협은 '수익...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d9e60e96",
+      "title": "금융위 '단일종목 레버리지 예탁금 상향' 31일부터 조기시행",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cba4c064",
+      "title": "\"5935조원을 깨워라\"…日, AI로 고령자 투자 문턱 손본다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "49e0d3e2",
+      "title": "코빗 품은 박현주 미래에셋 회장···'Digital X'로 그리는 디지털 금융...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "921f4bd5",
+      "title": "[금융그룹/삼성①] 계열사 58개, 총자산 580조, 임직원 2만4660명",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융그룹/삼성①]"
+    },
+    {
+      "hash": "47761060",
+      "title": "현대차, 하반기 HEV 신차 효과 기대…\"최선호주 유지\"-키움증권",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    },
+    {
+      "hash": "2687a5f9",
+      "title": "현대차, 하반기 신차·로봇 기대감…증권가 \"반등 가능성 주목\"[애널리...",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    },
+    {
+      "hash": "b3603b2c",
+      "title": "[금융권 이모저모]KB국민은행, 'KB굿잡 취업학교' 19기 운영 外",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융권 이모저모]"
+    },
+    {
+      "hash": "a877d8aa",
+      "title": "[금융권 이모저모]신한자산운용, SOL 금융지주 ETF 한 달 수익률 8.87% 外",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융권 이모저모]"
+    },
+    {
+      "hash": "35d873b7",
+      "title": "\"NH투자증권, 2분기 순익 전년比 90.7%↑…배당수익률 6.8% 전망\"<iM證>",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    },
+    {
+      "hash": "b7adad02",
+      "title": "미래에셋證 “LIG아큐버, 네트워크 투자 사이클 초입 진입”",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    },
+    {
+      "hash": "24c24387",
+      "title": "스페이스X 주가 IPO가 밑으로 추락, 실적 우려 속 반등 가능성도 주목",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "1a375a9d",
+      "title": "[연금개미의 반란①] 연금도 직접 굴린다…주식 비중 85% 채우는 개미들",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[연금개미의 반란①]"
+    }
+  ]
+}
