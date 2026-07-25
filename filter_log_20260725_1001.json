@@ -1,0 +1,173 @@
+{
+  "time": "2026-07-25T10:01:35.971504+09:00",
+  "total": 23,
+  "sent": 1,
+  "hard_excl": 2,
+  "excl_stats": {
+    "순이익 1조": 1,
+    "[A 증권가 소식]": 1
+  },
+  "entries": [
+    {
+      "hash": "f3d618a7",
+      "title": "[IPO챗] 인제니아 청약 돌입…네오뷰 코스닥 재상장",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "3a37117f",
+      "title": "[주간 IPO] 인제니아테라퓨틱스 청약…수요예측 3곳·신규 상장 공백",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "d0221106",
+      "title": "[주간 거래소 기관] SK하이닉스 2조원대 매도…새 선택지는 SK텔레콤·NA...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2f864950",
+      "title": "[MTS AI 경쟁] [하나증권] '편의성 극대화'로 2030 투자자 '공략'",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8a3c78e9",
+      "title": "신한금융, 상반기 ‘역대 최대 순익’… 리딩금융 탈환 열쇠는 ‘손보사...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c204eaff",
+      "title": "한국투자증권, 현대커머셜 위안화 김치본드 인수 참여...외화채권 역량...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "752c18a1",
+      "title": "구글이 다시 당긴 AI 투자 방아쇠…M7 실적서 확인할 ‘쩐의 전쟁’",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "944264e3",
+      "title": "\"AI가 PB를 바꾼다\"…자산관리, '초개인화' 시대로",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2017c157",
+      "title": "KB증권, 7월 넷째주 현대건설 등 27종목 매수 추천",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7b712eeb",
+      "title": "5대 금융지주, 모두 미소금융 갖춘다…'상생금융 경쟁' 2라운드",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0eb655a2",
+      "title": "토스증권, '연금저축계좌' 출시 外",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "aa581f5c",
+      "title": "“남들 60% 대박나는데 내 퇴직금은?”…퇴직연금 승자는 따로 있었다",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7aef00ba",
+      "title": "“증시 오르든지 내리든지 우린 버니까”…5대금융 13조 벌었다",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1e5995d9",
+      "title": "가상자산 거래소 코빗 인수한 박현주 미래에셋 회장 [CEO 라운지]",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4859e5c1",
+      "title": "[IB 라운지] 미래에셋 성주완 부사장 “인수금융 다시 키운다… IMA 활용...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6c9806cb",
+      "title": "\"연말정산 최대 99만원 절세\"…토스증권 연금저축계좌, 뭐가 다를까?",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "56c6ecea",
+      "title": "[컨콜] 우리금융 \"리테일 부분 경쟁력 확보해 수익 제고 노력할 것\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9edae518",
+      "title": "\"韓 증권사 최초\" 한국투자증권, 인베스팅닷컴과 계좌 연동… AI 콘텐츠...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cb5d537e",
+      "title": "한국투자증권, 인베스팅닷컴 제휴 계좌개설 연동 서비스 개시",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "26cb1665",
+      "title": "푸투니우니우, BNB 실시간 거래 서비스 출시",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e34a66c5",
+      "title": "삼전닉스 레버리지 예탁금 3천만원 올리면 기존 투자자는 어떻게 되나요...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2d3b3f12",
+      "title": "농협금융, 상반기 당기순이익 1조 7791억원… 전년 동기 대비 9.2% 증가",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "순이익 1조"
+    },
+    {
+      "hash": "b6505adb",
+      "title": "[A 증권가 소식] 토스증권, 연금저축계좌 출시...세액공제 최대 99만원·...",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[A 증권가 소식]"
+    }
+  ]
+}
