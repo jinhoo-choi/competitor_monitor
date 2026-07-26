@@ -1,0 +1,212 @@
+{
+  "time": "2026-07-26T18:02:07.543048+09:00",
+  "total": 29,
+  "sent": 1,
+  "hard_excl": 0,
+  "excl_stats": {},
+  "entries": [
+    {
+      "hash": "7fbd3e6c",
+      "title": "STO 플랫폼 선점전 불붙은 증권업계…상품화는 '숙제'",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "c6288fa8",
+      "title": "\"AI가 미래\"…증권업계, 잇달아 AX 조직개편",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "895046e1",
+      "title": "[주간 증시 전망] 7000선 무너진 코스피…AI 투자 확대가 반도체 반등 열...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3ee5ed06",
+      "title": "'AI 믿는 Z세대' 반도체 주식 사고, 반도체 기업 취업도 노린다",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "06d7e48a",
+      "title": "[자금조달 프리뷰] NH證·SK에코플랜트 공모채…IPO 3곳 '잰걸음'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "69898479",
+      "title": "550조 퇴직연금 전쟁…금융그룹 '원팀' 경쟁 시대로 전환",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "9660aeb1",
+      "title": "주가도 배당도 흔들린 리츠···자산 재편으로 돌파구 모색",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "27d22287",
+      "title": "[투데이 Pick] 여의도가 증권사 광고판으로…오프라인 브랜드 경쟁 '후끈...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f90db3ec",
+      "title": "\"AI 애널리스트 4명이 매일 8000개 기업 분석…투자 판단은 사람이\"",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "cd5706bd",
+      "title": "외국인 쓸어담은 K뷰티...글로벌 투자시장 '큰손' 반했다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c2cb1742",
+      "title": "[취업걱정 없는 명품학교] 〈502〉 인천금융고등학교",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a012f2e2",
+      "title": "호실적에 배당 짭짤…피난처된 증권·금융株",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0b113208",
+      "title": "올해 상반기 5대 지주 계열 증권사 순익 2배 껑충",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bf067bad",
+      "title": "QQQ도 美 국채도 토큰으로…블록체인 올라탄 월가",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5df37d91",
+      "title": "'국경 없는 커머스'에 돈 몰렸다…AI 물류 스타트업 투자 '활활'",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f580081d",
+      "title": "금감원 \"RIA 계좌 해외주식 매도, 매도결제완료일 확인해야 세제혜택\"",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d586119e",
+      "title": "[공모주달력]한국계 美바이오텍 인제니아, 일반 청약",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "990cdcc0",
+      "title": "“금융업ㆍ가상자산시장 경계 무너진다”…글로벌 시장, ‘슈퍼앱’ 경...",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "5e7b11e5",
+      "title": "예금·주식은 한눈에, 비트코인은 ‘깜깜이’…가상자산 빠진 마이데이...",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fef2ee60",
+      "title": "'간편 주식 거래' 핀테크 증권사…종합금융 향해 사업 확대",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6d6fa1e1",
+      "title": "연말정산 최대 99만원 돌려받는다...토스증권, 연금저축 출시",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "9998e870",
+      "title": "토스증권, 연금시장 출사표…첫 절세상품 출시",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "b40a5a8b",
+      "title": "AI 투자정보·상품·자산관리 \"올 서비스\"...증권업계, MTS 경쟁 '확전'",
+      "company": "토스증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "dd0722fd",
+      "title": "한국투자증권, 인베스팅닷컴 계좌개설 연동 서비스 출시",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f03f45b1",
+      "title": "토큰화 자산 규모 1000억 원…'주식거래 증가' 로빈후드 폭풍 성장",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3a9392df",
+      "title": "4대 금융 상반기 순익 11.3조…이번에도 '역대급' 증권이 끌었다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "39020830",
+      "title": "“RIA 계좌로 해외주식 팔기 전 ‘결제 완료일’ 반드시 확인하세요”",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "456a0b77",
+      "title": "‘거래시간 늘려 中 투자금 잡겠다’… 홍콩거래소, 10여 년 만에 점심...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8851ea6e",
+      "title": "비트고·OTC마켓츠, 브로커딜러에 토큰화 증권 거래 접근 추진",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    }
+  ]
+}
