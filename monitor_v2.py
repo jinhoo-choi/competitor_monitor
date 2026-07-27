@@ -256,6 +256,12 @@ def canonicalize_company(entity: str) -> str:
 # ⚠️ 중의성 함정 방지 — 단어 단위가 아닌 구체적 구문 단위로만 등록
 #    ("가입자"/"돌파"/"1위"/"선점"/"오픈"/"상장" 단독은 부정적 맥락에서도
 #    출현해 오탐(회귀테스트 5/5 실패) 확인 → 전량 제거, 구문·정규식으로 대체)
+# ⚠️ 2차 오탐(7/27 실사례): 수치 마일스톤 정규식("1000억원 돌파")은 같은
+#    사실을 다른 매체가 같은 날 재보도해도 매번 동일하게 매칭되어 억제를
+#    뚫어버림(키움증권 퇴직연금 1000억 돌파 기사가 8시간 뒤 중복발송됨).
+#    "새 마일스톤인지 재보도인지" 구분할 방법이 없으므로 수치패턴 전량 제거.
+#    문구 기반 키워드(정식출시·인가획득 등, 1회성 행위)만 유지 — 재현율보다
+#    정밀도 우선 원칙.
 # ═══════════════════════════════════════════════
 NEW_STAGE_KEYWORDS = [
     "정식 출시", "정식출시",
@@ -264,13 +270,6 @@ NEW_STAGE_KEYWORDS = [
     "서비스 개시", "정식 오픈", "런칭 완료",
     "지분 확정", "인수 완료",
     "코스피 상장", "코스닥 상장",
-]
-# 수치 마일스톤 — "가입자/누적 + 숫자 + 만/억/조" 형태만 인정 (숫자 없는 단독 언급은 제외)
-NEW_STAGE_PATTERNS = [
-    r'가입자\s*[\d,]+\s*(만|천)',
-    r'누적\s*[\d,]+\s*(만|억|조)',
-    r'[\d,]+\s*(만|억|조)\s*.{0,4}돌파',
-    r'(점유율|업계)\s*1위',
 ]
 RESOLVE_KEYWORDS = [
     "무산", "철회", "보류", "연기", "중단", "취소", "제동", "불발",
@@ -284,13 +283,12 @@ def is_new_stage(title: str, desc: str) -> bool:
     """event_key/폴백키가 동일해도, 실질적 국면 진전이면 True (억제 예외)"""
     text = (title or "") + (desc or "")
     literal_hits = [kw for kw in NEW_STAGE_KEYWORDS if kw in text]
-    pattern_hit  = any(re.search(p, text) for p in NEW_STAGE_PATTERNS)
-    if not literal_hits and not pattern_hit:
+    if not literal_hits:
         return False
     if any(rk in text for rk in RESOLVE_KEYWORDS):
-        # 해소·좌절 표현이 섞여 있으면, 확정적 신규 이벤트/수치 마일스톤만 남기고 폐기
+        # 해소·좌절 표현이 섞여 있으면, 확정적 신규 이벤트만 남기고 폐기
         literal_hits = [h for h in literal_hits if h in ALWAYS_NEW_KEYWORDS]
-        if not literal_hits and not pattern_hit:
+        if not literal_hits:
             return False
     return True
 
