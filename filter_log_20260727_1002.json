@@ -1,0 +1,386 @@
+{
+  "time": "2026-07-27T10:02:37.882835+09:00",
+  "total": 53,
+  "sent": 3,
+  "hard_excl": 8,
+  "excl_stats": {
+    "목표주가": 4,
+    "생산적금융": 1,
+    "반기 순이익": 1,
+    "토스뱅크": 1,
+    "컨센서스": 1
+  },
+  "entries": [
+    {
+      "hash": "3e786148",
+      "title": "국내증시로 해외자금 유도…하나증권, 푸투와 거래 개시",
+      "company": "하나증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "7a13399e",
+      "title": "[NSPCEO인덱스:CEO혁신동력]박종문 삼성증권 대표, CEO인덱스 4.0점 ‘성...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "62f1a675",
+      "title": "아시아 공략 하나증권, 외국인 수급 틈새전략 성공하나",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "37768f63",
+      "title": "삼성증권 \"제일기획, 광고시장 변화 속 경쟁력 입증…D2C·AI로 성장축 확...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "44b61011",
+      "title": "기아, 역대 최대 매출에도 웃지 못했다…증권가 목표가 줄하향",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4c0afffb",
+      "title": "키움證 퇴직연금, 출시 두 달 적립금 ‘1000억’ 돌파",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "1cc399b6",
+      "title": "키움증권, 퇴직연금 적립금 1000억원 돌파...출시 두 달 만에 성과",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "46f52d01",
+      "title": "키움증권, IRP 가입자 96% 기존 고객…연금 전환 효과",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "e5dcd770",
+      "title": "하나금융, 임원 140명 AX 워크숍…키움증권, 퇴직연금 적립금 1000억원 [...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bad26853",
+      "title": "키움증권 퇴직연금 적립금 1000억 돌파...가입 96% 자사 고객",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "a54e0262",
+      "title": "KB금융, 첨단산업 금융지원 확대…1500억원 유니콘 펀드 조성",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "11f12ce1",
+      "title": "주가 30% 빠진 유한양행, 4천억 자기주식 소각에 반등…진짜 승부수는",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4643092d",
+      "title": "발행어음 깃발·그룹 시너지…하나증권, 성장 발판 마련 [전업계 추격하...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c1c4b943",
+      "title": "KB금융, '1천500억 유니콘 펀드'로 첨단 산업 지원 강화—AI와 반도체 분...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "144528b0",
+      "title": "[더벨]서클, 금융권·거래소 총집결 '한국 시장 공략 본격화'",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d71617f6",
+      "title": "[Invest]금리 인상기 증권사 조달비용 '변수' 된 발행어음...회사별로 온...",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4b7d4f10",
+      "title": "[Invest]레버리지 ETF 허용한 정부, 책임은 금융사에…반복되는 민간 '뒷...",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f2ff794f",
+      "title": "코스닥, '천스닥'서 700선까지···레버리지 ETF 후폭풍 커졌다",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3135f04f",
+      "title": "신한금융, 손보사 인수 검토 공식화…비은행 확대 속도 내나",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9e8644a4",
+      "title": "현대차, 78만원서 40만원대로 급락…증권사 목표가 낮아진 이유가",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2a26f52b",
+      "title": "키움증권 \"현대모비스, A/S 부문이 2분기 실적 만회…목표가↑\"",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c2c5a887",
+      "title": "NH투자증권, 퇴직연금DC·IRP 5년 수익률 1위",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "be3a1e3b",
+      "title": "‘66%’ 대 ‘2%’… 퇴직연금 수익률 33배 격차",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "699f961f",
+      "title": "‘10조 K뷰티 대어’ 구다이글로벌, 코스피 상장 초읽기… 거래소 사전...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "83c98bc1",
+      "title": "[증권업계 게임체인저]② 박현주식 영토확장…미래에셋, 글로벌·디지털...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "64780268",
+      "title": "토스 '해외주식 선도' 카카오페이 '맞춤형 자산관리'…테크핀 증권사 '...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a4b602cc",
+      "title": "하나증권, 외국인계좌서비스에 홍콩 푸투증권 추가..美 웨드부시도 추진",
+      "company": "하나증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "2b78937f",
+      "title": "\"코스피, 이번주 실력 발휘 기대\" '샌프란 선언' MOU 뭐가 달랐나",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d6b7b2eb",
+      "title": "하나증권, 푸투증권과 외국인통합계좌 거래 개시…글로벌 접근성 확대",
+      "company": "하나증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "f5303199",
+      "title": "한국투자증권·코인원, 지분투자 넘어 ‘서비스 동맹’…주식·가상자산...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d3c3ef3c",
+      "title": "한국투자증권, 코인원과 손잡고 주식 투자 연결…첫 협업 공개",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0b5528e7",
+      "title": "코인원·한국투자증권 첫 협업…앱에서 주식 WTS 연결",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "56f632c0",
+      "title": "한국투자증권, 가상자산거래소 ‘코인원’ 앱 연계 국내주식거래서비스...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9a1d31d0",
+      "title": "한국투자증권, 코인원 앱 통한 국내주식 거래 개시",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9bd17f89",
+      "title": "BTS 티켓도 원화 코인으로…K-콘텐츠 토큰화 길 열릴까",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8d144cdc",
+      "title": "이호성號 하나은행, 맞춤 포트폴리오로 IRP 1위 정조준 [은행권 연금 방...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7c1ef974",
+      "title": "하나증권, 푸투증권과 외국인통합계좌 거래 개시…아시아 투자자 유치 ...",
+      "company": "하나증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "111f91ca",
+      "title": "KB ‘비대면 개편ʼ vs 신한 ‘상담 고도화ʼ…퇴직연금 사수전",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "302adcf8",
+      "title": "키움증권 퇴직연금 적립금, 서비스 개시 두 달 만에 1000억 돌파",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d3955955",
+      "title": "하나증권, 글로벌 푸투(FUTU)증권과 외국인통합계좌 거래 개시",
+      "company": "하나증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "756dd75e",
+      "title": "키움증권, 발행어음 잔액 1조 넘겨…후발주자 중 선두",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "7e860c84",
+      "title": "우리투자증권, 리테일 안착에 고른 성장…1조 원 증자도 힘 받는다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0f3a1187",
+      "title": "韓증시 뒤흔든 단일종목 레버리지 ETF, 日증시로 확산하나…키옥시아 '...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0d6f83f5",
+      "title": "하나증권, K-증시 투자 문턱 낮췄다…푸투증권과 ‘외국인통합계좌’ 거...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3a2b0669",
+      "title": "[더벨][thebell interview] \"STO, 유통까지 제도권으로…스테이블코인 차...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4b3311e6",
+      "title": "기아 목표주가 줄하향…증권가 \"주가 13만원대, 지금은 매수 기회\"",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "20acbf4d",
+      "title": "KB금융, 생산적금융에 1500억원 투입…유니콘 스케일업 펀드 조성",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적금융"
+    },
+    {
+      "hash": "b1795e36",
+      "title": "4대 금융 상반기 팩트북…KB '균형'·신한 'WM'·하나 '자본효율'·우리 ...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "반기 순이익"
+    },
+    {
+      "hash": "2fb86ed3",
+      "title": "한 달 새 21% 빠진 현대차…목표가 낮춰도 증권가는 \"사라\"",
+      "company": "메리츠증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "c56eec43",
+      "title": "[투자자 순매수 TOP5] 매일 사이드카 발동 속 외인 마지막날 제외 매수우...",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "9b581915",
+      "title": "“두산퓨얼셀, 목표가 42000원…하반기 반등 기대”-미래에셋",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "a7e26f45",
+      "title": "로지텍 코리아, 토스 신사옥에 100여 개 회의실 규모 ‘스마트 워크플레...",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "67bcfec4",
+      "title": "하나증권 \"우리금융, 분기 순익 1조원 시대…비이자이익 확대 긍정적\"",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "컨센서스"
+    }
+  ]
+}
