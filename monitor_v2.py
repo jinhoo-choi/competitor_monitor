@@ -43,6 +43,16 @@ GMAIL_APP_PASSWORD  = os.environ["GMAIL_APP_PASSWORD"]
 RECIPIENTS_ALL = []  # 실제 배포대상 단일화 — risk_aigent 그룹 하나만 사용
 RECIPIENTS_CC  = ["risk_aigent@googlegroups.com"]  # 실제 배포대상 — 유일한 숨은참조(개별발송) 수신자
 
+# ═══ TEST_MODE — 나에게만 발송되는 검수용 실행 ═══
+# workflow_dispatch 수동 테스트가 실제 그룹(risk_aigent)으로 라이브 발송되는 사고를 막기 위한 격리 모드.
+# TEST_MODE=1 이면: ① 그룹 수신자 전량 비움 ② SMTP 단계에서 GMAIL_USER 외 주소 강제 차단
+#                  ③ 제목에 [TEST] 프리픽스 ④ seen_articles.json 저장 스킵(정기 실행 dedup 상태 오염 방지)
+TEST_MODE = os.environ.get("TEST_MODE", "").strip() == "1"
+if TEST_MODE:
+    RECIPIENTS_ALL = []
+    RECIPIENTS_CC  = []
+    print("[TEST_MODE] 그룹 수신자 비활성화 — GMAIL_USER 단독 발송 / seen 저장 스킵")
+
 SENDER_NAME     = "인사이트봇"
 KST             = timezone(timedelta(hours=9))
 SEEN_FILE       = "seen_articles.json"
@@ -498,6 +508,9 @@ def save_seen(seen: dict, sent_urls: set = None,
               new_title_norms: list = None, new_desc_norms: list = None,
               new_events: set = None):
     """atomic write. event_key는 날짜별로 묶어 7일 보존."""
+    if TEST_MODE:
+        print("  [TEST_MODE] seen_articles.json 저장 스킵 (정기 실행 중복제거 상태 보존)")
+        return
     now      = datetime.now(KST)
     cur_key  = now.strftime("%Y-%m-%d %H")
     cur_day  = now.strftime("%Y-%m-%d")
@@ -1616,6 +1629,12 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
       본인(GMAIL_USER)도 항상 사본을 받도록 대상에 포함."""
     real_recipients = list(to) + list(cc or [])
     targets = list(dict.fromkeys(real_recipients + [GMAIL_USER]))  # 순서유지 중복제거
+    if TEST_MODE:
+        # ⚠️ 최종 방어선 — 시크릿/환경변수가 어떻게 설정돼 있든 본인 주소 외에는 절대 발송 금지
+        blocked = [t for t in targets if t != GMAIL_USER]
+        if blocked:
+            print(f"  [TEST_MODE] 외부 수신자 차단: {blocked}")
+        targets = [GMAIL_USER]
 
     all_refused = {}
     for addr in targets:
@@ -1630,7 +1649,7 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
 
 def send_email(html: str, analyzed: list[dict], raw_count: int):
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
-    subject = f"[인사이트] {now_str} 기준"
+    subject = f"{'[TEST] ' if TEST_MODE else ''}[인사이트] {now_str} 기준"
     cc = RECIPIENTS_CC if RECIPIENTS_CC else None
     _smtp_send(subject, html, RECIPIENTS_ALL, cc)
     print(f"  ✅ 발송 완료 | {subject}")
