@@ -1,0 +1,66 @@
+name: "[TEST] 인사이트봇 — 본인 발송 전용"
+
+# ⚠️ 이 워크플로는 검수 전용입니다.
+#   - 수동 실행(workflow_dispatch)만 가능. schedule / repository_dispatch 없음
+#   - TEST_MODE=1 → monitor_v2.py가 그룹 수신자를 전량 비우고,
+#     SMTP 직전 단계에서 GMAIL_USER 외 주소를 강제 차단합니다 (2중 방어)
+#   - RECIPIENTS / RECIPIENTS_CC 시크릿을 아예 주입하지 않습니다 (3중 방어)
+#   - seen_articles.json 을 저장/커밋하지 않습니다
+#     → 테스트 실행이 정기 실행(10:00/17:00)의 중복제거 상태를 오염시키지 않음
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "테스트 사유 (로그 기록용)"
+        required: false
+        default: "탐지 품질 검수"
+
+jobs:
+  test-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: 실행 조건 표시
+        run: |
+          echo "::warning::TEST MODE — 수신자는 GMAIL_USER 1인으로 제한됩니다"
+          echo "사유: ${{ github.event.inputs.reason }}"
+          echo "실행자: ${{ github.actor }}"
+
+      - name: Python 설정
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 패키지 설치
+        run: pip install -r requirements.txt
+
+      - name: 모니터 실행 (TEST_MODE)
+        env:
+          TEST_MODE:           "1"
+          NAVER_CLIENT_ID:     ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+          ANTHROPIC_API_KEY:   ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_USER:          ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD:  ${{ secrets.GMAIL_APP_PASSWORD }}
+          # NO_RESULT_RECEIVER 도 본인으로 고정 (결과없음 메일 포함)
+          NO_RESULT_RECEIVER:  ${{ secrets.GMAIL_USER }}
+          # ⚠️ RECIPIENTS / RECIPIENTS_CC 는 의도적으로 주입하지 않음
+        run: python monitor_v2.py
+
+      - name: 필터 로그 아티팩트 업로드
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: filter-log-${{ github.run_id }}
+          path: filter_log_*.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+      # seen_articles.json 커밋 단계 없음 — 의도적 생략
