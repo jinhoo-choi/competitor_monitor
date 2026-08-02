@@ -1,0 +1,226 @@
+{
+  "time": "2026-08-02T18:01:37.409623+09:00",
+  "total": 30,
+  "sent": 2,
+  "hard_excl": 6,
+  "excl_stats": {
+    "반기 순이익": 1,
+    "생산적 금융": 1,
+    "목표주가": 1,
+    "[금융권 이모저모]": 1,
+    "토스뱅크": 1,
+    "케이뱅크": 1
+  },
+  "entries": [
+    {
+      "hash": "c3078b96",
+      "title": "[마켓IN브리핑]두나무, 디지털 금융 연합 구축 나서나",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "cb43c39d",
+      "title": "펄어비스 주가 전망 [금주 주목할 게임 IT 주식]",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ecdda017",
+      "title": "증권사 상반기 실적 잔치…거래대금 감소에 하반기는 '근심'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cff1678e",
+      "title": "삼성증권 발행어음 인가 '청신호'…메리츠증권은 '답보'",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "c87d4ad0",
+      "title": "이번 주 IPO 청약 2곳·수요예측 4곳…빅웨이브로보틱스 절차 재개",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bed8ca9d",
+      "title": "‘AI 투자, 그거 돈 됩니까?’ 현금 마르는 빅테크, 다시 믿는 시장…대...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "062881a7",
+      "title": "전 부문 고른 성장 키움증권, 2분기 어닝 서프라이즈",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4f7f4d85",
+      "title": "AI·방산·로봇기업들 잇달아 출격…8월 IPO 시장 달군다",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d4b5fc68",
+      "title": "ESG 채권 매력 ‘뚝’…해외 발행 눈돌리는 카드사",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6cb55c90",
+      "title": "KB증권, 7월 마지막주 HD현대일렉트릭 등 33종목 매추 추천",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a4415c7c",
+      "title": "NH투자증권, 연금자산 20조 원 돌파 기념 불꽃 감사 이벤트 진행 外",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d8130d61",
+      "title": "“한국, 온체인 금융허브 조건 다 갖췄다”…체인링크 창업자가 꼽은 ‘...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3c2168b1",
+      "title": "월 9만5000원씩 국민연금 20년 부었더니…'이 정도였어?' 깜짝",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c4c65e38",
+      "title": "[이번주 IPO]8월 첫째 주 수요예측·청약 일정",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "12fce301",
+      "title": "'여보 어떡해'…'삼전닉스 몰빵' 직장인, 연금 계좌 열어봤다가 [김연지...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "619fa616",
+      "title": "통제 부서에서 기술 전도사로... 토스증권이 짚은 AI 시대 보안 혁신",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "720a9450",
+      "title": "하나증권, 외국인통합계좌로 글로벌 비즈니즈 확장",
+      "company": "하나증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "cb25d325",
+      "title": "[ESG경영 사례분석] NH투자증권 신재욱·배광수 대표, 탄소 줄이고 농업...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7d392dbd",
+      "title": "커지는 시너지…우투증권 수익 2.3배 급증",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "99ba51e4",
+      "title": "[STO 돋보기 ㊦] 美는 주식, 韓은 실물자산…4경원 토큰증권 경쟁 ‘점화...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bdc377d5",
+      "title": "예금보다 딱 1%p 더, 증권사의 약속을 믿은 결과",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "78587b3c",
+      "title": "[Invest]현대로보틱스 IPO, 국민연금·HD현대 소액주주 설득이 관건",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "87e8d3bf",
+      "title": "넥스트레이드, 거래소 거래시간 확대 맞춰 대량매매 오후 8시까지 연장",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "eb26046e",
+      "title": "[위기의 중소형사] [카카오페이증권] 수익구조 다각화 및 자본확충 '과...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "72d0cffd",
+      "title": "[증권가 실적분석] 거래대금 폭증에 '실적 잔치'… 상반기 순이익 '1조 ...",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "반기 순이익"
+    },
+    {
+      "hash": "33036c51",
+      "title": "\"지역 경제 살려야 금융도 산다\"… NH농협금융지주, 하반기 '지역밀착형...",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적 금융"
+    },
+    {
+      "hash": "17ff4cd2",
+      "title": "미래에셋증권, 7월 마지막주 포스코인터내셔널 등 33종목 매수 추천",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "1739d3e2",
+      "title": "[금융권 이모저모]삼성화재, S&P 신용등급 'AA' 획득 外",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융권 이모저모]"
+    },
+    {
+      "hash": "9f888e6c",
+      "title": "토스뱅크, 매일 자동환전으로 달러 모으는 '외화 저금통' 선보여 外",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "be3186b3",
+      "title": "일회성 거품빠진 케이뱅크, 기업금융·신사업 돌파구 찾나",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "케이뱅크"
+    }
+  ]
+}
