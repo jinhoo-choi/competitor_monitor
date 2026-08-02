@@ -43,7 +43,7 @@ GMAIL_APP_PASSWORD  = os.environ["GMAIL_APP_PASSWORD"]
 RECIPIENTS_ALL = []  # 실제 배포대상 단일화 — risk_aigent 그룹 하나만 사용
 RECIPIENTS_CC  = ["risk_aigent@googlegroups.com"]  # 실제 배포대상 — 유일한 숨은참조(개별발송) 수신자
 
-SENDER_NAME     = "✅ eBiz 인사이트봇"
+SENDER_NAME     = "인사이트봇"
 KST             = timezone(timedelta(hours=9))
 SEEN_FILE       = "seen_articles.json"
 TITLE_SIM_THRESHOLD = 80   # rapidfuzz 유사도 임계값 (88→80 완화)
@@ -249,6 +249,56 @@ def canonicalize_company(entity: str) -> str:
     """dedup 키 생성 직전에만 사용 — 회사명 별칭을 대표명으로 통일"""
     e = (entity or "").strip()
     return ALIAS_MAP.get(e, e)
+
+# ═══════════════════════════════════════════════
+# 레이어6 — 회사 귀속(attribution) 검증
+# 오탐 실사례(8/2 18시): 두나무 투자유치 기사에 company_name="삼성증권" 8.2점 부여.
+#   본문에는 "삼성 계열사"만 등장하고 삼성'증권'은 무관 → 그룹명 오매핑.
+# 실사례(7/30 18시): company_name="삼성SDS" — 증권사가 아닌 기업이 카드 회사 태그 점유.
+# 대응: ① 증권사 화이트리스트 밖이면 귀속 실패 처리
+#       ② 화이트리스트 안이어도 본문에 '그룹명+증권' 형태로 실제 등장해야 인정
+#          (그룹명 단독 "삼성"은 계열사 일반 지칭이므로 불인정 — 오탐의 직접 원인)
+# ═══════════════════════════════════════════════
+SECURITIES_WHITELIST = {
+    "삼성증권","키움증권","KB증권","메리츠증권","신한투자증권","NH투자증권",
+    "미래에셋증권","토스증권","하나증권","대신증권","유안타증권","한화투자증권",
+    "교보증권","IBK투자증권","현대차증권","DB금융투자","BNK투자증권","다올투자증권",
+    "SK증권","이베스트투자증권","LS증권","상상인증권","케이프투자증권","부국증권",
+}
+
+def _surface_re(canon: str):
+    """canonical명 + 표기 변형(그룹명+증권/證)을 함께 매칭하는 정규식 생성"""
+    stem = canon[:-2] if canon.endswith("증권") else canon
+    return re.compile(rf"{re.escape(canon)}|{re.escape(stem)}\s*(?:투자)?\s*(?:증권|證)")
+
+_SURFACE_CACHE = {c: _surface_re(c) for c in SECURITIES_WHITELIST}
+
+def verify_attribution(company: str, text: str) -> tuple[bool, str]:
+    """
+    반환: (검증통과여부, 사유)
+    통과 실패 시 호출부에서 회사 태그를 기사 주체로 교체하고 점수를 감쇠한다.
+    """
+    c = canonicalize_company((company or "").strip())
+    if not c or c == "-":
+        return False, "회사명 없음"
+    if c not in SECURITIES_WHITELIST:
+        return False, f"증권사 아님({c})"
+    rgx = _SURFACE_CACHE.get(c) or _surface_re(c)
+    if not rgx.search(text or ""):
+        return False, f"본문 미등장({c})"
+    return True, ""
+
+# ── 라이선스·인가 사안 하한 점수
+# 오탐 실사례(8/1 10시): "삼성증권, 발행어음 인가 문턱 넘었다" → 1.5점(하) 처리.
+#   발행어음·종투사 인가는 조달구조·리테일 상품경쟁에 직결되는 구조적 사안.
+#   'BROAD_KEYWORDS 수집'만 반영돼 있고 채점 룰에는 미반영이었음 → 하한 강제.
+LICENSE_FLOOR_SCORE = 6.5
+LICENSE_PATTERNS = [
+    r"발행어음", r"종합금융투자사업자", r"종투사", r"초대형\s*IB", r"초대형\s*투자은행",
+    r"본인가", r"예비인가", r"인가\s*(획득|승인|취득|의결)", r"라이선스\s*(획득|취득)",
+    r"자기자본\s*4조", r"단기금융업\s*인가",
+]
+_LICENSE_RE = re.compile("|".join(LICENSE_PATTERNS))
 
 # ═══════════════════════════════════════════════
 # 레이어4 — 새 국면(Next-Stage) 판정: event_key가 같아도
@@ -959,6 +1009,24 @@ JSON only, 다른 텍스트 없이:
         if extracted and extracted != "-":
             art["_company"] = extracted
 
+        # ── 레이어6 귀속 검증 (제목+본문/description 기준)
+        _vtext = (art.get("title","") or "") + " " + (art.get("_body","") or art.get("description","") or "")
+        _ok, _why = verify_attribution(extracted, _vtext)
+        if not _ok:
+            _subj = _ENTITY_RE.search(art.get("title","") or "")
+            _subj_name = re.sub(r"\s+", "", _subj.group(0)) if _subj else ""
+            art["_company"]            = _subj_name or "기타"
+            art["_attr_unverified"]    = True          # dedup에서 주체키(SUBJ) 적용 트리거
+            art["_attr_subject"]       = _subj_name
+            analysis["company_name"]   = art["_company"]
+            _os = float(analysis.get("impact_score", 3.0))
+            analysis["impact_score"]   = round(min(_os * 0.8, 6.9), 1)   # 상(7.0+) 진입 차단
+            if analysis["impact_score"] < 5.0 and analysis.get("impact_level") != "하":
+                analysis["impact_level"] = "하"
+            elif analysis.get("impact_level") == "상":
+                analysis["impact_level"] = "중"
+            print(f"    [귀속검증 실패] {_why} | {art.get('title','')[:40]} → {art['_company']} / {_os}→{analysis['impact_score']}")
+
         # ── event_key 정규화 — 날짜 부분을 코드에서 강제 현재 월로 교정
         # AI가 기사 내 날짜(출시 예정일 등)를 보고 과거/미래 날짜를 넣는 문제 방지
         ym_now = datetime.now(KST).strftime("%Y%m")
@@ -994,6 +1062,16 @@ JSON only, 다른 텍스트 없이:
             # 점수 상한 4.9 (하 영역 유지)
             analysis["impact_score"] = min(float(orig_score), 4.9)
             print(f"    [본문미수집 하향] {art.get('_company','')} | {orig_lvl}→{analysis['impact_level']} / {orig_score}→{analysis['impact_score']}")
+
+        # ── 라이선스·인가 사안 점수 하한 (본문 수집 성공 + 귀속검증 통과 건에만 적용)
+        if not art.get("_body_failed") and not art.get("_attr_unverified"):
+            if _LICENSE_RE.search((art.get("title","") or "") + " " + (art.get("_body","") or art.get("description","") or "")):
+                _cur = float(analysis.get("impact_score", 0))
+                if _cur < LICENSE_FLOOR_SCORE:
+                    analysis["impact_score"] = LICENSE_FLOOR_SCORE
+                    if analysis.get("impact_level") == "하":
+                        analysis["impact_level"] = "중"
+                    print(f"    [라이선스 하한 적용] {art.get('_company','')} | {_cur}→{LICENSE_FLOOR_SCORE}")
 
         _ai_fail_count = 0
         return {**art, "analysis": analysis}
@@ -1403,7 +1481,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
       <!--[if mso]><tr><td width="420" valign="top" class="header-td"><![endif]-->
       <!--[if !mso]><!--><tr><td class="header-td" style="padding:12px 16px 6px;vertical-align:top;"><!--<![endif]-->
         <p style="margin:0;font-size:17px;font-weight:bold;color:#ffffff;
-                  font-family:Arial,sans-serif;letter-spacing:-0.3px;">&#129302; eBiz 인사이트봇</p>
+                  font-family:Arial,sans-serif;letter-spacing:-0.3px;">인사이트봇</p>
         <p style="margin:7px 0 0;font-size:12px;color:#74c69d;font-family:Arial,sans-serif;">
           수집 {raw_count}건 &rarr; AI 선별 {filtered_count}건 &rarr;
           <strong style="color:#d8f3dc;">영향 탐지 {len(analyzed)}건</strong>
@@ -1443,7 +1521,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
                   border-radius:0 0 10px 10px;-webkit-border-radius:0 0 10px 10px;">
       <tr><td style="padding:13px 18px;">
         <p style="margin:0;font-size:11px;color:#888888;line-height:2.0;font-family:Arial,sans-serif;">
-          ※ 주요 경쟁사(★) : 키움증권, 미래에셋증권, 삼성증권, KB증권, NH투자증권, 토스증권<br>
+          ※ 주요 경쟁사(★) : 키움증권, 미래에셋증권, 삼성증권, KB증권, NH투자증권, 토스증권, 메리츠증권, 신한투자증권<br>
           ※ 탐지 대상 : 주요 경쟁사 및 전체 증권사<br>
           ※ 담당자 : 최진후 차장
         </p>
@@ -1552,7 +1630,7 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
 
 def send_email(html: str, analyzed: list[dict], raw_count: int):
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
-    subject = f"✅ [인사이트] {now_str} 기준"
+    subject = f"[인사이트] {now_str} 기준"
     cc = RECIPIENTS_CC if RECIPIENTS_CC else None
     _smtp_send(subject, html, RECIPIENTS_ALL, cc)
     print(f"  ✅ 발송 완료 | {subject}")
@@ -1666,7 +1744,7 @@ def build_empty_html() -> str:
 <table width="640" align="center" cellpadding="0" cellspacing="0"
        style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;overflow:hidden;">
   <tr><td style="background:#1e5c3a;padding:20px 22px;">
-    <p style="margin:0;font-size:19px;font-weight:bold;color:#fff;">&#129302; eBiz 인사이트봇</p>
+    <p style="margin:0;font-size:19px;font-weight:bold;color:#fff;">인사이트봇</p>
     <p style="margin:6px 0 0;font-size:12px;color:#95d5b2;">{now_str}</p>
   </td></tr>
   <tr><td style="padding:40px;text-align:center;font-size:15px;color:#aaa;">
@@ -1820,6 +1898,18 @@ def main():
             # ③ 폴백2: 회사명+파트너사/서비스명 고유명사 — event_key 핵심행위가 달라도 잡아냄
             # 예) '키움증권::트레이딩뷰' → 제목이 달라도 동일 파트너사면 차단
             entity_key = _extract_entity_key(title_txt, co_for_key)
+            # ③-b 주체키(SUBJ) — 귀속검증 실패 기사는 회사 태그를 신뢰할 수 없으므로
+            # 기사 주체(두나무 등)만으로 중복을 판정한다. 회사명이 삼성SDS/삼성증권으로
+            # 엇갈려 동일 사건이 3일 간격 중복 발송된 실사례(7/30↔8/2) 대응.
+            subj_key = ""
+            if result.get("_attr_unverified") and result.get("_attr_subject"):
+                subj_key = f"SUBJ::{result['_attr_subject']}"
+                if subj_key in seen.get("events", set()) and not new_stage:
+                    print(f"  [사건중복-주체키] {result.get('_company','')} | {title_txt[:45]} (키: {subj_key})")
+                    continue
+                if subj_key in runtime_events:
+                    print(f"  [런타임중복-주체키] {result.get('_company','')} | {title_txt[:45]}")
+                    continue
             if entity_key and entity_key in seen.get("events", set()) and not new_stage:
                 print(f"  [사건중복-폴백2(엔티티)] {result.get('_company','')} | {result.get('title','')[:45]} (키: {entity_key})")
                 continue
@@ -1837,6 +1927,8 @@ def main():
             runtime_events.add(fallback_key)
             if entity_key:
                 runtime_events.add(entity_key)
+            if subj_key:
+                runtime_events.add(subj_key)
         analyzed.append(result)
         if an:
             new_title_norms.append(_normalize_title(art.get("title","")))
@@ -2008,13 +2100,18 @@ def main():
             co = an.get("company_name","") or a.get("_company","")
             ekey = f"{co}::{an.get('threat_type','')}"
         new_events.add(ekey)
-        co_fb        = (an.get("company_name","") or a.get("_company","")).strip()
+        # ⚠️ 조회부(dedup)는 canonicalize_company()를 거친 키로 비교하므로
+        #    저장부도 반드시 동일하게 정규화해야 키가 매칭됨 (기존 미정규화 = 폴백1 무효화 버그)
+        co_fb        = canonicalize_company((an.get("company_name","") or a.get("_company","")).strip())
         domain_fb    = _domain_key(an.get("impact_domain",""))
         new_events.add(f"{co_fb}::{domain_fb}::{ym}")
         # 엔티티 폴백 키 저장 — 파트너사/서비스명 기반
         entity_fb = _extract_entity_key(a.get("title",""), co_fb)
         if entity_fb:
             new_events.add(entity_fb)
+        # 주체키 저장 — 귀속검증 실패 건(회사 태그 신뢰불가)만
+        if a.get("_attr_unverified") and a.get("_attr_subject"):
+            new_events.add(f"SUBJ::{a['_attr_subject']}")
     save_seen(seen, sent_urls=sent_urls,
               new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
               new_events=new_events)
