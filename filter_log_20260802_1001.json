@@ -1,0 +1,189 @@
+{
+  "time": "2026-08-02T10:01:31.409214+09:00",
+  "total": 25,
+  "sent": 1,
+  "hard_excl": 4,
+  "excl_stats": {
+    "반기 순이익": 1,
+    "카카오뱅크": 1,
+    "토스뱅크": 1,
+    "생산적금융": 1
+  },
+  "entries": [
+    {
+      "hash": "cb43c39d",
+      "title": "펄어비스 주가 전망 [금주 주목할 게임 IT 주식]",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ecdda017",
+      "title": "증권사 상반기 실적 잔치…거래대금 감소에 하반기는 '근심'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c4c65e38",
+      "title": "[이번주 IPO]8월 첫째 주 수요예측·청약 일정",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "eefc0fb7",
+      "title": "[공모주달력]증권신고서 4번 고친 빅웨이브로보틱스, 수요예측",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "80d7a4ba",
+      "title": "거래소 품고 STO 키우고…증권사, 디지털자산 영토 확장",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "b7ceaa97",
+      "title": "[삼성증권 인사&조직] ⑤'SNI 영업통' 오선미 상무, 초고액자산가 공략",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "062881a7",
+      "title": "전 부문 고른 성장 키움증권, 2분기 어닝 서프라이즈",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8e303551",
+      "title": "“삼전닉스 말고 우리도 돈 쓸어담았어요”…함박웃음 짓는 증권사들",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a4415c7c",
+      "title": "NH투자증권, 연금자산 20조 원 돌파 기념 불꽃 감사 이벤트 진행 外",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7c846e85",
+      "title": "[은행가] 하나금융그룹 헤드쿼터 청라 이전·농협은행 '디지털 영사인증...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5e1662f2",
+      "title": "전북으로 집결하는 금융지주…금융중심도시 경쟁 본격화",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "33036c51",
+      "title": "\"지역 경제 살려야 금융도 산다\"… NH농협금융지주, 하반기 '지역밀착형...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8f9bd0f6",
+      "title": "퇴직연금서 가장 많이 담은 ETF 봤더니…'삼전닉스' [김연지의 연금빌드...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bdc377d5",
+      "title": "예금보다 딱 1%p 더, 증권사의 약속을 믿은 결과",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cb25d325",
+      "title": "[ESG경영 사례분석] NH투자증권 신재욱·배광수 대표, 탄소 줄이고 농업...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3ed617d4",
+      "title": "[빅테크 줌인] 막대한 AI 인프라 투자 속 방향이 모호한 메타…\"남는 자...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7f75eae6",
+      "title": "8월에는 용돈 벌자…내 통장 잔고 바꿀 8월 '알짜 공모주'는?",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6d88e9a8",
+      "title": "[이슈] \"증권사에 반격\" 삼성생명, ETF 자동운용으로 퇴직연금 시장 공략",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d613d2de",
+      "title": "'우회적 시세조종'도 처벌…'투자자 보호' 강화하는 법원",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "eb26046e",
+      "title": "[위기의 중소형사] [카카오페이증권] 수익구조 다각화 및 자본확충 '과...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "78587b3c",
+      "title": "[Invest]현대로보틱스 IPO, 국민연금·HD현대 소액주주 설득이 관건",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "72d0cffd",
+      "title": "[증권가 실적분석] 거래대금 폭증에 '실적 잔치'… 상반기 순이익 '1조 ...",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "반기 순이익"
+    },
+    {
+      "hash": "0c08abe5",
+      "title": "[경제소식] 하나금융, HQ 청라 이전 기념 통합 캠페인…인천 맞춤형 혜...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "카카오뱅크"
+    },
+    {
+      "hash": "9f888e6c",
+      "title": "토스뱅크, 매일 자동환전으로 달러 모으는 '외화 저금통' 선보여 外",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "703632d5",
+      "title": "이찬우 회장 “지역경제활성화 농협금융이 가장 잘해…포용금융 집중”",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적금융"
+    }
+  ]
+}
