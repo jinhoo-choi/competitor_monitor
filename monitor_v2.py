@@ -47,7 +47,8 @@ RECIPIENTS_CC  = ["risk_aigent@googlegroups.com"]  # 실제 배포대상 — 유
 # workflow_dispatch 수동 테스트가 실제 그룹(risk_aigent)으로 라이브 발송되는 사고를 막기 위한 격리 모드.
 # TEST_MODE=1 이면: ① 그룹 수신자 전량 비움 ② SMTP 단계에서 GMAIL_USER 외 주소 강제 차단
 #                  ③ 제목에 [TEST] 프리픽스 ④ seen_articles.json 저장 스킵(정기 실행 dedup 상태 오염 방지)
-TEST_MODE = os.environ.get("TEST_MODE", "").strip() == "1"
+TEST_MODE   = os.environ.get("TEST_MODE", "").strip() == "1"
+TEST_PREFIX = "[TEST] " if TEST_MODE else ""   # 모든 발송 경로 제목에 공통 적용
 if TEST_MODE:
     RECIPIENTS_ALL = []
     RECIPIENTS_CC  = []
@@ -1664,7 +1665,7 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
 
 def send_email(html: str, analyzed: list[dict], raw_count: int):
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
-    subject = f"{'[TEST] ' if TEST_MODE else ''}[인사이트] {now_str} 기준"
+    subject = f"{TEST_PREFIX}[인사이트] {now_str} 기준"
     cc = RECIPIENTS_CC if RECIPIENTS_CC else None
     _smtp_send(subject, html, RECIPIENTS_ALL, cc)
     print(f"  ✅ 발송 완료 | {subject}")
@@ -1831,7 +1832,7 @@ def main():
 
     if not relevant:
         print("  한투 영향 기사 없음.")
-        subj = f"[인사이트] {now_str} — 해당 기사 없음"
+        subj = f"{TEST_PREFIX}[인사이트] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
         save_filter_log(articles, hard_excluded, [], [])
@@ -2107,13 +2108,13 @@ def main():
 
     if not analyzed:
         # 탐지 기사 없으면 담당자에게만 발송
-        subj = f"[인사이트] {now_str} — 해당 기사 없음"
+        subj = f"{TEST_PREFIX}[인사이트] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, html)
     else:
         levels = {a["analysis"].get("impact_level") for a in analyzed if a.get("analysis")}
         if levels <= {"하"}:
             # 탐지됐지만 전부 '하' 등급뿐이면 전체발송 대신 담당자에게만 발송
-            subj = f"[인사이트] {now_str} — 영향도 낮음(하)만 탐지"
+            subj = f"{TEST_PREFIX}[인사이트] {now_str} — 영향도 낮음(하)만 탐지"
             send_email_no_result(subj, html)
             print(f"  ℹ️ 전량 '하' 등급 — 담당자 전용 발송으로 전환")
         else:
