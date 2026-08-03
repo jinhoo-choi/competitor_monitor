@@ -283,6 +283,17 @@ def _surface_re(canon: str):
 
 _SURFACE_CACHE = {c: _surface_re(c) for c in SECURITIES_WHITELIST}
 
+def find_securities_in_text(text: str) -> str:
+    """텍스트에서 실제 표기된 증권사 중 가장 앞에 등장하는 회사를 반환. 없으면 ""."""
+    if not text:
+        return ""
+    hits = []
+    for canon, rgx in _SURFACE_CACHE.items():
+        mm = rgx.search(text)
+        if mm:
+            hits.append((mm.start(), canon))
+    return min(hits)[1] if hits else ""
+
 def verify_attribution(company: str, text: str) -> tuple[bool, str]:
     """
     반환: (검증통과여부, 사유)
@@ -1022,23 +1033,27 @@ JSON only, 다른 텍스트 없이:
         if extracted and extracted != "-":
             art["_company"] = extracted
 
-        # ── 레이어6 귀속 검증 (제목+본문/description 기준)
-        _vtext = (art.get("title","") or "") + " " + (art.get("_body","") or art.get("description","") or "")
-        _ok, _why = verify_attribution(extracted, _vtext)
+        # ══ 레이어6 — 경쟁사(증권사) 게이트 [사업 판정보다 상위] ══
+        # 원칙: "어느 사업 영역인가"보다 "주체가 경쟁 증권사인가"가 먼저다.
+        #   · 하나증권 IRP 기사  → 주체=증권사      → 탐지 O (사업=퇴직연금)
+        #   · 삼성생명 IRP 기사  → 주체=보험사      → 탐지 X (사업이 같아도 제외)
+        #   · 두나무/삼성SDS     → 주체=비증권 기업 → 탐지 X
+        # 2단 처리: ① 회사 태그 검증 실패 시 제목→본문 순으로 증권사 재추출(rescue)
+        #           ② rescue도 실패하면 비증권 주체로 보고 기사 자체를 드롭
+        _title  = art.get("title","") or ""
+        _btext  = art.get("_body","") or art.get("description","") or ""
+        _ok, _why = verify_attribution(extracted, _title + " " + _btext)
         if not _ok:
-            _subj = _ENTITY_RE.search(art.get("title","") or "")
-            _subj_name = re.sub(r"\s+", "", _subj.group(0)) if _subj else ""
-            art["_company"]            = _subj_name or "기타"
-            art["_attr_unverified"]    = True          # dedup에서 주체키(SUBJ) 적용 트리거
-            art["_attr_subject"]       = _subj_name
-            analysis["company_name"]   = art["_company"]
-            _os = float(analysis.get("impact_score", 3.0))
-            analysis["impact_score"]   = round(min(_os * 0.8, 6.9), 1)   # 상(7.0+) 진입 차단
-            if analysis["impact_score"] < 5.0 and analysis.get("impact_level") != "하":
-                analysis["impact_level"] = "하"
-            elif analysis.get("impact_level") == "상":
-                analysis["impact_level"] = "중"
-            print(f"    [귀속검증 실패] {_why} | {art.get('title','')[:40]} → {art['_company']} / {_os}→{analysis['impact_score']}")
+            _rescued = find_securities_in_text(_title) or find_securities_in_text(_btext)
+            if _rescued:
+                # 복수 증권사 기사(예: "삼성증권 청신호…메리츠증권 답보")에서 AI가 회사명을
+                # 잘못 잡은 케이스 — 제목 우선순위로 교정하고 점수는 그대로 유지한다.
+                print(f"    [귀속교정] {_why} → {_rescued} | {_title[:40]}")
+                art["_company"]          = _rescued
+                analysis["company_name"] = _rescued
+            else:
+                print(f"    [비증권 주체 드롭] {_why} | {_title[:45]}")
+                return {**art, "analysis": None}
 
         # ── event_key 정규화 — 날짜 부분을 코드에서 강제 현재 월로 교정
         # AI가 기사 내 날짜(출시 예정일 등)를 보고 과거/미래 날짜를 넣는 문제 방지
@@ -1077,7 +1092,7 @@ JSON only, 다른 텍스트 없이:
             print(f"    [본문미수집 하향] {art.get('_company','')} | {orig_lvl}→{analysis['impact_level']} / {orig_score}→{analysis['impact_score']}")
 
         # ── 라이선스·인가 사안 점수 하한 (본문 수집 성공 + 귀속검증 통과 건에만 적용)
-        if not art.get("_body_failed") and not art.get("_attr_unverified"):
+        if not art.get("_body_failed"):
             if _LICENSE_RE.search((art.get("title","") or "") + " " + (art.get("_body","") or art.get("description","") or "")):
                 _cur = float(analysis.get("impact_score", 0))
                 if _cur < LICENSE_FLOOR_SCORE:
@@ -1917,9 +1932,6 @@ def main():
             # ③ 폴백2: 회사명+파트너사/서비스명 고유명사 — event_key 핵심행위가 달라도 잡아냄
             # 예) '키움증권::트레이딩뷰' → 제목이 달라도 동일 파트너사면 차단
             entity_key = _extract_entity_key(title_txt, co_for_key)
-            # ③-b 주체키(SUBJ) — 귀속검증 실패 기사는 회사 태그를 신뢰할 수 없으므로
-            # 기사 주체(두나무 등)만으로 중복을 판정한다. 회사명이 삼성SDS/삼성증권으로
-            # 엇갈려 동일 사건이 3일 간격 중복 발송된 실사례(7/30↔8/2) 대응.
             subj_key = ""
             if result.get("_attr_unverified") and result.get("_attr_subject"):
                 subj_key = f"SUBJ::{result['_attr_subject']}"
