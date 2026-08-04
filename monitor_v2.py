@@ -271,16 +271,40 @@ def canonicalize_company(entity: str) -> str:
 #          (그룹명 단독 "삼성"은 계열사 일반 지칭이므로 불인정 — 오탐의 직접 원인)
 # ═══════════════════════════════════════════════
 SECURITIES_WHITELIST = {
+    # 주요 경쟁사
     "삼성증권","키움증권","KB증권","메리츠증권","신한투자증권","NH투자증권",
-    "미래에셋증권","토스증권","하나증권","대신증권","유안타증권","한화투자증권",
-    "교보증권","IBK투자증권","현대차증권","DB금융투자","BNK투자증권","다올투자증권",
-    "SK증권","이베스트투자증권","LS증권","상상인증권","케이프투자증권","부국증권",
+    "미래에셋증권","토스증권",
+    # 그 외 국내 증권사 (제휴·신사업 기사 탐지 대상)
+    "하나증권","대신증권","유안타증권","한화투자증권","교보증권","IBK투자증권",
+    "현대차증권","DB금융투자","BNK투자증권","다올투자증권","SK증권","LS증권",
+    "이베스트투자증권","상상인증권","케이프투자증권","부국증권","신영증권",
+    "유진투자증권","한양증권","흥국증권","유화증권","리딩투자증권",
+    "코리아에셋투자증권","카카오페이증권","우리투자증권","iM증권","하이투자증권",
+    "한국포스증권","다올증권",
+    # ※ 한국투자증권(자사)은 의도적으로 제외 — 자사 기사는 드롭되어야 함
 }
 
+AMBIGUOUS_BRANDS = {"우리"}   # 일반 명사·대명사와 충돌하는 브랜드명
+
 def _surface_re(canon: str):
-    """canonical명 + 표기 변형(그룹명+증권/證)을 함께 매칭하는 정규식 생성"""
-    stem = canon[:-2] if canon.endswith("증권") else canon
-    return re.compile(rf"{re.escape(canon)}|{re.escape(stem)}\s*(?:투자)?\s*(?:증권|證)")
+    """canonical명 + 표기 변형을 매칭. 그룹명 단독('삼성')은 불인정 — 증권/證 접미 필수.
+    대응 표기: 삼성증권 / 삼성證 / NH證 / NH투자증권 / 키움 증권 / 신한금융투자(구사명) / DB금융투자
+    """
+    brand = canon
+    for suf in ("증권", "금융투자"):
+        if brand.endswith(suf):
+            brand = brand[:-len(suf)]
+            break
+    if brand.endswith("투자"):
+        brand = brand[:-2]
+    # '우리'는 1인칭 대명사와 충돌("우리 증권업계는~") → 띄어쓰기 변형 불허
+    if brand in AMBIGUOUS_BRANDS:
+        alts = [re.escape(canon), rf"{re.escape(brand)}(?:투자)?證"]
+    else:
+        alts = [re.escape(canon), rf"{re.escape(brand)}\s*(?:투자|금융투자)?\s*(?:증권|證)"]
+    if canon.endswith("금융투자"):
+        alts.append(rf"{re.escape(brand)}\s*금융투자")
+    return re.compile("|".join(alts), re.IGNORECASE)
 
 _SURFACE_CACHE = {c: _surface_re(c) for c in SECURITIES_WHITELIST}
 
