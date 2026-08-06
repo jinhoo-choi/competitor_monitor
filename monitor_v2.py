@@ -462,11 +462,40 @@ _ENTITY_PATTERNS = [
     r'두나무|업비트|빗썸|코빗|코인원',
     r'온도파이낸스|온도(?!파이낸스)',  # '온도' 단독도 잡되 '온도파이낸스' 우선
     r'무신사|카카오페이|네이버페이|토스페이|네이버파이낸셜',
+    r'트래블월렛|트래블로그|네이버웹툰|티맵모빌리티|당근마켓|배달의민족',
     r'두올|파운트|핀트|에임|쿼터백',
     # 은행 (일반)
     r'우리은행|신한은행|하나은행|국민은행|기업은행|농협은행',
 ]
 _ENTITY_RE = re.compile("|".join(_ENTITY_PATTERNS), re.IGNORECASE)
+
+# 파트너사 고정 목록만으로는 신규 제휴처(트래블월렛·네이버웹툰 등)를 못 잡아
+# 동일 사건이 매체만 바꿔 2건씩 탐지되는 사고 발생(8/6 10시). 범용 추출기로 보완.
+_PARTNER_PATS = [
+    re.compile(r'[-–—x×]\s*([가-힣A-Za-z0-9]{2,12})'),        # 'A-B' 결합 표기
+    re.compile(r'([가-힣A-Za-z0-9]{2,12})(?:와|과)\s'),        # '~와/과 손잡고'
+    re.compile(r'([가-힣A-Za-z0-9]{2,12})(?:와|과)의'),
+]
+# 고유명사가 아닌 일반명사 — 키로 쓰면 무관한 기사를 뭉뚱그려 억제하므로 제외
+_PARTNER_STOP = {
+    "증권","증권사","고객","투자","투자자","서비스","시장","금융","업계","회사","기업",
+    "은행","계좌","수수료","상품","사업","실적","거래","주식","해외주식","국내주식",
+    "퇴직연금","연금","자산","자산운용","플랫폼","이벤트","프로모션","리서치","보고서",
+    "지난해","올해","내년","관련","공동","함께","맞손","협약","제휴","체결","출시",
+}
+
+def _extract_partner(title: str, company: str) -> str:
+    """제목에서 제휴 상대방 고유명사를 범용 추출. 없으면 \"\"."""
+    t = (title or "").replace(company or "", " ")
+    for rgx in _PARTNER_PATS:
+        for mm in rgx.finditer(t):
+            cand = re.sub(r"\s+", "", mm.group(1))
+            if len(cand) < 2 or cand in _PARTNER_STOP:
+                continue
+            if re.fullmatch(r"[0-9]+", cand):
+                continue
+            return cand
+    return ""
 
 def _extract_entity_key(title: str, company: str) -> str:
     """
@@ -482,7 +511,9 @@ def _extract_entity_key(title: str, company: str) -> str:
         title_stripped = title_stripped.replace(company, "")
     m = _ENTITY_RE.search(title_stripped)
     if not m:
-        return ""
+        # 큐레이션 목록 미스 → 범용 파트너 추출로 폴백
+        generic = _extract_partner(title, company)
+        return f"{company}::{generic}" if generic else ""
     entity = re.sub(r'\s+', '', m.group(0))  # 공백 제거 정규화
     # 영문 → 한글 정규화
     entity = re.sub(r'(?i)tradingview|trading\s*view', '트레이딩뷰', entity)
