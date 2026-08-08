@@ -1,0 +1,196 @@
+{
+  "time": "2026-08-08T10:01:29.912749+09:00",
+  "total": 26,
+  "sent": 0,
+  "hard_excl": 4,
+  "excl_stats": {
+    "케이뱅크": 1,
+    "[A 증권가 소식]": 1,
+    "카카오뱅크": 1,
+    "한국투자신탁운용": 1
+  },
+  "entries": [
+    {
+      "hash": "d52ba80c",
+      "title": "[N2 포커스] 삼성증권, 발행어음 눈앞…자기자본 8조로 ‘리테일·IB·배...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "e327fd73",
+      "title": "LIG디펜스앤에어로스페이스, 실적 발표 후 급락→반등⋯증권가 “28년까...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2118beeb",
+      "title": "[주간 거래소 기관] 삼성전자·SK하이닉스 팔고 삼성전기·한화솔루션·...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fa6885bb",
+      "title": "삼성증권, 연금저축계좌 거래수수료 혜택 이벤트",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d181b777",
+      "title": "삼성증권, 연금저축 ETF·리츠 온라인 수수료 우대…연말까지 자동 적용",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bcae5057",
+      "title": "IPO 시장, 종목별 투자 열기 '극과 극'... 딜리셔스 vs 케이앤에스아이앤...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "98bdd29c",
+      "title": "공모주 시장도 'AI·로봇' 열풍…코스모로보틱스·마키나락스 두각",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a0e00ebf",
+      "title": "[IPO챗] 딜리셔스·케이앤에스아이앤씨 코스닥 입성…공모주 청약 3곳",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "91b94bcc",
+      "title": "SK하이닉스, 용인 반도체에 54조 베팅…대규모 투자 나선다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "762d6273",
+      "title": "‘요즘 헬스장마다 있는데’ 주식 살 생각 못했네…일주일 만에 53% 급등...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5718cda3",
+      "title": "[경제 이슈] 금융업계, 혁신 추구하는 AI 도입 경쟁 치열...\"책임 없는 혁...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "279d3312",
+      "title": "[핀포인트] [KB증권] 연임성공 이홍구, WM 수익 다변화 과제",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4a2f042c",
+      "title": "전주 금융생태계 커진다…민간금융·스타트업 투자 확대",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "dd3e61bb",
+      "title": "개인도 외국인·기관처럼 자동 매매···'오픈API' 속속 도입하는 증권...",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "8d32d28d",
+      "title": "[주간 거래소 외국인] 삼성물산 셀트리온 삼성바이오로직스 SK 쓸어 담았...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d16272a6",
+      "title": "AI 키우는 스페이스X…성장 빨라졌지만 투자 부담도 커졌다[클릭!e해외...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "996b53c3",
+      "title": "아기 주식 계좌 3배 폭증…부모들 열광한 이유",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "51fcb938",
+      "title": "‘껍데기’와 다르다…영업망 갖춘 상상인증권, 2000억 몸값 배경은",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "40a88e6e",
+      "title": "빗썸, 파트너 물색 장기화…IPO로 독자 승부수 띄우나",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "dc3191b9",
+      "title": "[장선필의 연금이야기] 혼돈의 시대, '임계점'에 선 퇴직연금 가입자",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "88c69a40",
+      "title": "반도체 레버리지 경각심 속 뉴욕 증시에서 3배 레버리지 투자 상품 경쟁...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "83979cc9",
+      "title": "예탁원, 비상장주식·조각투자 청산결제망 구축…증권사 간 거래 열린다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0aaa948a",
+      "title": "게임하고 포인트 쌓고...금융앱 앱테크, 콘텐츠로 승부",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "케이뱅크"
+    },
+    {
+      "hash": "3616264c",
+      "title": "[A 증권가 소식] 삼성증권, 연금저축 거래 수수료 낮춰 고객 자산 운용...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[A 증권가 소식]"
+    },
+    {
+      "hash": "ac68f418",
+      "title": "금융주는 40% 뛰었는데…카뱅·케뱅 '인뱅株 잔혹사' [인뱅 스코프]",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "카카오뱅크"
+    },
+    {
+      "hash": "c1c4c193",
+      "title": "다음주 상장 예정 ETF는?…'반도체·우주' 여전히 관심",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "한국투자신탁운용"
+    }
+  ]
+}
