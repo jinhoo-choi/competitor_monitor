@@ -1,0 +1,211 @@
+{
+  "time": "2026-08-09T10:01:50.253960+09:00",
+  "total": 28,
+  "sent": 2,
+  "hard_excl": 5,
+  "excl_stats": {
+    "기업금융": 1,
+    "[거래절벽 코인시장, 활로는②]": 1,
+    "상장브이아이자산운용": 1,
+    "브이아이자산운용": 1,
+    "자산운용": 1
+  },
+  "entries": [
+    {
+      "hash": "d54e7597",
+      "title": "역대 최대 실적에도 하반기 불안감 커지는 증권업계",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fe7a836a",
+      "title": "단일 레버리지 규제에 코스닥 레버리지 ETF '급부상'…자금 유입 뚜렷",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0a590ac6",
+      "title": "'주식'에서 '자산관리'로…700조 연금시장 노리는 리테일 강자들",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "db6c8174",
+      "title": "청약 경쟁률, 연이어 초토화…IPO 시장도 '양극화' 조짐",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8050d55e",
+      "title": "연금 고객 잡기 나선 삼성증권…ETF·리츠 수수료 우대",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "8d6479a0",
+      "title": "[이번주 IPO]8월 둘째 주 수요예측·청약 일정",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8d1b88de",
+      "title": "[공모주달력]무더위만큼 뜨거운 일정...기도산업·해치텍·니어스랩, 동...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "61662d22",
+      "title": "‘미디어 플랫폼 흑자’ CJ ENM, 하반기 IP·글로벌 유통 확장 드라이브",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4de2edf4",
+      "title": "'코인무브' 탓?···쪼그라든 국내 디지털자산 시장",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bab3bb6f",
+      "title": "증권사, 조각투자 서비스 확대…장외거래소 개장 대비",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "2cb8bf60",
+      "title": "[N2 포커스] 브로커리지 넘어 연금까지…키움증권, 수익 다각화 ‘본궤...",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "dacdb25d",
+      "title": "국내 증시 급등에 따른 증권사 단기 자금 조달 170% 증가",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0d87619a",
+      "title": "늘어난 ‘빚투’에 증권사 단기 차입 급증…전년比 170% ‘쑥’",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bc3d71b6",
+      "title": "개미 '빚투' 열풍에 증권사 단기자금 조달 '폭증'",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0f305eec",
+      "title": "개미 '빚투' 급증에 증권사 단기조달 확대…CP·전단채 발행 170% 급증",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8bb017d4",
+      "title": "최윤 OK금융 회장, '종합금융' 승부수…비은행 영토 확장 '잰걸음'[오늘...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c440ace2",
+      "title": "[핀포인트] [KB증권] 1.7조 수혈해 IMA 채비…내부통제·대주주 심사 등...",
+      "company": "KB증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "af98b8be",
+      "title": "‘짤방’으로 이해하는 K-주식 세계",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9588dad6",
+      "title": "이번주 공모주 청약, 기도산업·니어스랩·해치텍 3개사",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "461c4772",
+      "title": "'AI 투자비서'가 미래 먹거리…토스·카카오페이증권, 투자 대중화 속도",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "f2efb6db",
+      "title": "개인은 9조 팔았는데… 코스닥 ‘숨은 우량주’ 사모은 美 펀드",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e77c8e88",
+      "title": "디지털자산 주도권 경쟁… 금융권, 플랫폼 확보 사활 [거래소 판도변화...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9ffabda8",
+      "title": "[비즈앤피플] 24시간 주식 거래 시대가 온다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "59cfb35b",
+      "title": "'상반기 1조 클럽' 삼성증권 실적 랠리 진행형, 박종문 '발행어음' 달고...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "8911c26d",
+      "title": "[거래절벽 코인시장, 활로는②] 거래는 말라도 몸값은 뛴다…금융권, 거...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[거래절벽 코인시장, 활로는②]"
+    },
+    {
+      "hash": "e503699a",
+      "title": "반도체·금융·우주산업까지...한국거래소, ETF 3종 신규 상장",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "상장브이아이자산운용"
+    },
+    {
+      "hash": "bfea858c",
+      "title": "반도체+·금융반도체지주·美우주항공 [이주의 상장ETF]",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "브이아이자산운용"
+    },
+    {
+      "hash": "74a98b62",
+      "title": "美 우주 인프라·반도체 ‘주목’…ETF 3종목 신규 상장",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    }
+  ]
+}
