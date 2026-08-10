@@ -484,6 +484,20 @@ _PARTNER_STOP = {
     "지난해","올해","내년","관련","공동","함께","맞손","협약","제휴","체결","출시",
 }
 
+# 신규 서비스·브랜드명은 국내 기사에서 거의 항상 따옴표로 표기된다('PLUG', '크레온').
+# 제휴 기사가 아닌 '서비스 출시' 기사의 동일사건 중복(8/10 NH투자증권 PLUG)은
+# 파트너사 추출로는 못 잡히므로 따옴표 브랜드명을 별도 축으로 사용한다.
+# 공백 포함 후보는 문장형 인용("웹툰 보며 투자도")이므로 제외.
+_QUOTED_RE = re.compile(r"['\"\u2018\u2019\u201c\u201d\u300c\u300d\u300e\u300f]([A-Za-z\uac00-\ud7a30-9]{2,15})['\"\u2018\u2019\u201c\u201d\u300c\u300d\u300e\u300f]")
+
+def _extract_quoted_brand(title: str, company: str) -> str:
+    for mm in _QUOTED_RE.finditer(title or ""):
+        cand = mm.group(1)
+        if cand in _PARTNER_STOP or cand == company:
+            continue
+        return cand.upper() if re.fullmatch(r"[A-Za-z0-9]+", cand) else cand
+    return ""
+
 def _extract_partner(title: str, company: str) -> str:
     """제목에서 제휴 상대방 고유명사를 범용 추출. 없으면 \"\"."""
     t = (title or "").replace(company or "", " ")
@@ -512,7 +526,7 @@ def _extract_entity_key(title: str, company: str) -> str:
     m = _ENTITY_RE.search(title_stripped)
     if not m:
         # 큐레이션 목록 미스 → 범용 파트너 추출로 폴백
-        generic = _extract_partner(title, company)
+        generic = _extract_quoted_brand(title, company) or _extract_partner(title, company)
         return f"{company}::{generic}" if generic else ""
     entity = re.sub(r'\s+', '', m.group(0))  # 공백 제거 정규화
     # 영문 → 한글 정규화
