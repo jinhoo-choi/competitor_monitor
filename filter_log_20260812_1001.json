@@ -1,0 +1,457 @@
+{
+  "time": "2026-08-12T10:01:59.497944+09:00",
+  "total": 62,
+  "sent": 0,
+  "hard_excl": 22,
+  "excl_stats": {
+    "자산운용사": 1,
+    "[금융지주 비은행 M&A①]": 1,
+    "분기 순이익": 4,
+    "투자의견": 4,
+    "목표주가": 3,
+    "실적 전망 하향": 1,
+    "반기 순이익": 1,
+    "[금융권 이모저모]": 1,
+    "[금융人": 1,
+    "칼럼]": 2,
+    "연간 순이익": 1,
+    "순이익 1조": 1,
+    "컨센서스": 1
+  },
+  "entries": [
+    {
+      "hash": "534e18da",
+      "title": "'피지컬 AI 기반 자율비행 드론' 니어스랩, 일반 공모 돌입[오늘청약]",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "38e88a55",
+      "title": "\"35만원\" vs \"60만원\"…삼성전자 두고 증권가 '극과 극' 전망",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "03e7d585",
+      "title": "[오늘의 주요일정] 정치·경제·금융·사회·법조 12일(수)",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "864cc5f9",
+      "title": "[Invest]딜 가뭄에 '공동보다 단독'…SK실트론·에어퍼스트 인수금융 쟁...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "583d74ed",
+      "title": "[들어보니]증권사, STO 승부처 ‘플랫폼’…리테일 앱이 가른다",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "110d2b8a",
+      "title": "[N2 포커스] 외국인 거래 30% 시대…증권사, 해외 개미 '유치전'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6384068c",
+      "title": "국내주식 소수점 거래 도입 4년...카카오페이증권도 합류",
+      "company": "카카오페이증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "2b55aac5",
+      "title": "[흔들리는 퇴직연금] 적립금 1위 뺏긴 삼성생명…IRP로 왕관 되찾는다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6196a78f",
+      "title": "상반기 거래 2760조 ETF ‘숨은 손’… 차익거래로 연 1000억 이상 번다...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4fd82d0c",
+      "title": "\"퇴직연금 553.9조 돌파…DC·IRP서 채권 수요 증가\"<키움證>",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9d3fec04",
+      "title": "554조원 퇴직연금 ‘대이동’…은행 떠난 돈, 증권사·ETF로",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "72673096",
+      "title": "퇴직연금 554조 시대…'직접투자' 나선 개미들, 채권보다 주식",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cedf1575",
+      "title": "[아주증시포커스] 프리마켓은 밀리고, 애프터 ETF 거래는 무산되고…스...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c7f8718c",
+      "title": "증시 유동성 유입 속 브로커리지 호조… 상상인증권·부국증권· 상상인...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "389bcbce",
+      "title": "포스코그룹 2.5조 PRS에 증권사 총출동…금리 5%대",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7da2e920",
+      "title": "사상 최대 실적이 무색…증권주 3달 만에 40% '급락'",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f843f82e",
+      "title": "[주식마감] '3대 메가프로젝트' 소식에 금호건설·금호전기 상한가... 남...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d4d58c7c",
+      "title": "KB증권 \"엔씨 '아이온2' 글로벌 성과 주목, 시장 기대 넘어설 가능성 충...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6a8ce887",
+      "title": "KB증권 \"한미약품, 북경한미 실적 조정...27년 기술이전 기대감\"",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ef41b11f",
+      "title": "플리토, '구글·AWS·메타까지' 빅테크향 AI 플랫폼 확대…수주잔고 1263...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9e9b6d77",
+      "title": "[더벨]한국투자금융지주, '카디프생명' 품는다",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f50bb47c",
+      "title": "[핀포인트] [NH투자증권] IMA 책임질 PF통 신재욱, 비부동산 역량 과제",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7929e9b4",
+      "title": "NH투자증권, NYSE 린 마틴 회장 초청 간담회",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e3f2f82d",
+      "title": "[증권 데일리] 미래에셋·한화 고객접점 확대…iM 자본·NH 글로벌 강화",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "91120d86",
+      "title": "미래에셋증권, 업계 최초 2분기 연속 순익 1조…상반기 3조 육박",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1764d5ab",
+      "title": "미래에셋증권, 2분기 순익 1조9052억…2개 분기 연속 1조 돌파",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b4282084",
+      "title": "부자 고객 잡으려는 금융사들…'개인전'에서 '단체전'으로",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "be1c4333",
+      "title": "미래에셋, 증권업계 최초 2분기 연속 순이익 '1조원' 돌파(종합)",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2ab4b425",
+      "title": "미미래에셋증권, 2분기 순익 1.9조 '역대 최대'···고객자산 784조 시대...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "717b354e",
+      "title": "토스, 교보생명과 디지털자산 동맹…결제 넘어 보험·금융으로 웹3 영토...",
+      "company": "토스",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "18cacec3",
+      "title": "교보생명·토스 디지털자산 협력…금융 서비스 공동 제공",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "fd75e163",
+      "title": "'회수·판매 중지' 정보가 자본시장법상 공개되기 전에 주식을 팔았다면...",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ad1af78d",
+      "title": "[금융가 사람들] 신한證 디지털자산부서장 \"믿고 쓰는 STO 환경 만들겠다...",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "dec66a2f",
+      "title": "단일종목 레버리지 ETF ‘20주씩 거래’, 이르면 내달 시행",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ee715c5e",
+      "title": "“에잇퍼센트·에이판다, 1호 STO 추진…스테이블코인·IPO도 도전”",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "24584e35",
+      "title": "'신상마켓' 딜리셔스, 코스닥 입성 첫날 16%대 하락세 … 공모가 밑돌아...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b8e9ed90",
+      "title": "미래에셋증권, 2분기 순익 2조원 근접…리테일 호조",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7d1bcf3d",
+      "title": "아이티아이즈, KDX 정보사업 플래폼 구축 사업자 낙점…STO 생태계 '주요...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "da8e73e0",
+      "title": "\"대신증권, 초대형 IB 도약 준비…목표가 4만원\"<NH투자證>",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0f4eac08",
+      "title": "IBK투자증권, 코넥스 5곳 중 1곳 키웠다…성장 사다리 역할 ‘톡톡’",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a8171d93",
+      "title": "우리·카카오도 시장진입…커지는 ETF 시장에 경쟁 확대 ['황금알' 낳는...",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    },
+    {
+      "hash": "4c90c1f3",
+      "title": "[금융지주 비은행 M&A①] 카드·증권 거쳐 보험까지… 20년 영토 전쟁",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융지주 비은행 M&A①]"
+    },
+    {
+      "hash": "dbbfac9c",
+      "title": "미래에셋증권, 분기 순이익으로 신한지주 넘어서",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "분기 순이익"
+    },
+    {
+      "hash": "0ea342d0",
+      "title": "KB증권 \"한미약품, 비만 신약 가치 커진다…내년 기술이전 주목\"",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    },
+    {
+      "hash": "9eccbff4",
+      "title": "메리츠證 \"NHN, 클라우드 매출 1조 전망…목표가 18.5% 상향\"",
+      "company": "메리츠증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "35279ccd",
+      "title": "목표가 5000원 낮춘 메리츠증권, 스튜디오드래곤 실적 전망 하향",
+      "company": "메리츠증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "실적 전망 하향"
+    },
+    {
+      "hash": "6dd16a0f",
+      "title": "NC, '저스트플레이' 포함 모바일 캐주얼의 성장…'매수'-메리츠",
+      "company": "메리츠증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    },
+    {
+      "hash": "70099c05",
+      "title": "NC, 저스트플레이 본격 편입…안정적 성장 기대-메리츠證",
+      "company": "메리츠증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    },
+    {
+      "hash": "ef7f9434",
+      "title": "NHN, 호실적 이어 증권가 목표가 줄상향…이틀째 급등[특징주]",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "2436163e",
+      "title": "NH투자證 \"NHN, 목표가 7만원↑…네오클라우드 성과 주목\"",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    },
+    {
+      "hash": "e462a75d",
+      "title": "NH투자증권 \"대신증권 실적 개선에 사업 확장 가시화, 주가 반등 발판 마...",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "4f2d3569",
+      "title": "미래에셋증권, 상반기 순이익 2조9072억원…전년 대비 337.8%↑",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "반기 순이익"
+    },
+    {
+      "hash": "e55e2d8c",
+      "title": "미래에셋증권, 2분기 순이익 1조 9052억 원…분기사상 최대 실적 달성",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "분기 순이익"
+    },
+    {
+      "hash": "e4c09c54",
+      "title": "[금융권 이모저모]한국투자신탁운용, ACE 밸류체인 ETF 2종 3개월 수익률...",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융권 이모저모]"
+    },
+    {
+      "hash": "c075d2bf",
+      "title": "[금융人사이트] 장병호의 승부수…한화투자증권 '디지털자산 증권사'로...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융人"
+    },
+    {
+      "hash": "d90e250b",
+      "title": "[허정수칼럼] IPO침체, 생산적 금융의 걸림돌",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "칼럼]"
+    },
+    {
+      "hash": "fc0f0fbf",
+      "title": "미래에셋증권, 상반기 순익 2.9조 '업계 1위'…사상 첫 '4조 클럽' 예약",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "연간 순이익"
+    },
+    {
+      "hash": "9f8d1aa7",
+      "title": "미래에셋증권, 2분기 순이익 1.9조원…증권업계 첫 2개 분기 연속 1조원...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "분기 순이익"
+    },
+    {
+      "hash": "ac3d17c3",
+      "title": "미래에셋증권, 국내 증권사 최초 ‘분기 1조’ 연속…상반기 3조 육박",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "순이익 1조"
+    },
+    {
+      "hash": "425e2455",
+      "title": "미래에셋증권, 2분기 순이익 1.9조..'전무후무'(상보)",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "분기 순이익"
+    },
+    {
+      "hash": "08d8f005",
+      "title": "[돌담길칼럼] 삼성증권 중징계도 결국 '할인 스티커'",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "칼럼]"
+    },
+    {
+      "hash": "286b5f0b",
+      "title": "\"대신증권, 일회성 이익 덕에 '깜짝 실적'…반등 발판 마련\"-NH",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "컨센서스"
+    }
+  ]
+}
