@@ -1,0 +1,208 @@
+{
+  "time": "2026-08-15T10:01:37.260480+09:00",
+  "total": 27,
+  "sent": 2,
+  "hard_excl": 9,
+  "excl_stats": {
+    "기업금융": 1,
+    "[A 증권가 소식]": 1,
+    "[550조 퇴직연금 승부수①]": 1,
+    "고객패널": 1,
+    "고객 패널": 1,
+    "[여의도 물어보살①]": 1,
+    "반기 순이익": 1,
+    "자산운용": 1,
+    "법인영업": 1
+  },
+  "entries": [
+    {
+      "hash": "3f62b9fc",
+      "title": "삼성증권, ISA 수수료 ‘평생 우대’…신규 고객 자동 적용",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "8cf31f2b",
+      "title": "다음 주 IPO 시장, 바이오·의류주 출격…스카이랩스 수요예측 [주간 IP...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "711fbe93",
+      "title": "[주간사모펀드] 롯데렌탈 새 주인 찾았다…美 사모펀드 TPG에 매각",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "58a936a0",
+      "title": "최대 실적에도 리테일 점유율 5분기째 하락···키움증권, 거래 외 돌파...",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "8ecda5a9",
+      "title": "'역대급 불장'에 작년보다 5.8조 더 번 10대 증권사…8곳 '반기 최대'",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "698aabc5",
+      "title": "\"코스피 9000 시대 효과\" 대형 증권사들, 상반기 순익 6조원 육박...주요...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "03d3cff8",
+      "title": "[기자수첩] 미래에셋과의 신경전? '1조' 번 한국금융, 더 중요한 건 'Nex...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e36deafb",
+      "title": "증권사 계약직이 '227억 연봉킹' 올랐다…수십억대 성과보수 속출",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "261799d6",
+      "title": "[은행가] 하나금융, 지역 중장년 구직자 일자리 지원 外",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c1482bac",
+      "title": "[흔들리는 퇴직연금] 증권사로 '머니무브'…교보생명 대응 전략은",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "962d08e7",
+      "title": "[집중분석] 월가 홀린 엔비디아의 'GPU 자산화' 승부수",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c7a66063",
+      "title": "금리·수수료·AI까지…증권사 '리테일 전쟁' 불붙었다",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "a9acfe25",
+      "title": "[증권 뉴스브리핑] 투자자문·일임업 수익 2.3조/신한투자증권, 상반기...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8a2185e4",
+      "title": "NH투자증권, 기준수익률 높인 IMA 3호 출격",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "de0070f2",
+      "title": "[핀포인트] [미래에셋증권] 퇴직연금 1위 수성, 수익률은 '주춤'",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d82b6b4e",
+      "title": "미래에셋證 북미 공략 … 퍼블릭닷컴 인수 추진",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "433e2d5b",
+      "title": "싱가포르 벤처펀드 '대박 예감'…SV인베, 5개사 해외 상장 가능성",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "385e5a74",
+      "title": "\"휴일에도 이자 받는다\" 토스증권, 해외채권 지급 관행 깬다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "69a6e3b9",
+      "title": "[증권브리핑] 토스증권, 해외채권 원리금 공휴일에도 지급 외",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "c9991f4b",
+      "title": "[A 증권가 소식] 삼성증권, '중개형 ISA' 수수료 우대 적용...거래 비용 ...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[A 증권가 소식]"
+    },
+    {
+      "hash": "da099d9a",
+      "title": "[550조 퇴직연금 승부수①] 계열사 강점 결집…금융그룹 연금시장 '총공...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[550조 퇴직연금 승부수①]"
+    },
+    {
+      "hash": "cb2c9706",
+      "title": "키움증권, 21기 고객패널 모집",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "고객패널"
+    },
+    {
+      "hash": "5311f953",
+      "title": "[증권 NOW] 키움증권·대신증권",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "고객 패널"
+    },
+    {
+      "hash": "f552a1b6",
+      "title": "[여의도 물어보살①] '피크아웃 벌써?' 삼전·닉스 급락에도…증권가는...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[여의도 물어보살①]"
+    },
+    {
+      "hash": "0099f880",
+      "title": "토스증권, 상반기 순이익 2368억…역대 최대 실적",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "반기 순이익"
+    },
+    {
+      "hash": "fa66c8a2",
+      "title": "KCGI자산운용, 3년 만에 공모 주식형 톱10…순자산 3배로",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "df9109b6",
+      "title": "\"리테일·플랫폼 수익 증가\" 다올투자증권, 2분기 매출 1조605억원…전년...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "법인영업"
+    }
+  ]
+}
