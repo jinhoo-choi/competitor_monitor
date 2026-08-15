@@ -1,0 +1,161 @@
+{
+  "time": "2026-08-15T18:01:12.645271+09:00",
+  "total": 21,
+  "sent": 0,
+  "hard_excl": 4,
+  "excl_stats": {
+    "[A 증권가 소식]": 1,
+    "[550조 퇴직연금 승부수①]": 1,
+    "[여의도 물어보살①]": 1,
+    "법인영업": 1
+  },
+  "entries": [
+    {
+      "hash": "538ba570",
+      "title": "삼성증권, 연금저축 '점프-업!' 이벤트 전개",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "69a6e3b9",
+      "title": "[증권브리핑] 토스증권, 해외채권 원리금 공휴일에도 지급 외",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8cf31f2b",
+      "title": "다음 주 IPO 시장, 바이오·의류주 출격…스카이랩스 수요예측 [주간 IP...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9b6acb60",
+      "title": "네이버 AI 사업 몸집 커진다…키움증권 \"글로벌 제휴 필요\"",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8ecda5a9",
+      "title": "'역대급 불장'에 작년보다 5.8조 더 번 10대 증권사…8곳 '반기 최대'",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "698aabc5",
+      "title": "\"코스피 9000 시대 효과\" 대형 증권사들, 상반기 순익 6조원 육박...주요...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "261799d6",
+      "title": "[은행가] 하나금융, 지역 중장년 구직자 일자리 지원 外",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "962d08e7",
+      "title": "[집중분석] 월가 홀린 엔비디아의 'GPU 자산화' 승부수",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c7a66063",
+      "title": "금리·수수료·AI까지…증권사 '리테일 전쟁' 불붙었다",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "de0070f2",
+      "title": "[핀포인트] [미래에셋증권] 퇴직연금 1위 수성, 수익률은 '주춤'",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e1a7edb7",
+      "title": "[H1 분석] 5대 금융지주…\"비은행은 KB·균형은 신한·본업은 하나·포트...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c1482bac",
+      "title": "[흔들리는 퇴직연금] 증권사로 '머니무브'…교보생명 대응 전략은",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2132fc5b",
+      "title": "주식시장 활황에 미래에셋증권 날았다…수수료·운용·해외법인 모두 개...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "433e2d5b",
+      "title": "싱가포르 벤처펀드 '대박 예감'…SV인베, 5개사 해외 상장 가능성",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "99695b06",
+      "title": "8월 19일부터 '이것' 반드시 이수해야 레버리지 투자 가능해진다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b0ebe16f",
+      "title": "증권사 랩·일임 '100조' 시대…고객 6% 늘 때 잔고 55% 껑충",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1f1c991b",
+      "title": "5대 금융지주 증권사 상반기 성적표···NH·KB 앞서고 신한·하나 회복...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c9991f4b",
+      "title": "[A 증권가 소식] 삼성증권, '중개형 ISA' 수수료 우대 적용...거래 비용 ...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[A 증권가 소식]"
+    },
+    {
+      "hash": "da099d9a",
+      "title": "[550조 퇴직연금 승부수①] 계열사 강점 결집…금융그룹 연금시장 '총공...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[550조 퇴직연금 승부수①]"
+    },
+    {
+      "hash": "f552a1b6",
+      "title": "[여의도 물어보살①] '피크아웃 벌써?' 삼전·닉스 급락에도…증권가는...",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[여의도 물어보살①]"
+    },
+    {
+      "hash": "df9109b6",
+      "title": "\"리테일·플랫폼 수익 증가\" 다올투자증권, 2분기 매출 1조605억원…전년...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "법인영업"
+    }
+  ]
+}
