@@ -308,6 +308,31 @@ def _surface_re(canon: str):
 
 _SURFACE_CACHE = {c: _surface_re(c) for c in SECURITIES_WHITELIST}
 
+INDUSTRY_TAG = "증권업계"   # 특정사 액션이 아닌 시장 전반 기사에 쓰는 회사 태그
+
+# 업계 기획기사 신호 — 제목에 특정사 액션이 아니라 시장 전반을 다룬다는 표지가 있는 경우.
+# 실사례(8/11 18시): "코딩 몰라도 AI가 주식 매매 척척…증권가 '오픈 API' 대중화 활짝"이
+#   다올증권 단독 이벤트(중 5.5)로 표시됐으나 본문은 다올·토스·NH 등 업계 전반 동향.
+_INDUSTRY_SIGNALS = re.compile(
+    r'증권가|증권업계|증권사들|업계\s*전반|잇따라|잇단|줄줄이|너도나도|확산|대중화|'
+    r'경쟁\s*가열|각축|들썩|바람|열풍|트렌드|\[증권\s*UP|이모저모|한눈에'
+)
+
+def count_securities_in_text(text: str) -> int:
+    """텍스트에 등장하는 서로 다른 증권사 수."""
+    return sum(1 for rgx in _SURFACE_CACHE.values() if rgx.search(text or ""))
+
+def is_industry_wide(title: str, body: str) -> bool:
+    """
+    업계 전반 기사 판정. 두 조건을 모두 만족해야 한다:
+      ① 제목에 업계 기획기사 신호가 있음
+      ② 본문에 서로 다른 증권사가 3곳 이상 등장 (단순 비교 언급 1~2곳은 제외)
+    한쪽만으로 판정하면 "증권가 최초" 같은 단일사 기사까지 뭉뚱그려진다.
+    """
+    if not _INDUSTRY_SIGNALS.search(title or ""):
+        return False
+    return count_securities_in_text((title or "") + " " + (body or "")) >= 3
+
 def find_securities_in_text(text: str) -> str:
     """텍스트에서 실제 표기된 증권사 중 가장 앞에 등장하는 회사를 반환. 없으면 ""."""
     if not text:
@@ -490,6 +515,21 @@ _PARTNER_STOP = {
 # 공백 포함 후보는 문장형 인용("웹툰 보며 투자도")이므로 제외.
 _QUOTED_RE = re.compile(r"['\"\u2018\u2019\u201c\u201d\u300c\u300d\u300e\u300f]([A-Za-z\uac00-\ud7a30-9]{2,15})['\"\u2018\u2019\u201c\u201d\u300c\u300d\u300e\u300f]")
 
+# 규모 마일스톤(가입자 1000만, 자산 100조 등)은 같은 사건이 여러 날 다른 앵글로 재보도된다.
+# 실사례(8/7 10시↔18시): 토스증권 1000만 가입자가 "누적 가입자 1000만 돌파"(MTS플랫폼)와
+#   "1000만 고객 시대…연금저축계좌 출시"(연금저축)로 도메인이 갈려 폴백1 키를 우회함.
+# 수치+단위를 별도 키 축으로 두면 도메인이 달라도 동일 사건으로 묶인다.
+# ※ 순위(1위)·퍼센트·연도는 제외 — 일반적이라 무관한 기사까지 억제됨.
+_MILESTONE_RE = re.compile(r'(\d{1,4})\s*(만|억|조)\s*(?:명|원|건|좌|주|달러)?')
+
+def _extract_milestone(title: str) -> str:
+    for mm in _MILESTONE_RE.finditer(title or ""):
+        num, unit = mm.group(1), mm.group(2)
+        if unit == "만" and int(num) < 10:      # '5만원대' 같은 소규모 수치 제외
+            continue
+        return f"{num}{unit}"
+    return ""
+
 def _extract_quoted_brand(title: str, company: str) -> str:
     for mm in _QUOTED_RE.finditer(title or ""):
         cand = mm.group(1)
@@ -526,7 +566,9 @@ def _extract_entity_key(title: str, company: str) -> str:
     m = _ENTITY_RE.search(title_stripped)
     if not m:
         # 큐레이션 목록 미스 → 범용 파트너 추출로 폴백
-        generic = _extract_quoted_brand(title, company) or _extract_partner(title, company)
+        generic = (_extract_quoted_brand(title, company)
+                   or _extract_partner(title, company)
+                   or _extract_milestone(title))
         return f"{company}::{generic}" if generic else ""
     entity = re.sub(r'\s+', '', m.group(0))  # 공백 제거 정규화
     # 영문 → 한글 정규화
@@ -1112,18 +1154,27 @@ JSON only, 다른 텍스트 없이:
         #           ② rescue도 실패하면 비증권 주체로 보고 기사 자체를 드롭
         _title  = art.get("title","") or ""
         _btext  = art.get("_body","") or art.get("description","") or ""
-        _ok, _why = verify_attribution(extracted, _title + " " + _btext)
-        if not _ok:
-            _rescued = find_securities_in_text(_title) or find_securities_in_text(_btext)
-            if _rescued:
-                # 복수 증권사 기사(예: "삼성증권 청신호…메리츠증권 답보")에서 AI가 회사명을
-                # 잘못 잡은 케이스 — 제목 우선순위로 교정하고 점수는 그대로 유지한다.
-                print(f"    [귀속교정] {_why} → {_rescued} | {_title[:40]}")
-                art["_company"]          = _rescued
-                analysis["company_name"] = _rescued
-            else:
-                print(f"    [비증권 주체 드롭] {_why} | {_title[:45]}")
-                return {**art, "analysis": None}
+        # ── 업계 전반 기사 → 특정사 귀속 대신 '증권업계' 태그로 표시
+        if is_industry_wide(_title, _btext):
+            _n = count_securities_in_text(_title + " " + _btext)
+            print(f"    [업계동향] 증권사 {_n}곳 언급 → {INDUSTRY_TAG} | {_title[:40]}")
+            art["_company"]          = INDUSTRY_TAG
+            analysis["company_name"] = INDUSTRY_TAG
+            art["_industry_wide"]    = True
+            extracted                = INDUSTRY_TAG
+        else:
+            _ok, _why = verify_attribution(extracted, _title + " " + _btext)
+            if not _ok:
+                _rescued = find_securities_in_text(_title) or find_securities_in_text(_btext)
+                if _rescued:
+                    # 복수 증권사 기사(예: "삼성증권 청신호…메리츠증권 답보")에서 AI가 회사명을
+                    # 잘못 잡은 케이스 — 제목 우선순위로 교정하고 점수는 그대로 유지한다.
+                    print(f"    [귀속교정] {_why} → {_rescued} | {_title[:40]}")
+                    art["_company"]          = _rescued
+                    analysis["company_name"] = _rescued
+                else:
+                    print(f"    [비증권 주체 드롭] {_why} | {_title[:45]}")
+                    return {**art, "analysis": None}
 
         # ── event_key 정규화 — 날짜 부분을 코드에서 강제 현재 월로 교정
         # AI가 기사 내 날짜(출시 예정일 등)를 보고 과거/미래 날짜를 넣는 문제 방지
