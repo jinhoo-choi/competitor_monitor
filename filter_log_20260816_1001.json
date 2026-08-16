@@ -1,0 +1,132 @@
+{
+  "time": "2026-08-16T10:01:41.638637+09:00",
+  "total": 17,
+  "sent": 2,
+  "hard_excl": 3,
+  "excl_stats": {
+    "[금융人": 1,
+    "자산운용": 1,
+    "[550조 퇴직연금 승부수②]": 1
+  },
+  "entries": [
+    {
+      "hash": "923a85f9",
+      "title": "증권사, 연금 고객 유치 경쟁… IRP·개인연금 이전 이벤트 잇달아",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "ad1138c4",
+      "title": "삼성증권, 중개형 ISA 신규 고객에 온라인 수수료 평생 우대...올해 말까...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "1297edb0",
+      "title": "\"두 달 만에 1200억 됐다\"…개미들 퇴직연금 들고 몰려든 곳 [김연지의 ...",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "18370766",
+      "title": "엄주성 키움증권 대표, 고객 불편 살핀다...고객 소통 강화",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "e0c4b253",
+      "title": "[ESG경영 사례분석] 키움증권 엄주성 대표, 포용금융 토대로 ESG 균형 개...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cd54bd07",
+      "title": "미래에셋증권 주주들 울겠네…\"스페이스X 때문\" 목표가 줄하향 이유는",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "139014e7",
+      "title": "증시 활황에 웃은 증권사…상반기 순익 첫 10조 돌파",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "391360d8",
+      "title": "개인 10조 손실… 단일종목 레버리지 ETF, 무엇이 문제였나",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "49ef163b",
+      "title": "[N2 포커스] 스페이스X 빼도 세전익 1조원 육박…미래에셋증권, 글로벌...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8f9d4a62",
+      "title": "[전라 Insight] 전북금융특화도시 육성",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ca89d8a9",
+      "title": "에브리봇, AI '스마트 실버케어' 확장…로봇 플랫폼 체질 개선",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4ce1a278",
+      "title": "[핀포인트] [신한투자증권] 발행어음, 규모는 신중…모험자본은 확대",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d58feb25",
+      "title": "토스증권, 국내 증권사 최초 해외채권 원리금 공휴일·토요일 지급",
+      "company": "토스증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "a102a543",
+      "title": "외환당국, 심야 FX 거래에 최대 3배 가중치…원화 국제결제망도 구축",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4b471b52",
+      "title": "[금융人사이트] '삼성 금융 전략통' 박종문, 실적으로 증명…삼성증권 ...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융人"
+    },
+    {
+      "hash": "0bea3dec",
+      "title": "광복절에 다시 본 '필승코리아 펀드'…7년간 수익률 612.01%",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "fca27503",
+      "title": "[550조 퇴직연금 승부수②] 적립금보다 수익률…금융그룹 운용능력 '시...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[550조 퇴직연금 승부수②]"
+    }
+  ]
+}
