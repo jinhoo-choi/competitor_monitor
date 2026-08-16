@@ -520,22 +520,35 @@ _QUOTED_RE = re.compile(r"['\"\u2018\u2019\u201c\u201d\u300c\u300d\u300e\u300f](
 #   "1000만 고객 시대…연금저축계좌 출시"(연금저축)로 도메인이 갈려 폴백1 키를 우회함.
 # 수치+단위를 별도 키 축으로 두면 도메인이 달라도 동일 사건으로 묶인다.
 # ※ 순위(1위)·퍼센트·연도는 제외 — 일반적이라 무관한 기사까지 억제됨.
-_MILESTONE_RE = re.compile(r'(\d{1,4})\s*(만|억|조)\s*(?:명|원|건|좌|주|달러)?')
+_MILESTONE_RE = re.compile(r'(\d{1,4}(?:\.\d{1,2})?)\s*(만|억|조)\s*(?:명|원|건|좌|주|달러)?')
 
 def _extract_milestone(title: str) -> str:
     for mm in _MILESTONE_RE.finditer(title or ""):
         num, unit = mm.group(1), mm.group(2)
-        if unit == "만" and int(num) < 10:      # '5만원대' 같은 소규모 수치 제외
+        if unit == "만" and float(num) < 10:    # '5만원대' 같은 소규모 수치 제외
             continue
         return f"{num}{unit}"
     return ""
 
+# 따옴표 안이라도 브랜드가 아닌 표현이 많다('우후죽순','종합금융','연 4.5% 금리 적용').
+# 브랜드로 인정하는 조건: 영문/숫자 조합이거나, 한글이면 일반어 사전에 없을 것.
+_QUOTED_STOP = _PARTNER_STOP | {
+    "우후죽순","종합금융","최초","처음","대세","열풍","돌풍","황제주","동학개미","서학개미",
+    "큰손","대박","반토막","보릿고개","역대급","사상최대","신기록","1위","전액","무료",
+    "반년만","올해최고","연금부자","머니무브","패닉셀","불장","박스권",
+}
+
 def _extract_quoted_brand(title: str, company: str) -> str:
     for mm in _QUOTED_RE.finditer(title or ""):
         cand = mm.group(1)
-        if cand in _PARTNER_STOP or cand == company:
+        if cand in _QUOTED_STOP or cand == company:
             continue
-        return cand.upper() if re.fullmatch(r"[A-Za-z0-9]+", cand) else cand
+        # 영문/숫자 포함 = 서비스명일 가능성 높음(PLUG, M-STOCK, MTS2.0)
+        if re.search(r"[A-Za-z0-9]", cand):
+            return cand.upper() if re.fullmatch(r"[A-Za-z0-9]+", cand) else cand
+        # 순한글은 2~6자 고유명사만 인정(크레온, 나무, 미니스탁)
+        if 2 <= len(cand) <= 6:
+            return cand
     return ""
 
 def _extract_partner(title: str, company: str) -> str:
@@ -2053,15 +2066,7 @@ def main():
             # ③ 폴백2: 회사명+파트너사/서비스명 고유명사 — event_key 핵심행위가 달라도 잡아냄
             # 예) '키움증권::트레이딩뷰' → 제목이 달라도 동일 파트너사면 차단
             entity_key = _extract_entity_key(title_txt, co_for_key)
-            subj_key = ""
-            if result.get("_attr_unverified") and result.get("_attr_subject"):
-                subj_key = f"SUBJ::{result['_attr_subject']}"
-                if subj_key in seen.get("events", set()) and not new_stage:
-                    print(f"  [사건중복-주체키] {result.get('_company','')} | {title_txt[:45]} (키: {subj_key})")
-                    continue
-                if subj_key in runtime_events:
-                    print(f"  [런타임중복-주체키] {result.get('_company','')} | {title_txt[:45]}")
-                    continue
+            subj_key = ""   # (구)주체키 — 비증권 주체는 레이어6에서 드롭되므로 미사용
             if entity_key and entity_key in seen.get("events", set()) and not new_stage:
                 print(f"  [사건중복-폴백2(엔티티)] {result.get('_company','')} | {result.get('title','')[:45]} (키: {entity_key})")
                 continue
@@ -2261,9 +2266,6 @@ def main():
         entity_fb = _extract_entity_key(a.get("title",""), co_fb)
         if entity_fb:
             new_events.add(entity_fb)
-        # 주체키 저장 — 귀속검증 실패 건(회사 태그 신뢰불가)만
-        if a.get("_attr_unverified") and a.get("_attr_subject"):
-            new_events.add(f"SUBJ::{a['_attr_subject']}")
     save_seen(seen, sent_urls=sent_urls,
               new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
               new_events=new_events)
