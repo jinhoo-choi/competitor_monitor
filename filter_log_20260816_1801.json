@@ -1,0 +1,168 @@
+{
+  "time": "2026-08-16T18:01:35.533931+09:00",
+  "total": 22,
+  "sent": 0,
+  "hard_excl": 4,
+  "excl_stats": {
+    "[금융人": 1,
+    "[550조 퇴직연금 승부수②]": 1,
+    "[AI, 증권맨이 되다③]": 1,
+    "자산운용사": 1
+  },
+  "entries": [
+    {
+      "hash": "fbd16318",
+      "title": "이번 주 인제니아·기도산업 코스닥 상장…청약 경쟁률 올해 IPO 최저",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "923a85f9",
+      "title": "증권사, 연금 고객 유치 경쟁… IRP·개인연금 이전 이벤트 잇달아",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "1297edb0",
+      "title": "\"두 달 만에 1200억 됐다\"…개미들 퇴직연금 들고 몰려든 곳 [김연지의 ...",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "e0c4b253",
+      "title": "[ESG경영 사례분석] 키움증권 엄주성 대표, 포용금융 토대로 ESG 균형 개...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "96c183bd",
+      "title": "\"하반기 스페이스X 변수 부담\"…미래에셋증권 목표가 줄하향",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "139014e7",
+      "title": "증시 활황에 웃은 증권사…상반기 순익 첫 10조 돌파",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "391360d8",
+      "title": "개인 10조 손실… 단일종목 레버리지 ETF, 무엇이 문제였나",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "49ef163b",
+      "title": "[N2 포커스] 스페이스X 빼도 세전익 1조원 육박…미래에셋증권, 글로벌...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9e0f3b23",
+      "title": "반도체 반등에 삼전·닉스 신용잔고 ‘쑥’…레버리지ETF 거래도 회복세",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ca89d8a9",
+      "title": "에브리봇, AI '스마트 실버케어' 확장…로봇 플랫폼 체질 개선",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0bea3dec",
+      "title": "광복절에 다시 본 '필승코리아 펀드'…7년간 수익률 612.01%",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a8eb70ef",
+      "title": "미래에셋증권, 스페이스X 넘어 본업도 날았다..수익 기반 ‘탄탄’",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "508187c0",
+      "title": "삼성 보험 형제, 상반기 3조3000억원 벌었다…'비은행 금융그룹' 존재감...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1e2a1dcb",
+      "title": "넷마블 주가 전망 [금주 주목할 게임 IT 주식]",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4ce1a278",
+      "title": "[핀포인트] [신한투자증권] 발행어음, 규모는 신중…모험자본은 확대",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "2f60c759",
+      "title": "1410원대로 내려온 환율, 빨라진 '대미 투자' 시계에 반등 여부 촉각",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ad1138c4",
+      "title": "삼성증권, 중개형 ISA 신규 고객에 온라인 수수료 평생 우대...올해 말까...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "dcf4b563",
+      "title": "공모가는 어떻게 정할까… 증권신고서에 숨은 '몸값 공식' [돈 되는 공시...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4b471b52",
+      "title": "[금융人사이트] '삼성 금융 전략통' 박종문, 실적으로 증명…삼성증권 ...",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융人"
+    },
+    {
+      "hash": "fca27503",
+      "title": "[550조 퇴직연금 승부수②] 적립금보다 수익률…금융그룹 운용능력 '시...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[550조 퇴직연금 승부수②]"
+    },
+    {
+      "hash": "4cba088c",
+      "title": "[AI, 증권맨이 되다③] 어닝콜·뉴스 언제 다 봐요?…토스證 AI는 '투자 ...",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[AI, 증권맨이 되다③]"
+    },
+    {
+      "hash": "53fe7ce4",
+      "title": "국민연금 이사장 “2분기 미국주식 평가가치 17.8% 증가”",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    }
+  ]
+}
