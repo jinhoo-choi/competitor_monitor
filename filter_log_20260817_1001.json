@@ -1,0 +1,271 @@
+{
+  "time": "2026-08-17T10:01:19.199904+09:00",
+  "total": 37,
+  "sent": 2,
+  "hard_excl": 2,
+  "excl_stats": {
+    "자산운용": 1,
+    "반기 순이익": 1
+  },
+  "entries": [
+    {
+      "hash": "6b29d0ad",
+      "title": "'실적 잔치' 증권사들…다음 격전지는 'AI 투자'",
+      "company": "증권업계",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "2eb5936a",
+      "title": "ISA 아직 없다면 주목…삼성증권이 내건 '평생 혜택'은?",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "765863d3",
+      "title": "삼성증권, '중개형 ISA 평생혜택계좌' 이벤트",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "18d9f241",
+      "title": "붉은사막, 게이머 열광·주주 한숨…증권가 반응 싸늘한 이유",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "41931e6d",
+      "title": "[주간투자동향] 그래파이, 170억 원 규모 시리즈A 투자 유치 外",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "42cb12ea",
+      "title": "핑거, 금융 플랫폼에 STO·스테이블코인까지…새 성장축 주목",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "13f5f209",
+      "title": "반년 앞둔 토큰증권 시행…\"기초자산 적격요건이 초기 시장 향방 가른다...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "89413077",
+      "title": "[A 인터뷰] 이종형 키움증권 센터장 \"국민연금 리밸런싱 우려, 대부분 해...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f3bed62a",
+      "title": "서학개미, 해외주식 거래 활발해지자…토스··미래에셋·한국투자·삼성...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b5859c02",
+      "title": "서학개미 순매도 행렬에도…증권사, 2분기 해외 수수료로 1조 벌었다 [투...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "406f2c56",
+      "title": "증시 호황, 중형 증권사까지 온기…대형사와 실적격차는 '울상'",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bee1a731",
+      "title": "농협금융, 그룹 총동원 ‘연금시장’ 정조준…“수익률 1위 굳힌다”",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c7519488",
+      "title": "NH농협금융, 퇴직연금 500조 시대 그룹 역량 총동원한다",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5f947a68",
+      "title": "동양생명 인수로 ‘은행’ 넘어 ‘종합금융’ 진화...임종룡표 우리금융...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d3d3c771",
+      "title": "금융 슈퍼앱 전성시대...4대지주에서 토스, 삼성까지",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1cda528f",
+      "title": "\"매출 늘어도 수익은 줄었다\"…금융지주 IT 자회사 4곳 상반기 성적표",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8daeb9ba",
+      "title": "[단독] 은행 떠난 ELS, 증권사서 부활…\"삼전닉스 폭락 안하면 高수익\"",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0855de59",
+      "title": "헥토이노베이션, 신사업 투자 결실 눈앞…중장기 성장 기대",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8abbe422",
+      "title": "NH농협금융, 퇴직연금 경쟁력 강화…그룹 역량 총동원",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3571cdb1",
+      "title": "NH농협금융, 그룹 총동원해 퇴직연금 경쟁력 강화...\"사각지대 줄인다\"",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "55964e00",
+      "title": "NH농협금융, 퇴직연금 사업 강화에 '은행·증권·자산운용 역량' 결집",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bd89a819",
+      "title": "NH투자증권, IMA 3호 상품 출시",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bec93f3b",
+      "title": "NH투자證, 1200억 'N2 IMA1 3호' 출시",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5100b69b",
+      "title": "'오락가락' 증시에 답 찾는 투자자들…증권사들, 하반기 세미나 확대",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e26377ec",
+      "title": "[핀포인트] [미래에셋증권] 코빗 품어 '디지털X'로…시너지 방안은?",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "e4315509",
+      "title": "[사모대출 리스크] IMA에 2045억 담았다…이자는 '제로' ｜①한국투자증...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b57de773",
+      "title": "미래에셋증권, 분기 기준 해외에서 최대 수익...해외사업 수익 본격화",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cc97accc",
+      "title": "현금 88조·ADR 40조에도…SK하이닉스, 왜 솔리다임 IPO인가",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e4c1c93c",
+      "title": "서학개미 ‘팔자’ 전환에도…증권사 해외주식 2분기 수수료 '1조'",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8fc3bc80",
+      "title": "서학개미 손바뀜에 증권사 ‘잭팟’…해외주식 수수료 1조, 역대 최대",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d2ebaf73",
+      "title": "서학개미 팔아도 증권사는 웃었다…해외주식 수수료 1조원 돌파",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "660d5212",
+      "title": "[AI 부채의 함정(하)] 英 금융당국, AWS·구글·MS·오라클 직접감독…금...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ed8567f9",
+      "title": "미술품·부동산 조각투자 장내시장 11월 열린다…‘신종증권시장’ 개설",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a0956a76",
+      "title": "레버리지 ETF 규제 풍선효과 우려, 전 상품 규제론",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d5be4390",
+      "title": "[들어보니]한국금융지주, KDB생명 품는다…“‘증권 편중’ 깨고 종합금...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3ab5f0c9",
+      "title": "한국금융지주, 기대 뛰어넘은 실적… 브로커리지·자산관리 쌍끌이",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "487a51fe",
+      "title": "“상반기 순이익 111억 원” 상상인증권, 연간 흑자전환 가시권",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "반기 순이익"
+    }
+  ]
+}
