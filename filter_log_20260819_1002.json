@@ -1,0 +1,394 @@
+{
+  "time": "2026-08-19T10:02:50.543669+09:00",
+  "total": 53,
+  "sent": 6,
+  "hard_excl": 14,
+  "excl_stats": {
+    "목표가 상향": 2,
+    "목표주가": 1,
+    "투자의견": 1,
+    "[5대 금융 대해부⑤]": 1,
+    "[조각투자 전쟁②]": 1,
+    "[5대 금융 대해부①]": 1,
+    "[금융권 스타트업 협업①]": 1,
+    "신한자산운용": 1,
+    "생산적금융": 1,
+    "토스뱅크": 1,
+    "카카오뱅크": 1,
+    "[조각투자 전쟁①]": 1,
+    "[조각투자 전쟁③]": 1
+  },
+  "entries": [
+    {
+      "hash": "8cd944e4",
+      "title": "삼성금융,모니모, MAU 1000만 넘어…주식 증정 이벤트 진행",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "4aea48e8",
+      "title": "배당주로 현금흐름 만든다…대신증권, 고배당 세미나",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cd6fd3a2",
+      "title": "[금융투자 상반기 실적]레버리지가 휩쓴 증시, 증권사 실적은 더 커졌다",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d8ad7bf4",
+      "title": "SK증권, ‘K-브랜드지수’ 증권사 부문 톱10 탈락…‘토스증권’ 신규 ...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b8c1567e",
+      "title": "키움증권 영웅문S# 간편모드, 이용자 수 170만명 돌파",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "3f6b4fc8",
+      "title": "키움증권 간편모드 170만명 돌파…AI로 투자 문턱 낮췄다",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "d949c6b6",
+      "title": "키움證 \"티앤엘, 관세 환급 없이도 수익성 개선…목표가↑\"",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0daa476f",
+      "title": "증권사, 고객 필요한 정보 제공 차별화 경쟁..MTS 잇단 개편",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e2fcc473",
+      "title": "거래대금 1위 키움이지만… 돈은 KB가 벌었다",
+      "company": "KB증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "c637ca40",
+      "title": "[N2 포커스] 증시 활황에 운용사 순익 '껑충'…미래에셋 압도적 1위",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "674d6fc8",
+      "title": "‘미래에셋증권 1위 vs 한국투자증권 4위’...K-브랜드지수 증권사 부문...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6c889eed",
+      "title": "‘SK증권 탈락 속 토스증권 진입’...K-브랜드지수 증권사 부문 톱10 경...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c1b9c033",
+      "title": "[우리투자증권 2주년] 거침없는 실적 성장세…그룹 내 기여도는 '과제'",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d431f0ce",
+      "title": "KB증권, 'ICT어워드 코리아 2026'서 디지털 AI영상 부문 금상",
+      "company": "KB증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "5372f170",
+      "title": "\"퇴직연금으로 한방 노렸다\"...월급쟁이 뭉칫돈 '은행→증권' 대이동",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c2eaa5df",
+      "title": "[초점] NXT 상반기 순익 700억 돌파…NH證 투자 성과 '날개'",
+      "company": "NH투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "5ce592c0",
+      "title": "로빈후드 추월한 미래에셋증권…MAPS로 글로벌 플랫폼 도약",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "06d3db6b",
+      "title": "역대급 실적에 국민연금까지 담았다…주가 폭등한 이 기업[이주의 관.종...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c253cb18",
+      "title": "[증권의 시대] ① 증권사, 은행 넘는 실적…'머니무브'에 금융권 왕좌 흔...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "446f941d",
+      "title": "수익률 1%가 노후를 바꾼다…내 퇴직금 어디에 둘까 [550조 연금전쟁 下...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d4e30670",
+      "title": "미래에셋證, 퍼블릭닷컴 인수 검토…“북미 리테일시장 공략”",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "d6aadb60",
+      "title": "“2828일은 배신 않는다…1호 조각투자 루센트블록 재도전”",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "3c1f7611",
+      "title": "토스증권·카카오페이증권, 역대급 실적…핀테크 증권 ‘수익모델’ 갈...",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "4eefb768",
+      "title": "NH투자증권, K-브랜드지수 증권사 부문 3위 부상...SK증권 탈락",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c662897a",
+      "title": "[초점] \"슈퍼앱의 힘\"…토스, 역대 최대 실적 갈아치웠다",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "e1ef6ed9",
+      "title": "뜨거운 증시…은행·증권 '하이브리드 계좌' 재조명",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "92624890",
+      "title": "21억엔 증권사 인수한 메타플래닛, 비트코인 상품 유통망 넓혔다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "096dc2db",
+      "title": "170만명이 선택한 키움증권 MTS…비결은 'AI 투자도우미'",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "da7d95f0",
+      "title": "결혼하면 주식 받는다…카카오페이증권 캠페인 3만명 참여",
+      "company": "카카오페이증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "2db0bd20",
+      "title": "[정책포커스] 금융위, 19일부터 단일종목 레버리지 상품 신규 유동성 제...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "aef8e6b1",
+      "title": "미래에셋증권 M-STOCK, 8개월 연속 MAU 1위 “국민 자산관리 플랫폼 자리...",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "8e3f3a29",
+      "title": "역대 최대 ‘금융 채용 박람회’ 개막… 현장면접·AI 맞춤 솔루션",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "54d67b43",
+      "title": "토요타 10억 엔 블록체인 채권 직판… 모바일로 렉서스 시승 혜택",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "560b3775",
+      "title": "실리콘투, CVC캐피탈서 3000억 투자유치",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7266208d",
+      "title": "교보증권, 토큰증권 수요 검증 먼저 한다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "83f450b4",
+      "title": "\"불장에 10조 대박\" 증권사, 그들만의 돈잔치 NO...사회 기여 나선다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "02b88fc8",
+      "title": "[금융가 사람들] 교보證 신사업담당 \"STO도 결국 수요가 핵심…현장서 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8fbc0689",
+      "title": "클라우스DX, STO 시대 이끌 새 시스템 구축에 박차",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a88925b5",
+      "title": "[Invest]8월말 바라보는 회사채 시장…금융사 중심 발행 이어진다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "07cbd364",
+      "title": "삼성증권 \"로보티즈, 2분기 영업익 흑자전환.. 목표가 상향\"",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표가 상향"
+    },
+    {
+      "hash": "bde13af7",
+      "title": "“티앤엘, 단기 실적 모멘텀에 배당 가세…목표가↑”-키움",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "018d5887",
+      "title": "[키-리포트] 키움 \"티앤엘, 단기 실적 모멘텀 지속\"",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    },
+    {
+      "hash": "3385b219",
+      "title": "[5대 금융 대해부⑤]반도체 주춤할 때 빛난 ‘금반지’ 투자",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[5대 금융 대해부⑤]"
+    },
+    {
+      "hash": "268be3e8",
+      "title": "[조각투자 전쟁②] 거래소 3곳, 거래할 물건 있나…\"유동성 쟁탈전\"",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[조각투자 전쟁②]"
+    },
+    {
+      "hash": "c8c642c3",
+      "title": "[5대 금융 대해부①]'국(KB)신하우농' 몸집 커졌지만 숙제",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[5대 금융 대해부①]"
+    },
+    {
+      "hash": "799885aa",
+      "title": "[금융권 스타트업 협업①] KB국민은행은 왜 신생 ‘티냅스’를 택했나",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융권 스타트업 협업①]"
+    },
+    {
+      "hash": "9a25e210",
+      "title": "금 값 뛰자 날개 다는 '금 ETF'...한 달 수익률 5%, 1년 수익률은 30% 넘어",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한자산운용"
+    },
+    {
+      "hash": "169bddfa",
+      "title": "은행권, ISA 편입 상품 늘린다…증권사 독주 막을 반격 카드는",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적금융"
+    },
+    {
+      "hash": "b5ae076b",
+      "title": "한국투자증권, 2000억원 규모 IMA 출시…고객 유치 경쟁 본격화",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "53974d17",
+      "title": "[박정식의 국내 주식시황] 미 30년물 금리 19년 만에 최고…삼성전자·S...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표가 상향"
+    },
+    {
+      "hash": "759ce310",
+      "title": "코인원, 카카오뱅크와 실명확인 계좌 재계약 체결…1년 연장 [가상자산...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "카카오뱅크"
+    },
+    {
+      "hash": "469d2166",
+      "title": "[조각투자 전쟁①] 장내·장외 동시에 열린다…'상품'에서 '시장'으로",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[조각투자 전쟁①]"
+    },
+    {
+      "hash": "ede4088c",
+      "title": "[조각투자 전쟁③] 수수료 1억짜리 시장에 증권사가 왜…'토큰 IB' 선점...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[조각투자 전쟁③]"
+    }
+  ]
+}
