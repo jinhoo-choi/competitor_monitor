@@ -1,0 +1,315 @@
+{
+  "time": "2026-08-20T10:03:04.479914+09:00",
+  "total": 43,
+  "sent": 5,
+  "hard_excl": 7,
+  "excl_stats": {
+    "기업금융": 1,
+    "[금융권 횡재세②]": 1,
+    "취약계층": 3,
+    "토스뱅크": 2
+  },
+  "entries": [
+    {
+      "hash": "2044d596",
+      "title": "[퇴직연금 머니무브/하]달라진 유치경쟁…수익률ㆍ수수료 넘어 자산관리...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "a1a618d8",
+      "title": "[증권픽] 키움증권 '영웅문S# 간편모드' 누적 이용자 170만 돌파 외",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a1926b55",
+      "title": "\"서학개미 엑시트에 수수료 잭팟\"…해외주식이 채운 증권사 곳간",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "137b67b4",
+      "title": "NH투자증권, 'N2 IMA1 중기형 3호' 모집 개시 하루만에 조기 완판外",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "37748e30",
+      "title": "메리츠증권, AI 투자플랫폼 강화…키움은 야구 마케팅",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "0eff6765",
+      "title": "키움증권, VC 집중 투자 '모험자본창업투자 ETN' 상장",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "56b5499b",
+      "title": "토큰증권 제도화 국면…SK증권, 전용 인프라 구축 완료",
+      "company": "SK증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "7371de6c",
+      "title": "메리츠증권, 금융플랫폼 '모음'에 위불 AI 독점 탑재",
+      "company": "메리츠증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "25905b6a",
+      "title": "메리츠증권, 9월 차세대 플랫폼 'MOUM' 출시…위불 'Vega AI' 독점 탑재",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "c8350fb5",
+      "title": "[Invest]오픈API 빗장 여는 증권업계…뒤따르는 비용·보안 '숙제'",
+      "company": "NH투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "75eb5404",
+      "title": "[비즈초대석] 김동민 NH투자증권 본부장 \"내 방식대로 사고판다…PLUG로...",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "5a4d5b89",
+      "title": "[기자수첩] 진화하는 美 가상자산 규제, 침묵하는 韓",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ed5b4775",
+      "title": "[투자노트] ‘AI 붐’ 뒤에 떠오른 증시 안도 랠리 핵심 요건",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3319eaa1",
+      "title": "NH투자증권, IMA ‘현금흐름’에 방점..잇단 완판에 사업 확대 속도",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8af4c017",
+      "title": "[리포트] 미래에셋증권 \"연금 투자, 흔들릴수록 '로보'…알고리즘에 맡...",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "13fbb16c",
+      "title": "[미래에셋증권 MTS] AI로 투자정보 한눈에…자산관리 플랫폼 진화",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "c5c75b23",
+      "title": "하반기 실적 ‘안갯속’…중소형 증권사, 생존전략 찾기 분주",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "304b2e1a",
+      "title": "[증권의 시대] ③ 은행 넘어선 증권사들, '한국판 버크셔' 되려면",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "629f91f8",
+      "title": "\"투자도 하고 뷰티 혜택도 챙긴다\"…토스증권·CJ올리브영 쇼핑·투자 제...",
+      "company": "토스증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "ec185212",
+      "title": "[금융투자 상반기 실적]토스증권, 대형사급 이익...해외주식이 99%",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a75ae574",
+      "title": "증시 호황에 웃은 중소형 증권사···수익구조가 상반기 실적 갈랐다",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "76e125e6",
+      "title": "\"AI가 투자 돕는다\"...메리츠증권, ‘MOUM’에 위불 ‘Vega AI’ 탑재",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "10d8219c",
+      "title": "임기 막판 증권사 M&A 승부수…신학기 수협은행장, 11월 연임 시험대 [인...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1dc303b3",
+      "title": "인젝티브, SEC 전송대리인 등록 정식 발효…온체인이 증권 소유권 공식...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "71d86b70",
+      "title": "브로커리지 날개 단 메리츠證…위불 AI 품은 ‘모음’ 9월 출격",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "47e3c8e5",
+      "title": "\"AI가 공시·뉴스 분석\"...메리츠증권, 'MOUM'에 ‘VEGA AI’ 독점 탑재",
+      "company": "메리츠증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "f675a0f7",
+      "title": "메리츠증권, 내달 출시 'MOUM'에 위불 '베가 AI' 독점 탑재",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "454c0df2",
+      "title": "[금융권 소식] 하나자산신탁ㆍ우리은행ㆍNH농협은행(8.20)",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1847a0fc",
+      "title": "[금융가 사람들] KRX금시장 키운 손승태 KDX 본부장 '다음은 조각투자'",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7c001a15",
+      "title": "유한양행, 기관투자자 만난다…렉라자·신약 성장전략 공개",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0e358daf",
+      "title": "유한양행, 기관투자자 대상 NDR 개최…본업·신약 가치 동반 성장 전략...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "53d8b933",
+      "title": "클라우스DX, STO 통한 실물자산 유동화 인프라 본격 구축",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "19d114d9",
+      "title": "[이슈체크] 76조원대 국고채 '담합 의혹' 심판대 오른 금융권…과징금 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "85a6bf05",
+      "title": "케이디엑스, 손승태 영입해 조각투자 본인가 준비",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cb1eb45e",
+      "title": "발행·유통 나눴는데…퇴장은 누가 책임지나 [퇴로 막힌 조각투자]③",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "040fb7c3",
+      "title": "살아나는 IPO 시장에…유진투자證, '7강 하우스' 목표 내걸었다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "be240326",
+      "title": "국민은행, 글로벌·WM·기업금융 제고…리딩뱅크 수성할까",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "a2451a4a",
+      "title": "[금융권 횡재세②] 김성주가 끌고 양종희가 답했다…'전북금융허브' 횡...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융권 횡재세②]"
+    },
+    {
+      "hash": "55879f50",
+      "title": "[증권브리핑] 메리츠증권, 'MOUM'에 위불 'VEGA AI' 탑재 외",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "취약계층"
+    },
+    {
+      "hash": "16f63bb5",
+      "title": "KB증권 취약계층 체납 건보료 지원",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "취약계층"
+    },
+    {
+      "hash": "a60687b8",
+      "title": "KB증권, '1인 최대 50만원' 취약계층 건강보험료 지원",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "취약계층"
+    },
+    {
+      "hash": "a755a0d4",
+      "title": "토스뱅크, 전자점자 서비스 여신·수신·카드 전 영역 확대",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "b631d7fe",
+      "title": "[현장] 참여사 확대·플랫폼 진화···이억원 금융위원장 \"내년엔 지방...",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    }
+  ]
+}
