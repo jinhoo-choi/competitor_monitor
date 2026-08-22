@@ -1,0 +1,191 @@
+{
+  "time": "2026-08-22T10:01:09.490313+09:00",
+  "total": 25,
+  "sent": 1,
+  "hard_excl": 6,
+  "excl_stats": {
+    "광고선전비": 1,
+    "[A 증권가 소식]": 1,
+    "자산운용": 1,
+    "신한자산운용": 1,
+    "기업금융": 1,
+    "컨센서스": 1
+  },
+  "entries": [
+    {
+      "hash": "47ec2191",
+      "title": "NH투자증권, THE100리포트 131호 발간 外",
+      "company": "NH투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "fb6d8a0a",
+      "title": "엘리스그룹, 코스닥 상장 시동…희망 공모가 최고 9만원대",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "49fc7c91",
+      "title": "[증권픽] 삼성증권, 모니모 '얼음 깨고 젤리 받기' 이벤트 외",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ff7b41e4",
+      "title": "삼성증권, 통합 앱 모니모 이벤트",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "485f022d",
+      "title": "삼성증권, '모니모'서 얼음 깨기 게임 이벤트... 신규 고객엔 젤리 최대...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2d7572eb",
+      "title": "변동성 장세에 '틈새 투자상품' 봇물",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4b6b1bcb",
+      "title": "\"AI야 주식 사줘\"…증권업계 '대화형 투자' 경쟁 불붙었다",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3610cd32",
+      "title": "AI는 준비됐다…500조 퇴직연금, 문제는 따로 있다[스페셜리스트 뷰]",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "16dfbf78",
+      "title": "[인터뷰] 김동민 NH투자증권 본부장 \"개인이 짠 투자전략, PLUG로 실제 주...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "72ae20cd",
+      "title": "세계 최초 기둥 빼고 나타났는데…'90만→75만원' 올스톱 복병 [주식R]",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6e7c21e1",
+      "title": "대형증권사 자기자본 10조 시대…이제는 '잘 굴리기' 과제",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "96619c64",
+      "title": "퇴직연금 시장서 존재감 키우는 NH증권",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f2f3a862",
+      "title": "[금융] NH투자증권 TDF 재조명 / NH투자증권 디폴트옵션 성과 / 신한금융...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "127be67c",
+      "title": "슈퍼위크 앞둔 美 증시, 일제히 상승…비트코인 8만달러 돌파 시도 [투자...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "83af134a",
+      "title": "[증권 Pick] 이번주 신상품 모아보기",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1507c74a",
+      "title": "김범수, AI·투자 '두 개의 엔진' 승부수…카카오 성장 속도전",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9b8a934a",
+      "title": "카카오, 창사 이래 최대 지배구조 개편 ... 'AI'와 '투자' 회사로 쪼갠다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f6245d61",
+      "title": "삼성증권, 모니모·엠팝 앞세워 리테일 공략…게임부터 투자지원금까지",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "9e3af80f",
+      "title": "성장 엔진 두 축 'AI·투자'로 나누는 카카오 재편 핵심 5가지 [IT돋보기...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7d5d7c8f",
+      "title": "'왕사남' 섭외한 키움증권 지출 1위···10대 증권사 광고비 추이 보니",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "광고선전비"
+    },
+    {
+      "hash": "84f1049a",
+      "title": "[A 증권가 소식] NH투자증권, 디폴트옵션 적극투자형 3년 수익률 90.15% 外",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[A 증권가 소식]"
+    },
+    {
+      "hash": "5d659d9b",
+      "title": "위고비·마운자로 믿었는데…비만 치료제 ETF 시들",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "475cfa91",
+      "title": "신한자산운용, 솔라나서 원화 표시 토큰화 펀드 실증…블랙록 BUIDL 벤치...",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한자산운용"
+    },
+    {
+      "hash": "9bf25420",
+      "title": "역대급 실적 낸 증권사들, 하반기 빈자리 뭘로 메우나",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "1b4b67fb",
+      "title": "카카오, 'AI·투자' 인적분할 승부수…주가 '반토막' 늪 탈출할까",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "컨센서스"
+    }
+  ]
+}
