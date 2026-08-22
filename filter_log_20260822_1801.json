@@ -1,0 +1,147 @@
+{
+  "time": "2026-08-22T18:01:30.924554+09:00",
+  "total": 19,
+  "sent": 3,
+  "hard_excl": 4,
+  "excl_stats": {
+    "광고선전비": 1,
+    "[A 증권가 소식]": 1,
+    "컨센서스": 1,
+    "자산운용사": 1
+  },
+  "entries": [
+    {
+      "hash": "87a36f6b",
+      "title": "[자금조달 프리뷰] 롯데건설·이랜드월드 공모채…코스닥 2곳 '데뷔'",
+      "company": "하나증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "9d324617",
+      "title": "엔비디아, 'K-엔비디아' 리벨리온스 투자·인수 검토",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "ff7b41e4",
+      "title": "삼성증권, 통합 앱 모니모 이벤트",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "2d7572eb",
+      "title": "변동성 장세에 '틈새 투자상품' 봇물",
+      "company": "IBK투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "3c85cb83",
+      "title": "스페이스X 넘는 ‘세기의 IPO’ 오나…앤트로픽, 몸값 2조달러 도전[투...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "de3c84b8",
+      "title": "\"상속·증여 시장 잡아라\"…은행권, 자산승계 경쟁 본격화",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3f1796c7",
+      "title": "금융권, 고객 접점 확대·ESG 역량 강화 총력…디지털 혜택 및 현장 소통...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4b6b1bcb",
+      "title": "\"AI야 주식 사줘\"…증권업계 '대화형 투자' 경쟁 불붙었다",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3610cd32",
+      "title": "AI는 준비됐다…500조 퇴직연금, 문제는 따로 있다[스페셜리스트 뷰]",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6e7c21e1",
+      "title": "대형증권사 자기자본 10조 시대…이제는 '잘 굴리기' 과제",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6d759ff5",
+      "title": "NH투자증권, 디폴트옵션 3년 수익률 90.15%…연금 경쟁력 부각",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "127be67c",
+      "title": "슈퍼위크 앞둔 美 증시, 일제히 상승…비트코인 8만달러 돌파 시도 [투자...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "83af134a",
+      "title": "[증권 Pick] 이번주 신상품 모아보기",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "3de88cf1",
+      "title": "[인터뷰] 김항주 피에코 대표 \"부동산도 '조각'으로 공동구매, 소액투자...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d5e8b7fb",
+      "title": "[핀포인트] [하나증권] 발행어음 덩치 키운다…리스크 관리는 '과제'",
+      "company": "하나증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "7d5d7c8f",
+      "title": "'왕사남' 섭외한 키움증권 지출 1위···10대 증권사 광고비 추이 보니",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "광고선전비"
+    },
+    {
+      "hash": "84f1049a",
+      "title": "[A 증권가 소식] NH투자증권, 디폴트옵션 적극투자형 3년 수익률 90.15% 外",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[A 증권가 소식]"
+    },
+    {
+      "hash": "1b4b67fb",
+      "title": "카카오, 'AI·투자' 인적분할 승부수…주가 '반토막' 늪 탈출할까",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "컨센서스"
+    },
+    {
+      "hash": "25ad5961",
+      "title": "디지털자산까지 영토 확장...수협은행, 금융지주 전환 속도",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    }
+  ]
+}
