@@ -1,0 +1,158 @@
+{
+  "time": "2026-08-23T10:01:30.022123+09:00",
+  "total": 21,
+  "sent": 2,
+  "hard_excl": 1,
+  "excl_stats": {
+    "신한자산운용": 1
+  },
+  "entries": [
+    {
+      "hash": "493d2094",
+      "title": "엔씨 주가 전망 [금주 주목할 게임 IT 주식]",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "08e69cd6",
+      "title": "'AI 풀스택' 엘리스그룹, 증권신고서 제출…코스닥 상장 목표",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ce764f51",
+      "title": "엘리스그룹, 코스닥 상장 본격화…최대 2000억 규모 공모",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7a6a7ac7",
+      "title": "삼성증권, 모니모서 게임형 이벤트…신규 고객에 젤리 혜택",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "194c48e9",
+      "title": "[더벨][이노크라스 IPO] 기술성평가 돌입…미국법인 KDR 상장 추진",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0abe5e96",
+      "title": "“복잡한 정보, AI가 요약”…키움증권 간편모드, 170만 명 사로잡았다",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "91e5bfff",
+      "title": "\"야구팬 잡고, 골퍼 모시고\"…금융권, 스포츠 마케팅 통해 로열티 '극대...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "15559913",
+      "title": "45조 불어난 퇴직연금, 절반이 증권사로…DC·IRP 등 투자형에 ‘뭉칫돈...",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "110d9862",
+      "title": "증시 활황에 증권사 MTS 개편 경쟁 뜨겁다, AI 싣고 종합 플랫폼으로 진...",
+      "company": "하나증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "f8f5808c",
+      "title": "자산·MBTI부터 1대1 토너먼트까지…증권사 실전투자대회 '각양각색'",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "32934b50",
+      "title": "빠르게 늘어나는 퇴직연금…채권시장 새 수급처 될까",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5302b3fc",
+      "title": "[출연] \"내 자산은 내가 굴린다\"…직접투자 확산에 금융사 경쟁도 변화",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4e7015d6",
+      "title": "‘불장’ 수혜 더 컸던 외국계 증권사…韓 증시 불장서 ‘잭팟’",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8fc1cc13",
+      "title": "\"연 5% 수익\" 증권사 IMA 고객유치 본격화",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f3ca0e23",
+      "title": "NH투자증권, 실적배당 30% 넘은 퇴직연금 시장...\"장기 자산관리 관점 잃...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "269635be",
+      "title": "CJ, 올리브영이 기업가치 끌어올린다…미래에셋증권 \"재평가 필요\"",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "83c8afc6",
+      "title": "2000억 몸값에 대주주·인허가까지…수협, 증권사 인수 시험대",
+      "company": "상상인증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "22ec2868",
+      "title": "AI·투자회사로 쪼개는 카카오… 인적분할 핵심 쟁점 일문일답",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "322abd45",
+      "title": "상반기 순익 두 배 뛴 중소형 증권사들···실적 뜯어보니 온도차",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ef5f4699",
+      "title": "'삼전닉스 레버리지' 사고 싶은데 3000만원부터?…달라진 투자법[주린이...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "faae9c73",
+      "title": "신한자산운용, 솔라나 재단 등 4자간 업무협약",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한자산운용"
+    }
+  ]
+}
