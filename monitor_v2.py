@@ -314,7 +314,7 @@ INDUSTRY_TAG = "증권업계"   # 특정사 액션이 아닌 시장 전반 기�
 # 실사례(8/11 18시): "코딩 몰라도 AI가 주식 매매 척척…증권가 '오픈 API' 대중화 활짝"이
 #   다올증권 단독 이벤트(중 5.5)로 표시됐으나 본문은 다올·토스·NH 등 업계 전반 동향.
 _INDUSTRY_SIGNALS = re.compile(
-    r'증권가|증권업계|증권사들|업계\s*전반|잇따라|잇단|줄줄이|너도나도|확산|대중화|'
+    r'증권가|증권업계|증권사들|증권사\s+[가-힣A-Za-z]|업계\s*전반|잇따라|잇단|줄줄이|너도나도|확산|대중화|'
     r'경쟁\s*가열|각축|들썩|바람|열풍|트렌드|\[증권\s*UP|이모저모|한눈에'
 )
 
@@ -322,16 +322,30 @@ def count_securities_in_text(text: str) -> int:
     """텍스트에 등장하는 서로 다른 증권사 수."""
     return sum(1 for rgx in _SURFACE_CACHE.values() if rgx.search(text or ""))
 
-def is_industry_wide(title: str, body: str) -> bool:
+# 제목만으로도 업계 전반임이 확실한 강신호 — 특정사 액션 서술이 아님
+_INDUSTRY_STRONG = re.compile(
+    r'증권가\s*판도|업계\s*판도|증권업계|증권사들|증권가\s*(?:경쟁|각축|들썩|지각변동)|'
+    r'\[증권\s*UP|이모저모|한눈에|경쟁\s*(?:뜨겁|가열|치열)|잇따라|줄줄이|너도나도'
+)
+
+def is_industry_wide(title: str, body: str, body_failed: bool = False) -> bool:
     """
-    업계 전반 기사 판정. 두 조건을 모두 만족해야 한다:
-      ① 제목에 업계 기획기사 신호가 있음
-      ② 본문에 서로 다른 증권사가 3곳 이상 등장 (단순 비교 언급 1~2곳은 제외)
-    한쪽만으로 판정하면 "증권가 최초" 같은 단일사 기사까지 뭉뚱그려진다.
+    업계 전반 기사 판정.
+      · 기본: 제목 신호 AND 본문 증권사 3곳 이상
+      · 본문 미수집(body_failed): description만 있어 카운트가 안 나오므로
+        강신호 + 증권사 2곳으로 완화. 실사례(8/23·8/24) — 「증권사 MTS 개편 경쟁 뜨겁다」,
+        「수탁수수료 10조 돌파…증권가 판도 변화」가 개별사로 오태깅됐다.
+    단, 특정사 액션 서술('~도 합류', '~가 출시')이 제목에 있으면 개별사로 본다.
     """
-    if not _INDUSTRY_SIGNALS.search(title or ""):
+    t = title or ""
+    if not (_INDUSTRY_SIGNALS.search(t) or _INDUSTRY_STRONG.search(t)):
         return False
-    return count_securities_in_text((title or "") + " " + (body or "")) >= 3
+    if re.search(r'[가-힣A-Za-z]+증권(?:도|이|은|가)\s', t):   # "대신증권도 합류"
+        return False
+    n = count_securities_in_text(t + " " + (body or ""))
+    if body_failed:
+        return bool(_INDUSTRY_STRONG.search(t)) and n >= 2
+    return n >= 3
 
 def find_securities_in_text(text: str) -> str:
     """텍스트에서 실제 표기된 증권사 중 가장 앞에 등장하는 회사를 반환. 없으면 ""."""
@@ -343,6 +357,39 @@ def find_securities_in_text(text: str) -> str:
         if mm:
             hits.append((mm.start(), canon))
     return min(hits)[1] if hits else ""
+
+# ── 부수 언급(incidental mention) 판별 ──────────────────────────
+# 실사례(8/24 18시): 「비투엔, 리벨리온에 100억 간접투자」→삼성증권,
+#   「엘리스그룹, 1조 IPO」→미래에셋증권. 증권사가 주관사·중개자로만 등장하는데
+#   rescue가 "본문에 증권사가 있으면 통과"로 동작해 오탐을 통과시켰다.
+# 판별: 증권사 직후에 오는 조사/문맥이 '주체'인지 '수단·경유'인지를 본다.
+# 판정 원칙: 기본은 '주체'로 보고, 부수 신호가 명확할 때만 드롭한다.
+#   (반대로 '주체 신호가 있을 때만 인정'하면 "하나증권 IRP 수익률 1위"처럼
+#    조사가 생략된 정상 기사까지 과잉 드롭된다 — 시뮬에서 실제 발생)
+_INCIDENTAL_BEFORE = re.compile(r"(?:대표)?주관사|주간사|인수단|공동주관|청약\s*(?:은|는)?\s*$")
+_INCIDENTAL_AFTER  = re.compile(r"^\s*(?:을|를)\s*통해|^\s*(?:이|가)\s*(?:대표)?주관|^\s*(?:에서|에)\s*청약")
+
+def is_incidental_mention(company: str, title: str, body: str) -> bool:
+    """
+    증권사가 기사의 행위 주체가 아니라 주관사·중개자로만 언급됐는지 판정.
+    True면 경쟁사 동향이 아니므로 드롭.
+    """
+    rgx = _SURFACE_CACHE.get(company)
+    if not rgx:
+        return False
+    # ① 제목에 등장하면 주체로 인정 (제목은 기사의 주어를 담는다)
+    if rgx.search(title or ""):
+        return False
+    # ② 본문 등장 중 '부수 신호가 아닌' 등장이 하나라도 있으면 주체로 인정
+    found = False
+    for mm in rgx.finditer(body or ""):
+        found = True
+        before = (body or "")[max(0, mm.start() - 14):mm.start()]
+        after  = (body or "")[mm.end():mm.end() + 12]
+        if _INCIDENTAL_BEFORE.search(before) or _INCIDENTAL_AFTER.match(after):
+            continue
+        return False
+    return found   # 전부 부수 신호일 때만 True
 
 def verify_attribution(company: str, text: str) -> tuple[bool, str]:
     """
@@ -1168,7 +1215,7 @@ JSON only, 다른 텍스트 없이:
         _title  = art.get("title","") or ""
         _btext  = art.get("_body","") or art.get("description","") or ""
         # ── 업계 전반 기사 → 특정사 귀속 대신 '증권업계' 태그로 표시
-        if is_industry_wide(_title, _btext):
+        if is_industry_wide(_title, _btext, art.get("_body_failed", False)):
             _n = count_securities_in_text(_title + " " + _btext)
             print(f"    [업계동향] 증권사 {_n}곳 언급 → {INDUSTRY_TAG} | {_title[:40]}")
             art["_company"]          = INDUSTRY_TAG
@@ -1177,8 +1224,17 @@ JSON only, 다른 텍스트 없이:
             extracted                = INDUSTRY_TAG
         else:
             _ok, _why = verify_attribution(extracted, _title + " " + _btext)
+            if _ok:
+                # 검증을 통과해도 '조연 등장'이면 경쟁사 동향이 아니다.
+                # (company_name 자체는 올바르나 기사 주체가 아닌 경우 — 주관사·중개 등)
+                if is_incidental_mention(extracted, _title, _btext):
+                    print(f"    [부수언급 드롭] {extracted} 조연 등장 | {_title[:45]}")
+                    return {**art, "analysis": None}
             if not _ok:
                 _rescued = find_securities_in_text(_title) or find_securities_in_text(_btext)
+                if _rescued and is_incidental_mention(_rescued, _title, _btext):
+                    print(f"    [부수언급 드롭] {_rescued} 조연 등장 | {_title[:45]}")
+                    return {**art, "analysis": None}
                 if _rescued:
                     # 복수 증권사 기사(예: "삼성증권 청신호…메리츠증권 답보")에서 AI가 회사명을
                     # 잘못 잡은 케이스 — 제목 우선순위로 교정하고 점수는 그대로 유지한다.
