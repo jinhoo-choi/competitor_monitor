@@ -1,0 +1,174 @@
+{
+  "time": "2026-08-29T18:01:19.916036+09:00",
+  "total": 23,
+  "sent": 1,
+  "hard_excl": 3,
+  "excl_stats": {
+    "자산운용": 1,
+    "목표가 상향": 1,
+    "생산적 금융": 1
+  },
+  "entries": [
+    {
+      "hash": "1594c4b1",
+      "title": "'TOP10'부터 K반도체까지…월가로 번진 한국식 ETF",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c21bdd5a",
+      "title": "[주간 거래소 외국인] 삼성전자·SK하이닉스 대신 삼성전기 담았다…무...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f6a6205f",
+      "title": "삼전·닉스 1주가 '공짜'?…증권사 이벤트 뭐 있나",
+      "company": "증권업계",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "3539dbbc",
+      "title": "[주간 거래소 기관] 삼성전자·SK하이닉스 팔고 삼성SDI·두산에너빌리...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c94be998",
+      "title": "[리테일 전성시대] [토스증권] '양날의 검', 해외주식 '올인'",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "31271752",
+      "title": "2분기 대형사 순익 6조 ‘대박’에도… 증권株 덮친 피크아웃 공포",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "46d1018a",
+      "title": "[보험·카드 라운지] 카드 한 장에 금융 기능까지…금융권 '경계 허물기...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0ee424e2",
+      "title": "[기획보도] ② 유니드, 리베스트·솔리비스 274억 투자…합산 영업손실...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0b2b632e",
+      "title": "전주 간 국민연금, 돈 더 벌었지만…\"주말 KTX는 더 붐벼\"[주末머니]",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bcf52540",
+      "title": "예금부터 TDF, 자산배분펀드까지…퇴직연금 상품의 모든 것",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7827e415",
+      "title": "[다음주 한국은행 및 금융위·금감원 일정]",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "402b19ef",
+      "title": "“금융 IT부터 홍보대사까지”...금융권, 청년 인재 확보 ‘각양각색’",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7bec4426",
+      "title": "전산장애 많았던 토스증권에 금감원 '현장 컨설팅'…IT 분야 첫 시도",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "c12b417e",
+      "title": "[주간증시전망] 코스피 7500선 열리나...다음 타자는 2차전지·AI 플랫폼...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ad4b7b62",
+      "title": "이번주 국내 주요 금융일정(8.31~9.4)",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bbf384e0",
+      "title": "\"투자는 식탁에서 결정된다\" 자본·인력이 서울에 몰린 이유 [주末머니...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c81f4451",
+      "title": "주택공급 막힌 돈줄 푼다…PF·건설사 금융애로센터 내달 가동",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "436e9e97",
+      "title": "[NZSI INDEX] 2026년 8월 28일…국민연금 6월 말 27% 수익의 착시, 8월 말...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3f3c8053",
+      "title": "한국 학습효과? 日 정부, 단일 종목 레버리지 ETF 판매 사실상 금지",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "522d72a2",
+      "title": "[단독]갤럭시코퍼레이션, 韓 증시 대신 '미국 직행'…지주사 설립",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "02c64a86",
+      "title": "돌아온 반도체 투심, 해외종목·채권으로 변동성 보완···8월 상장 ETF ...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "c8e63687",
+      "title": "[美증시 특징주] 아마존 증권사 목표가 상향에 급등…\"에이전틱AI 매출...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표가 상향"
+    },
+    {
+      "hash": "413cb9d8",
+      "title": "키움증권, 생산적 금융·모험자본 확대…서울대기술지주와 MOU",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적 금융"
+    }
+  ]
+}
