@@ -1,0 +1,136 @@
+{
+  "time": "2026-08-30T10:01:30.871963+09:00",
+  "total": 17,
+  "sent": 1,
+  "hard_excl": 7,
+  "excl_stats": {
+    "[투자테크 혁신 ①]": 1,
+    "키움투자자산운용": 1,
+    "케이뱅크": 1,
+    "[A 증권가 소식]": 1,
+    "기업금융": 1,
+    "목표주가": 1,
+    "[기고]": 1
+  },
+  "entries": [
+    {
+      "hash": "548b7ea4",
+      "title": "SKT, AI DC에 3조 외부자금…인적분할로 '투자 부담' 나눈다",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f8f5b34d",
+      "title": "‘올해 적자 예상’ 메쥬, 벌써 흑자…공모가 40% 밑도는 이유는 [종목콬...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e2df353d",
+      "title": "[공모주달력]수요예측·청약 흥행 실패한 스카이랩스, 상장후 반전할까",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "15fa1d90",
+      "title": "은행 부진 속 선방한 금융권, 자본관리·비은행 경쟁력 확보 관건",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b75b8467",
+      "title": "[증권 & Now] 키움증권, 서울대기술지주와 맞손…모험자본 투자 확대 협...",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "d5626c5c",
+      "title": "증권사 해외 확장 박차…메리츠는 홍콩, 미래·토스는 일본",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "8e3ed29d",
+      "title": "[리테일 전성시대] [토스증권] WM 확장 '포부', 현실은 '가시밭길'",
+      "company": "토스증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "481cbf7a",
+      "title": "카카오페이 선불충전 연결 서비스, 어떤 계좌든 자유롭게 연결",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "cb43c39d",
+      "title": "펄어비스 주가 전망 [금주 주목할 게임 IT 주식]",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "88f73ee9",
+      "title": "[이번주 IPO]9월 첫째 주 수요예측·청약 일정",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "00723e37",
+      "title": "나만의 투자봇 'API'… 거래규모 3년 만에 7배 급증 [투자테크 혁신 ①]",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[투자테크 혁신 ①]"
+    },
+    {
+      "hash": "eb0dba3a",
+      "title": "삼성·SK 핵심 상장사 담았다…ETF 4종목 신규 상장",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "키움투자자산운용"
+    },
+    {
+      "hash": "2e7654cc",
+      "title": "쇼핑하고 자산 상담 받아볼까…백화점으로 들어온 금융",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "케이뱅크"
+    },
+    {
+      "hash": "6b0cc9be",
+      "title": "[A 증권가 소식] 하나증권, 강원혁신센터와 업무협약...지역 혁신기업 ...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[A 증권가 소식]"
+    },
+    {
+      "hash": "6e84fe0c",
+      "title": "‘금리 인상’ 금융권 희비…은행 호재, 증권·카드사 수익성엔 부담",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    },
+    {
+      "hash": "7c8d3cfa",
+      "title": "미래에셋증권, 8월 마지막주 한화 등 9종목 매수 추천",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "6a41c213",
+      "title": "[기고]강남 수백억 빌딩 토큰화 불허? 韓 기막힌 현실",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[기고]"
+    }
+  ]
+}
