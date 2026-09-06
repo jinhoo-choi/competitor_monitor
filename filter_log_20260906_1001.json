@@ -1,0 +1,147 @@
+{
+  "time": "2026-09-06T10:01:13.935379+09:00",
+  "total": 19,
+  "sent": 1,
+  "hard_excl": 4,
+  "excl_stats": {
+    "케이뱅크": 1,
+    "자산운용": 1,
+    "생산적 금융": 1,
+    "미래에셋자산운용": 1
+  },
+  "entries": [
+    {
+      "hash": "61442ef4",
+      "title": "삼성증권, K-모멘텀 우수기업 IR 행사 'KSS IR Day' 성료 外",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "ffc6bd0d",
+      "title": "[공모주달력]빅웨이브로보틱스 몸값 낮춰 재도전…공모주 '슈퍼위크'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "583d6ee3",
+      "title": "[이번주 IPO]9월 둘째 주 수요예측·청약 일정",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "968ae34d",
+      "title": "[N2 포커스] 거래대금 47% ‘뚝’…증권사 3분기 실적 희비 가른 수익구...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "25ba3452",
+      "title": "가계대출·5세대 실손·레버리지 ETF…금융권 흔들 국감 핵심 쟁점",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ad859451",
+      "title": "[리테일 전성시대] [한국투자증권] 발행어음·IMA 몸집 압승, 다음은 운...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3b99f848",
+      "title": "“20년 넣으면 161%?”…퇴직연금 국채 투자 꼭 따져봐야할 '둘'",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "74d31b9f",
+      "title": "증권사에 밀린 생보 퇴직연금 신계약 4397억 감소…삼성생명만 361%↑",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1480bf39",
+      "title": "현대차증권, 연말 절세 수요 공략…ISA·IRP 이벤트",
+      "company": "현대차증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "9de615d4",
+      "title": "은행 외환창구, 반도체 수출·외인 매도에 외환 포지션 관리 부담 확대",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bc136c3c",
+      "title": "“금 사러 금은방 말고 증권사·은행 간다고?”…골드바 사면 부가세 10...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9f0bc5fa",
+      "title": "\"주식도 코인도 아니다\"…뭉칫돈 향할 새 투자판 [쩐널리즘]",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "af9a4ddb",
+      "title": "조각투자 넘어 주식·채권·펀드까지…토큰증권 판 커진다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b2288e92",
+      "title": "핀란드 오우라, 업계 첫 IPO 나섰다...'스마트 링' 경쟁 후끈",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "997f476b",
+      "title": "\"합성약 넘어 바이오·ADC로\"…종근당, 5000억 바이오 단지 투자로 성장...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "292a54f1",
+      "title": "대형주 중심으로 쏠리는 증권사 기업분석…신규 상장사 '소외'",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "케이뱅크"
+    },
+    {
+      "hash": "759f321f",
+      "title": "\"지분 보유주부터 채권 혼합까지\"...'삼전·닉스' 타깃 ETF 봇물",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "0765ffd4",
+      "title": "IPO 전부터 유망기업 찾는다···증권사, 모험자본 투자 보폭 확대",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적 금융"
+    },
+    {
+      "hash": "0217b115",
+      "title": "‘퇴직연금 필수템’ 채권 혼합 ETF…美 성장성까지 노리려면",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "미래에셋자산운용"
+    }
+  ]
+}
