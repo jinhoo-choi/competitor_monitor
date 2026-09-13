@@ -44,6 +44,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f seen_articles.json filter_log_*.json || true
-          git diff --staged --quiet || git commit -m "chore: update seen_articles [skip ci]"
-          git push || true
+          # -A + 따옴표 pathspec: 7개 보존 로직으로 삭제된 옛 filter_log 도 스테이징됨
+          git add -f -A seen_articles.json "filter_log_*.json" || true
+          git diff --staged --quiet && exit 0
+          git commit -m "chore: update seen_articles [skip ci]"
+          # 동시 push 로 인한 non-fast-forward 방어 — 상태 저장 실패 시 다음 실행이 중복 처리함
+          for i in 1 2 3; do
+            git pull --rebase -q origin main || true
+            git push && exit 0
+            sleep $((i * 5))
+          done
+          echo "::error::seen_articles.json push 실패 — 다음 실행 중복 발송 위험"
+          exit 1
