@@ -54,6 +54,44 @@ if TEST_MODE:
     RECIPIENTS_CC  = []
     print("[TEST_MODE] 그룹 수신자 비활성화 — GMAIL_USER 단독 발송 / seen 저장 스킵")
 
+# ═══ DRY_RUN — LLM 호출 직전까지만 실행하는 무과금 검증 모드 ═══
+# DRY_RUN=1 이면: 수집 → 하드필터 → 필터로그 저장 후 종료.
+#                AI 호출 0건 / 메일 0건 / seen_articles.json 저장 없음 → 비용 $0
+DRY_RUN = os.environ.get("DRY_RUN", "").strip() == "1"
+
+# ═══ API 사용량 계측 ═══
+# 단가(USD/1M tokens) — 모델 변경 시 반드시 실단가로 갱신할 것
+PRICES = {
+    "claude-haiku-4-5-20251001": (1.00, 5.00),
+    "claude-sonnet-5":           (3.00, 15.00),
+}
+USAGE = {}   # {(model, purpose): {"calls":n,"in":n,"out":n}}
+
+def _ai_create(model: str, purpose: str, **kw):
+    """client.messages.create 래퍼 — 호출수·토큰을 용도별로 누적"""
+    res = client.messages.create(model=model, **kw)
+    try:
+        k = (model, purpose)
+        u = USAGE.setdefault(k, {"calls": 0, "in": 0, "out": 0})
+        u["calls"] += 1
+        u["in"]  += getattr(res.usage, "input_tokens", 0)
+        u["out"] += getattr(res.usage, "output_tokens", 0)
+    except Exception:
+        pass
+    return res
+
+def _usage_summary() -> dict:
+    total = 0.0
+    by_route = {}
+    for (model, purpose), u in USAGE.items():
+        pin, pout = PRICES.get(model, (0.0, 0.0))
+        cost = u["in"]/1e6*pin + u["out"]/1e6*pout
+        total += cost
+        by_route[f"{model}|{purpose}"] = {**u, "cost_usd": round(cost, 4)}
+    return {"total_cost_usd": round(total, 4),
+            "calls": sum(u["calls"] for u in USAGE.values()),
+            "by_route": by_route}
+
 SENDER_NAME     = "인사이트봇"
 KST             = timezone(timedelta(hours=9))
 SEEN_FILE       = "seen_articles.json"
@@ -987,8 +1025,8 @@ JSON only, 다른 텍스트 없이:
 {{"relevant": [인덱스 배열]}}"""
 
     try:
-        res = client.messages.create(
-            model="claude-haiku-4-5-20251001",
+        res = _ai_create(
+            model="claude-haiku-4-5-20251001", purpose="1차필터",
             max_tokens=300,
             messages=[{"role":"user","content":prompt}]
         )
@@ -1162,8 +1200,8 @@ JSON only, 다른 텍스트 없이:
 }}"""
 
     def _call_and_parse(model: str) -> dict:
-        res = client.messages.create(
-            model=model,
+        res = _ai_create(
+            model=model, purpose="2차분석",
             max_tokens=500,
             messages=[{"role":"user","content":prompt}]
         )
@@ -1572,8 +1610,8 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
                 f"{a['analysis'].get('summary','')[:60]}"
                 for a in top_arts[:5] if a.get("analysis")
             )
-            res = client.messages.create(
-                model="claude-haiku-4-5-20251001",
+            res = _ai_create(
+                model="claude-haiku-4-5-20251001", purpose="헤더요약",
                 max_tokens=100,
                 messages=[{"role":"user","content":
                     f"아래 오늘의 경쟁사 인사이트 현황을 보고, 전체 흐름을 한 문장으로만 작성하세요.\n"
@@ -1947,6 +1985,7 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
                 "sent":       len(final),
                 "hard_excl":  len(hard_excluded),
                 "excl_stats": dict(excl_stats),
+                "usage":      _usage_summary(),
                 "entries":    entries,
             }, f, ensure_ascii=False, indent=2)
         print(f"  필터링 로그 저장: {log_path}")
@@ -1982,12 +2021,32 @@ def build_empty_html() -> str:
 
 
 # ═══════════════════════════════════════════════
+# 발송 대상 선확인 — 돈 쓰기 전에 목적지를 검증
+# ═══════════════════════════════════════════════
+def preflight() -> bool:
+    """SMTP 로그인만 확인(메일 발송 없음). 실패 시 AI 호출 0건으로 즉시 중단."""
+    if DRY_RUN:
+        return True
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=20) as server:
+            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+        return True
+    except Exception as e:
+        print(f"  ⛔ 발송 대상 미확인 — 생성 전에 중단합니다: {e}")
+        print("  LLM 호출 0건. 계정/앱비밀번호 확인 후 재실행하세요.")
+        return False
+
+
+# ═══════════════════════════════════════════════
 # 메인
 # ═══════════════════════════════════════════════
 def main():
     print(f"\n{'='*55}")
     print(f"KIS eBiz 인사이트봇 v3 | {datetime.now(KST).strftime('%Y-%m-%d %H:%M KST')}")
     print(f"{'='*55}")
+
+    if not preflight():
+        return
 
     seen = load_seen()
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
@@ -2012,6 +2071,12 @@ def main():
     if not articles:
         print("  하드필터 이후 기사 없음. 종료.")
         save_seen(seen)
+        return
+
+    if DRY_RUN:
+        # 구조 검증용 — AI 호출·메일 발송·seen 저장 없이 종료 (비용 $0)
+        save_filter_log(articles, hard_excluded, articles, [])
+        print(f"\n[DRY_RUN] LLM 호출 0건 / 메일 0건 — 하드필터 통과 {len(articles)}건")
         return
 
     # ── 3) AI 1차 필터링
@@ -2339,6 +2404,12 @@ def main():
     mid  = sum(1 for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="중")
     low  = sum(1 for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="하")
     print(f"\n완료: {len(analyzed)}건 | 상 {high} / 중 {mid} / 하 {low}")
+
+    us = _usage_summary()
+    per = us["total_cost_usd"] / len(analyzed) if analyzed else 0.0
+    print(f"비용: ${us['total_cost_usd']:.4f} | 호출 {us['calls']}회 | 건당 ${per:.4f}")
+    for route, v in us["by_route"].items():
+        print(f"  - {route}: {v['calls']}회 / in {v['in']:,} / out {v['out']:,} / ${v['cost_usd']:.4f}")
 
 
 if __name__ == "__main__":
