@@ -1,0 +1,22 @@
+name: CI — 구문 검증
+
+# 시크릿·외부 호출 없음 → 비용 0. main 반영 전 구문 오류로 정기 실행이 죽는 것을 차단.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+    paths: ["**.py", ".github/workflows/**"]
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: 파이썬 구문 검증
+        run: python -m py_compile monitor_v2.py
+      - name: 워크플로 YAML 검증
+        run: python -c "import yaml,glob,sys; [yaml.safe_load(open(f)) for f in glob.glob('.github/workflows/*.yml')]; print('yaml ok')"
