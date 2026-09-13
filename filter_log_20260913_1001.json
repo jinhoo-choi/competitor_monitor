@@ -1,0 +1,158 @@
+{
+  "time": "2026-09-13T10:01:18.139909+09:00",
+  "total": 21,
+  "sent": 1,
+  "hard_excl": 1,
+  "excl_stats": {
+    "목표주가": 1
+  },
+  "entries": [
+    {
+      "hash": "7c90cf04",
+      "title": "예금금리 오르자…증권사, 수신상품 금리 도미노 인상",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0e960221",
+      "title": "삼성증권·KAIST 발전재단, 신탁 활용 기부문화 확산 협력",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cffd11a9",
+      "title": "삼성증권, KAIST와 선진 기부문화 확산...\"맞춤형 신탁 솔루션 제공\"",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b6e359eb",
+      "title": "거래소 애프터마켓 개장 임박…KB·키움·삼성, 대응 전략 '각양각색'",
+      "company": "KB증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "54d6fc06",
+      "title": "기준금리 3%인데 예탁금 이자는 0%대…‘소액’만 올린 증권사들",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7173e3a5",
+      "title": "대미 투자 합의 임박…건설주, 수주 기대감에 이달 상승률 1위",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4f6e2d91",
+      "title": "[N2 포커스] 증권사 점포 10년 새 45%↓…영업점 줄이고 WM거점 키운다",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3b4a20e3",
+      "title": "“요즘 이 브랜드 상품권 주면 센스 만점” 너도나도 눈독…IPO 대어 ‘...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c3a3b6e1",
+      "title": "[공모주달력]'월화수목금' 줄 청약...공모가 상단 와이즈플래닛부터 시...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4c34e177",
+      "title": "[인니법인 대전] [미래에셋증권] 거래대금 1위는 옛말…시장 재편에 '왕...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "12d30991",
+      "title": "[이번주 IPO]9월 셋째 주 수요예측·청약 일정",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cc70df84",
+      "title": "이번주 공모주 청약, 글로벌테크놀로지·덕산넵코어스 등 5개사",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2f439019",
+      "title": "강성묵 하나증권 대표, 흑자 전환·발행어음 1조 수성…자산관리 꽃피웠...",
+      "company": "하나증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "53179025",
+      "title": "\"호실적에도 주가는 주춤…증권주 밸류에이션 매력 부각\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c16dcee5",
+      "title": "증권사 부장 행세한 40대, 여성 8명에게 30억원 넘게 가로챘다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e0cbecbb",
+      "title": "1000조 굴리는데 투자엔 족쇄…보험사 ‘3% 규제’ 풀리나",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7f46f005",
+      "title": "14일부터 한국거래소도 오후8시까지 거래",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e406c7a3",
+      "title": "\"전자증권 2.0 그쳐선 안 돼\"…전문가 10인이 꼽은 'K-STO' 성공 조건",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "10dedd99",
+      "title": "신한금융, ‘한국판 비들’ 띄운다…원화 MMF 토큰으로 글로벌 시장 공...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8432bf2a",
+      "title": "“직원 수천명에 강제로 지방 전근 가라니”...금융권 이전 둘러싼 경제...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "df982944",
+      "title": "삼전닉스 3분기 200조 기대 흔들, 증권가는 '30만전자 300만닉스' 외친다",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    }
+  ]
+}
