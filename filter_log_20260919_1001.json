@@ -1,0 +1,248 @@
+{
+  "time": "2026-09-19T10:01:22.295667+09:00",
+  "total": 30,
+  "sent": 0,
+  "hard_excl": 4,
+  "excl_stats": {
+    "[A 증권가 소식]": 1,
+    "입법 지연": 1,
+    "[기고]": 1,
+    "기업금융": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.0436,
+    "calls": 4,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 7217,
+        "out": 17,
+        "cost_usd": 0.0073
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 2,
+        "in": 11512,
+        "out": 667,
+        "cost_usd": 0.0148
+      },
+      "claude-sonnet-5|2차분석": {
+        "calls": 1,
+        "in": 5748,
+        "out": 279,
+        "cost_usd": 0.0214
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "0f7566bb",
+      "title": "[리테일 전성시대] [삼성증권] 숙원사업 발행어음 출격, 최대 16조 조달...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "74d6f53a",
+      "title": "[단독] 한국거래소, 뉴욕서 K증시 세일즈…외국기업 ‘코스닥 IPO’ 유치...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d9d3d894",
+      "title": "[IPO챗] 공모가 희비 엇갈린 네오사피엔스·와이즈플래닛 코스닥 입성",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "932874b2",
+      "title": "[증권 & Now] 미래에셋증권, 제비용 0% 대표지수 선물 ETN 4종 재상장 등",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ee468bbc",
+      "title": "주문창 넘어 자산관리까지…AI 앞세운 증권사, 서비스 전선 넓힌다",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1a641919",
+      "title": "삼성증권, 연금저축 고객 잡는다 … 최대 100만원 상품권 이벤트",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "55df8b39",
+      "title": "[코스피 지수선물 옵션] 삼성전자·SK하이닉스 선물 급등…반도체주에 ...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "29d7a1c1",
+      "title": "'청년자본 투자 촉진' 회의 소집하자 '레버리지 ETF' 답변왔다",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e4d1bd9b",
+      "title": "스페이스X ‘0주’ 넘어 PB 영업행위로…금감원 vs 미래에셋 진실공방",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "214d49f4",
+      "title": "금융권, 자금 조달원 다변화·디지털 서비스 확장·ESG 가치 제고 강화",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7e1c3d50",
+      "title": "증권사로 향하는 퇴직연금…농협은행, ETF 늘려 ‘수성’ 나선다",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1e1fa1a8",
+      "title": "[글로벌 K-Financer] (1) KB국민銀, 인니 금융지주 날개 달고 현지 공략 ...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "62bdae2a",
+      "title": "'반등도 AI부터…' AI·반도체 ETF 출시 이어진다",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "dff52f9e",
+      "title": "130조 몰렸는데 ETF 빼면 '-7조'…공모펀드, 씁쓸한 현실",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "091bdaae",
+      "title": "‘AI속도 조절론’에도…증권가 “코스피 7500까지 간다” 긍정 평가",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "057192e6",
+      "title": "비관론에도…투자자 홀린 휴머노이드 로봇 [매니지먼트]",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7e119681",
+      "title": "[신동립 잡기노트]경마장은 옮기고 증권사는 열고",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "53f27492",
+      "title": "주식 토큰 빗장 푼 SEC…'수혜주' 유니스왑, 일주일 새 50% 급등[코인현...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "de424b8c",
+      "title": "[기자의 눈] '금융의 상상력' 주식은 토큰이 된다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f6cba99e",
+      "title": "위즈덤트리 국채펀드 WTGXX, 문페이 3500만 계정에 풀리고 준비자산까지...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "48984594",
+      "title": "민병덕 의원 “달러 스테이블코인에 금융주권 뺏길라”…포스텍 특강서...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "14401645",
+      "title": "주식 결제 'T+1' 단축 '속도 조절'…내년 시행 '안갯속'",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "68e85bd1",
+      "title": "단일종목 레버리지 ETF, 누구의 아이디어였을까",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a559aed6",
+      "title": "주식 결제일 ‘T+1’ 단축 ‘속도 조절’… 업계 반발·시스템 한계",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "01b80ae0",
+      "title": "\"한·베트남 기술 스타트업 28곳 뭉쳤다\"… 신한금융, 호찌민서 '데모데...",
+      "company": "신한금융",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "5595b4b7",
+      "title": "美 주식 24시간 거래 시대 오나…SEC, '토큰 주식' 규제 일시 면제",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "dc3b290a",
+      "title": "[A 증권가 소식] 하나증권, 초록우산과 '유산기부 활성화' 업무협약 체결...",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[A 증권가 소식]"
+    },
+    {
+      "hash": "197e47e3",
+      "title": "토큰증권 시장 열리는데 매대는 텅텅…비금전신탁 입법 지연",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "입법 지연"
+    },
+    {
+      "hash": "1b951f73",
+      "title": "[기고]토큰증권 원장은 누가 고르는가",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[기고]"
+    },
+    {
+      "hash": "752620df",
+      "title": "키움증권, 창사 첫 4천억 신종자본증권 발행…자기자본 7.3조 돌파",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "기업금융"
+    }
+  ]
+}
