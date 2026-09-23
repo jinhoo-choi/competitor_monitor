@@ -292,6 +292,7 @@ ALIAS_MAP = {
     "NH": "NH투자증권", "나무증권": "NH투자증권", "NH투자": "NH투자증권",
     "미래에셋": "미래에셋증권", "미래에셋대우": "미래에셋증권",
     "토스": "토스증권",
+    "BNK": "BNK투자증권", "BNK증권": "BNK투자증권",
 }
 
 def canonicalize_company(entity: str) -> str:
@@ -455,6 +456,19 @@ LICENSE_PATTERNS = [
     r"자기자본\s*4조", r"단기금융업\s*인가",
 ]
 _LICENSE_RE = re.compile("|".join(LICENSE_PATTERNS))
+
+# 테마 키 — AI event_key 핵심행위·impact_domain이 매번 달라 동일 사건이 반복 노출되는 문제 보완
+# 실사례(9/17~9/21): 삼성증권 발행어음 5장(시장/출시/특판/인가 등 키 전부 상이)
+#   · 라이선스 테마: 7일 차단(구조적·저빈도 사안, 신규 국면은 is_new_stage로 예외)
+#   · STO 테마: 같은 실행 내에서만 차단(빈출 테마라 7일 차단은 과억제) — 9/21 BNK 2장
+_THEME_RULES = [
+    ("라이선스", _LICENSE_RE, True),
+    ("STO", re.compile(r"STO|토큰증권|조각투자"), False),
+]
+
+def _extract_theme_keys(title: str, company: str) -> list:
+    """[(키, 7일차단여부)] — 제목 기준"""
+    return [(f"{company}::#{n}", persist) for n, rx, persist in _THEME_RULES if rx.search(title or "")]
 
 # ═══════════════════════════════════════════════
 # 레이어4 — 새 국면(Next-Stage) 판정: event_key가 같아도
@@ -1320,7 +1334,8 @@ JSON only, 다른 텍스트 없이:
             print(f"    [본문미수집 하향] {art.get('_company','')} | {orig_lvl}→{analysis['impact_level']} / {orig_score}→{analysis['impact_score']}")
 
         # ── 라이선스·인가 사안 점수 하한 (본문 수집 성공 + 귀속검증 통과 건에만 적용)
-        if not art.get("_body_failed"):
+        # 실사례(9/17): AI "분석 불가" 응답(impact_domain="-")에도 6.5 부여 → 공란 분석 제외
+        if not art.get("_body_failed") and analysis.get("impact_domain","-") != "-":
             if _LICENSE_RE.search((art.get("title","") or "") + " " + (art.get("_body","") or art.get("description","") or "")):
                 _cur = float(analysis.get("impact_score", 0))
                 if _cur < LICENSE_FLOOR_SCORE:
@@ -2191,6 +2206,11 @@ def main():
             if entity_key and entity_key in seen.get("events", set()) and not new_stage:
                 print(f"  [사건중복-폴백2(엔티티)] {result.get('_company','')} | {result.get('title','')[:45]} (키: {entity_key})")
                 continue
+            theme_keys = _extract_theme_keys(title_txt, co_for_key)
+            _hit = next((k for k, persist in theme_keys if persist and k in seen.get("events", set())), "")
+            if _hit and not new_stage:
+                print(f"  [사건중복-테마] {result.get('_company','')} | {result.get('title','')[:45]} (키: {_hit})")
+                continue
             if new_stage and (ekey in seen.get("events", set()) or fallback_key in seen.get("events", set())
                                or (entity_key and entity_key in seen.get("events", set()))):
                 print(f"  [새국면-예외통과] {result.get('_company','')} | {result.get('title','')[:45]}")
@@ -2201,6 +2221,10 @@ def main():
             if entity_key and entity_key in runtime_events:
                 print(f"  [런타임중복-엔티티] {result.get('_company','')} | {result.get('title','')[:45]}")
                 continue
+            if any(k in runtime_events for k, _ in theme_keys):
+                print(f"  [런타임중복-테마] {result.get('_company','')} | {result.get('title','')[:45]}")
+                continue
+            runtime_events.update(k for k, _ in theme_keys)
             runtime_events.add(ekey)
             runtime_events.add(fallback_key)
             if entity_key:
@@ -2387,6 +2411,7 @@ def main():
         entity_fb = _extract_entity_key(a.get("title",""), co_fb)
         if entity_fb:
             new_events.add(entity_fb)
+        new_events.update(k for k, persist in _extract_theme_keys(a.get("title",""), co_fb) if persist)
     save_seen(seen, sent_urls=sent_urls,
               new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
               new_events=new_events)
