@@ -1,0 +1,321 @@
+{
+  "time": "2026-09-24T10:02:27.614229+09:00",
+  "total": 40,
+  "sent": 2,
+  "hard_excl": 2,
+  "excl_stats": {
+    "토스뱅크": 2
+  },
+  "usage": {
+    "total_cost_usd": 0.2173,
+    "calls": 17,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 9252,
+        "out": 38,
+        "cost_usd": 0.0094
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 9,
+        "in": 52894,
+        "out": 3428,
+        "cost_usd": 0.07
+      },
+      "claude-sonnet-5|2차분석": {
+        "calls": 6,
+        "in": 36379,
+        "out": 1882,
+        "cost_usd": 0.1374
+      },
+      "claude-haiku-4-5-20251001|헤더요약": {
+        "calls": 1,
+        "in": 279,
+        "out": 37,
+        "cost_usd": 0.0005
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "f944d60e",
+      "title": "한우·굴비 대신 '금테크'…골드바부터 1g 모으기까지",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "f98c8f62",
+      "title": "메리츠증권 9번째 발행어음 사업자 합류… 삼성증권 1000억 특판은 ‘완...",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "68979683",
+      "title": "메리츠 합류에 발행어음 9파전…금리 경쟁 넘어 운용력 시험대",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "c16aaddd",
+      "title": "“연 4.3%에 1000억원 동났다”…삼성증권 첫 발행어음, 이틀 반 만에 완...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "3298b72c",
+      "title": "삼성증권, 연 4.3% 발행어음 특판 이틀 반 만에 '완판'...첫 상품 흥행",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "cf8374d6",
+      "title": "삼성증권, 첫 발행어음 연 4.3% 이틀 반 만에 완판",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "c119172b",
+      "title": "[단독] '레버리지 ETF' 손실 규모 첫 확인…개인 투자자, 증권사 1곳서만...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e10a736f",
+      "title": "6000억 ‘완판’ 또 나올까…2차 국민참여성장펀드 30일 판매",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "23f065be",
+      "title": "'레버리지ETF' 책임론 증권가에 튀나…국감前 '초긴장'",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d6ea5832",
+      "title": "나흘 쉬는 국내 증시, 이틀 여는 美 증시...해외주식 데스크는 ‘풀가동...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cdf10bc3",
+      "title": "증시 거래대금 전년比 2배↑···증권가 고용시장도 확대",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6e943dd6",
+      "title": "'추석연휴 딱 한 권'…증권가 책벌레 리더들이 꼽은 책①",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a6829782",
+      "title": "\"서학개미 잡는다\"… 증권사, 추석 연휴 24시간 데스크 운영",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "043e7c4c",
+      "title": "쿠콘, 금융 데이터 API ‘AI 맞춤형’ 전환 속도…내년 완료",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ab101f3f",
+      "title": "KB증권, 시큐리타이즈·옵티미즘과 3자 MOU…토큰화 MMF로 국내 기관 시...",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "058df82e",
+      "title": "KB증권, 시큐리타이즈·옵티미즘과 토큰증권 협력",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "7c7ce944",
+      "title": "추석 연휴에도 해외주식은 열린다···증권사 '24시간 투자' 경쟁",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "daf2bd75",
+      "title": "\"추석 보너스 어디 넣지?\"…증권사 연금·ETF 주목",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "900d1b93",
+      "title": "신한금융, 외국인 '한국 투자길' 넓힌다…결제망 참여·통합계좌 확장",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b8b64b36",
+      "title": "추석에도 서학개미는 달린다…증권사 해외주식 데스크 정상 운영",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "17cf8259",
+      "title": "[A 인터뷰] 조수홍 NH투자증권 본부장 \"코스피 박스권 상단 높아질 것\"",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "69f62e0d",
+      "title": "국내 증시 추석 연휴 나흘간 멈춘다…해외주식 데스크는 '24시간'",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "762e64c4",
+      "title": "\"추석에도 미장은 쌩쌩\"…증권사 글로벌데스크 정상운영",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6d120033",
+      "title": "[단독] 증권사, PB에 단일종목 레버리지 '권유 금지'…\"적발 시 KPI 감점...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cc49ba2b",
+      "title": "美 ETF 올해 유입 1.51조달러 사상 최대…대표지수 쏠림 속 상품 세분화",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1015dda0",
+      "title": "증권사 국감 '줄소환' 예고…ETF·공모 참사 논란 도마 위로",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f67996e8",
+      "title": "\"JR 포인트로 주식 투자\"…금융업 진출하는 日철도회사들",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "17c1e1e2",
+      "title": "NYSE-블록체인닷컴, 토큰화 미국 주식·ETF 유통 맞손…SEC 규제 승인 남...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "14f67535",
+      "title": "증권사들, 토큰증권 ‘맞손’ 릴레이…사업 선점 경쟁 속도 [토큰화 통...",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "0bb792ba",
+      "title": "NYSE 토큰화 주식 플랫폼 개발…블록체인닷컴은 온도와 제휴",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "25bdb99b",
+      "title": "추석 연휴 금융거래 ‘공백’...대출·카드대금 28일로 '순연'",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b7664e74",
+      "title": "뉴욕증권거래소, 코인 시장 진입로 확보…블록체인닷컴과 토큰화 주식 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "989d672d",
+      "title": "바이비트, OpenPayd 연동해 최대 100만달러 USD 입금 수수료 11달러로 고...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "aa414e56",
+      "title": "\"개인투자 거의 없어\"...2.2경원 미국 ETF시장, 단종레는 '0.21%'",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ed951390",
+      "title": "“30만전자 가나?” 추석 끝나면 주식 오른다던데…22번 중 15번 통했다...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "67aac806",
+      "title": "연휴에 대출·카드값 언제 내나…달라지는 금융 일정",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "32a650ff",
+      "title": "한국금융투자포럼 '머니무브 2026' 오는 29일 개최",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8c3bb8f6",
+      "title": "대신증권, 공모주 청약증거금에 이자 지급",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a43b7c09",
+      "title": "[금융 풍향계] 농협금융 배우러 한국 찾은 인니 마야파다…AI·리스크관...",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "b6bdecf2",
+      "title": "\"매일 모으는 맛에 빠졌다\"…적금 넘어 ETF·금까지 '소액 짠테크'",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    }
+  ]
+}
