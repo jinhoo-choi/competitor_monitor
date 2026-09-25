@@ -1,0 +1,239 @@
+{
+  "time": "2026-09-25T10:02:21.048344+09:00",
+  "total": 28,
+  "sent": 2,
+  "hard_excl": 3,
+  "excl_stats": {
+    "우리자산운용": 1,
+    "신한운용": 1,
+    "[기고]": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.1834,
+    "calls": 15,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 6980,
+        "out": 35,
+        "cost_usd": 0.0072
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 8,
+        "in": 47357,
+        "out": 3124,
+        "cost_usd": 0.063
+      },
+      "claude-sonnet-5|2차분석": {
+        "calls": 5,
+        "in": 29978,
+        "out": 1516,
+        "cost_usd": 0.1127
+      },
+      "claude-haiku-4-5-20251001|헤더요약": {
+        "calls": 1,
+        "in": 280,
+        "out": 54,
+        "cost_usd": 0.0005
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "e0ed7677",
+      "title": "“세뱃돈 대신 주식”…증권사들도 절세계좌 경쟁",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e932b976",
+      "title": "[뉴(NEW) 희망의시대] 증권가, '통합금융 플랫폼'으로 전환 가속화",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "9fdba140",
+      "title": "내년부터 해외 개미도 직접 '한국 ETF' 투자…'역직구' 시장 커지나",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f06c0f9d",
+      "title": "\"추석 용돈, 주식으로 주세요\"… 어린이펀드 수익률 살펴보니",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4b9c6fcb",
+      "title": "삼성증권, 발행어음 특판 이틀 반 만에 완판…1000억원 소진",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "f7ada173",
+      "title": "\"자금유치에서 자금운영 경쟁으로\"...메리츠증권 가세한 발행어음 \"9파전...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "198df6e0",
+      "title": "증권사, 추석 명절 재테크족 겨냥한 특판 열풍",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "396f570c",
+      "title": "키움증권, '철권 스타즈컵' 후원...고객 접점 확대",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "435b680d",
+      "title": "여의도에 부는 IT 바람… 디지털 역량 갖춰야 증권사 ‘취뽀’",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "de13538f",
+      "title": "추석 용돈 굴려볼까…한 달에 배당 두 번 받는 ETF 투자법",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "003b04f5",
+      "title": "[금융家] 이찬진 금융감독원장 ⑤ㅣ 지배구조·소비자보호·시장 안정 '...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "051ccacf",
+      "title": "[A 금융체크] 상호금융, 굳건한 지역금융 버팀목...금융 사각지대 메운...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "82bae64e",
+      "title": "다시 칠천피, '은행·증권 결합 계좌' 대세…'SOL LINK' 50만좌 돌파",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e740bcc3",
+      "title": "주식투자·부동산·세금 상담에에 상생금융마켓까지…머니페스타 ‘재...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "413ad3a5",
+      "title": "KB증권, 시큐리타이즈·옵티미즘 파운데이션과 국내 토큰증권 사업 협력",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "16bf339b",
+      "title": "늘어난 파킹 자금 수요에 주목받는 증권사 '발행어음' 경쟁",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "2beb9d26",
+      "title": "대신증권, 공모주 청약증거금에도 이자 준다…고객혜택 확대 外",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9bf0e6a0",
+      "title": "[위클리크립토] 디지털자산 과세 반대 여론 확산 外",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "003a011e",
+      "title": "카카오페이증권, 멜론과 '비트타는 주식 거래' 이벤트 진행",
+      "company": "카카오페이증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "fca1162f",
+      "title": "\"개인고객 잡아라\" 증권업계는 '플랫폼' 전쟁 중",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7f4d1db9",
+      "title": "[뱅커스토리] 조윤환 NH농협은행 부장 \"퇴직연금, 수익률 다음은 '연금'...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8f1d334a",
+      "title": "주식·채권도 토큰으로 거래…내년 2월 STO 제도권 편입",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "256a659a",
+      "title": "주식·채권도 코인으로…STO 제도화에 조각투자 시대 ‘성큼’",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a58bca04",
+      "title": "'사팔사팔'로 손실본 개미들…1주씩 차곡차곡 '주식 모으기' 늘었다",
+      "company": "카카오페이증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "c217cc0e",
+      "title": "팩트블록 파블로, RWA·토큰증권 정보 제공",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "43c3da7f",
+      "title": "우리금융, 포항 AI 데이터센터에 6000억 공급…AI 인프라 구축 지원",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "우리자산운용"
+    },
+    {
+      "hash": "9c12ac5b",
+      "title": "'K-딥테크'에 3200억 푼다…신한운용의 과기혁신펀드 굴릴 곳은?",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한운용"
+    },
+    {
+      "hash": "6098bfcd",
+      "title": "[기고]금융 운영체제 바뀐다…한국 또 늦을 것인가",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[기고]"
+    }
+  ]
+}
