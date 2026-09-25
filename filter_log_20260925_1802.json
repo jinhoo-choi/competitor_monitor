@@ -1,0 +1,307 @@
+{
+  "time": "2026-09-25T18:02:30.292746+09:00",
+  "total": 38,
+  "sent": 2,
+  "hard_excl": 1,
+  "excl_stats": {
+    "[기고]": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.2039,
+    "calls": 17,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 9029,
+        "out": 41,
+        "cost_usd": 0.0092
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 10,
+        "in": 59537,
+        "out": 3814,
+        "cost_usd": 0.0786
+      },
+      "claude-sonnet-5|2차분석": {
+        "calls": 5,
+        "in": 30858,
+        "out": 1528,
+        "cost_usd": 0.1155
+      },
+      "claude-haiku-4-5-20251001|헤더요약": {
+        "calls": 1,
+        "in": 277,
+        "out": 49,
+        "cost_usd": 0.0005
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "31d27146",
+      "title": "[증권업계기상도]9월 넷째주, 10곳 중 4곳 ‘맑음’…발행어음·IMA 훈풍...",
+      "company": "증권업계",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "e0ed7677",
+      "title": "“세뱃돈 대신 주식”…증권사들도 절세계좌 경쟁",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e932b976",
+      "title": "[뉴(NEW) 희망의시대] 증권가, '통합금융 플랫폼'으로 전환 가속화",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "9fdba140",
+      "title": "내년부터 해외 개미도 직접 '한국 ETF' 투자…'역직구' 시장 커지나",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bf8af189",
+      "title": "주식·채권도 '토큰화' … 내년 2월 STO 제도권 편입 앞두고 장내외 시장...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4b9c6fcb",
+      "title": "삼성증권, 발행어음 특판 이틀 반 만에 완판…1000억원 소진",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "f7ada173",
+      "title": "\"자금유치에서 자금운영 경쟁으로\"...메리츠증권 가세한 발행어음 \"9파전...",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "32fe8d00",
+      "title": "메리츠증권 발행어음 인가…9개사 고객 유치전 '본격화'",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "11095a0c",
+      "title": "설에는 주식, 추석엔 안전자산?...은행보다 이자 더 준다는 '이것'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "198df6e0",
+      "title": "증권사, 추석 명절 재테크족 겨냥한 특판 열풍",
+      "company": "미래에셋증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "5af80787",
+      "title": "증권사 앱도 AI 시대…'투자 비서' 경쟁 본격화",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "396f570c",
+      "title": "키움증권, '철권 스타즈컵' 후원...고객 접점 확대",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3d11cc2c",
+      "title": "[심층] '빚투'가 키운 상반기 증권사 수익…하반기 '관리 능력' 시험대",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e3318680",
+      "title": "거래만 하던 MTS는 가라… AI 분석·자녀계좌·야구점수까지",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "8299b8da",
+      "title": "KB금융 18주년···국민과 함께 리딩금융으로 성장",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0ce5d6eb",
+      "title": "금감원 계파·친소 인사 경고⋯우리금융 자회사 CEO 선임구조 도마위",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "82bae64e",
+      "title": "다시 칠천피, '은행·증권 결합 계좌' 대세…'SOL LINK' 50만좌 돌파",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "051ccacf",
+      "title": "[A 금융체크] 상호금융, 굳건한 지역금융 버팀목...금융 사각지대 메운...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a711cea8",
+      "title": "추석 끝나면 IPO도 기지개…래블업 등 수요예측 줄줄이",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "da9996e6",
+      "title": "뤼튼, IPO 대표주관사 미래에셋증권 선정…내년 예심 청구 목표",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e740bcc3",
+      "title": "주식투자·부동산·세금 상담에에 상생금융마켓까지…머니페스타 ‘재...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ff4b65b2",
+      "title": "[개인국채 시대] 퇴직연금 '입성', 장기물 수요↑",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9bf0e6a0",
+      "title": "[위클리크립토] 디지털자산 과세 반대 여론 확산 外",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "003a011e",
+      "title": "카카오페이증권, 멜론과 '비트타는 주식 거래' 이벤트 진행",
+      "company": "카카오페이증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "6094c716",
+      "title": "메타 '뮤즈' AI 돌풍에 금융주 흔들…\"인간 자산관리사 역할 줄어들까\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5aa6b67c",
+      "title": "\"추석에 부모님 금융앱 열어보세요\"…대출·계좌 개설 미리 막는다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f2809fa5",
+      "title": "대신증권, 공모주 청약증거금에도 이자…\"소비자 혜택 강화한다\"",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f06c0f9d",
+      "title": "\"추석 용돈, 주식으로 주세요\"… 어린이펀드 수익률 살펴보니",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fca1162f",
+      "title": "\"개인고객 잡아라\" 증권업계는 '플랫폼' 전쟁 중",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "435b680d",
+      "title": "여의도에 부는 IT 바람… 디지털 역량 갖춰야 증권사 ‘취뽀’",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7f4d1db9",
+      "title": "[뱅커스토리] 조윤환 NH농협은행 부장 \"퇴직연금, 수익률 다음은 '연금'...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "635834b0",
+      "title": "추석 연휴 대출 만기·카드값은 언제?…금융거래 일정 총정리",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "43ff28f6",
+      "title": "'초단기채에 돈 넣고, 반도체 3배도 산다'…서학개미의 두 갈래 투자",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "75ca363b",
+      "title": "주식·채권도 코인처럼 거래...STO 제도화에 '자산 토큰화' 시대 연다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5511c3f7",
+      "title": "주식·채권도 코인으로…STO 제도화에 조각투자 시대 열린다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8f1d334a",
+      "title": "주식·채권도 토큰으로 거래…내년 2월 STO 제도권 편입",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4674cac0",
+      "title": "대신증권, 공모주 청약증거금에도 이자 지급",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6098bfcd",
+      "title": "[기고]금융 운영체제 바뀐다…한국 또 늦을 것인가",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[기고]"
+    }
+  ]
+}
