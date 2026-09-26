@@ -1,0 +1,163 @@
+{
+  "time": "2026-09-26T10:01:20.468718+09:00",
+  "total": 18,
+  "sent": 0,
+  "hard_excl": 3,
+  "excl_stats": {
+    "[기고]": 1,
+    "케이뱅크": 1,
+    "신한자산운용": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.042,
+    "calls": 4,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 5351,
+        "out": 17,
+        "cost_usd": 0.0054
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 2,
+        "in": 11215,
+        "out": 752,
+        "cost_usd": 0.015
+      },
+      "claude-sonnet-5|2차분석": {
+        "calls": 1,
+        "in": 5752,
+        "out": 286,
+        "cost_usd": 0.0215
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "a5251756",
+      "title": "\"예금으로 돌아가는 투자자 잡아라\"…증권가 발행어음 특판 경쟁",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "3580e9cd",
+      "title": "제논, 코스닥 상장예비심사 통과… 삼성증권 주관 IPO 착수",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e6d757c8",
+      "title": "\"우리도 한국 주식 살래\" 해외 개미 '러브콜'...ETF도 직접 투자한다",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1ec35afc",
+      "title": "추석 끝나면 IPO 청약 줄줄이…눈여겨볼 새내기주는",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b25b0e9b",
+      "title": "[Wealth 컨슈머] 증권사, 금현물 투자 고객 잡기…이벤트·적립식 서비스",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9eb89b5f",
+      "title": "금리 인상기, 예금 머니무브 속 '예금+α' 증권사 틈새전략은?",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "4d9ce54d",
+      "title": "[IPO챗] 글로벌테크놀로지 등 4곳, 이번주 코스닥 입성",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f4e83def",
+      "title": "AI 투자축 GPU서 CPU·메모리로 확장…판 뒤집힌다 “삼전닉스 가치 재평...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9eacc716",
+      "title": "렌털사기·사기대출 피해에 투자자 보호까지…금융권 책임, 국감 시험대",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a2978085",
+      "title": "美가 디지털자산 ‘바로미터’…韓 제도화도 ‘주목’",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "185379e9",
+      "title": "NH농협금융, 인도네시아 마야파다그룹 초청 연수",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ee3f5eb6",
+      "title": "남의 회사 주식을 허락 없이 찍어낸다? 로빈후드가 연 기묘한 시장 [비...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e6414806",
+      "title": "\"현금 급해\" 주식 팔았는데 돈 못 빼 '발 동동'...추석 뒤 바뀌는 '5가지...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d1819020",
+      "title": "에이판다 “부동산 대출채권 1호 STO로, 안정적 중수익 제공\"[인터뷰]",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1403ebe7",
+      "title": "주식 거래 넘어 공모주 청약까지…'금융 슈퍼앱'과 맞붙는 코인 거래소",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "44b9897a",
+      "title": "[기고]온체인 금융 시대…정부가 검토할 세가지",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[기고]"
+    },
+    {
+      "hash": "90cec8dc",
+      "title": "추석 상여금 굴려볼까…예금·파킹형·미국지수 ETF '선택지'",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "케이뱅크"
+    },
+    {
+      "hash": "70bb9c53",
+      "title": "토큰증권 시대 개막, 판 커진다",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한자산운용"
+    }
+  ]
+}
