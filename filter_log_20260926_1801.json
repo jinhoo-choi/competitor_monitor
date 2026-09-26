@@ -1,0 +1,202 @@
+{
+  "time": "2026-09-26T18:01:16.966787+09:00",
+  "total": 24,
+  "sent": 0,
+  "hard_excl": 6,
+  "excl_stats": {
+    "미래에셋자산운용": 1,
+    "토스뱅크": 1,
+    "목표주가": 1,
+    "[기고]": 1,
+    "케이뱅크": 1,
+    "신한자산운용": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.0206,
+    "calls": 3,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 5867,
+        "out": 17,
+        "cost_usd": 0.006
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 2,
+        "in": 11138,
+        "out": 696,
+        "cost_usd": 0.0146
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "b26767e8",
+      "title": "[개인국채 시대] 미래에셋 선구안 빛났다…선점효과 기대",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a5251756",
+      "title": "\"예금으로 돌아가는 투자자 잡아라\"…증권가 발행어음 특판 경쟁",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "c2a53859",
+      "title": "[단독] 한국예탁결제원도 단일종목 레버리지 ETF 제안 안 했다",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8675f91c",
+      "title": "'내 주식 어쩌나' 떨던 개미들…삼성전자 다시 보니 '깜짝' [한경우의 케...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e6d757c8",
+      "title": "\"우리도 한국 주식 살래\" 해외 개미 '러브콜'...ETF도 직접 투자한다",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1ec35afc",
+      "title": "추석 끝나면 IPO 청약 줄줄이…눈여겨볼 새내기주는",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5dcd771e",
+      "title": "추석 연휴 이후 4개사 코스닥 입성···수요예측·공모청약도 줄 잇는다",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4d9ce54d",
+      "title": "[IPO챗] 글로벌테크놀로지 등 4곳, 이번주 코스닥 입성",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6a860475",
+      "title": "'엘클라시코' 꺼낸 우리투자…2030 이용자 늘리기 통할까",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "06495423",
+      "title": "연휴 뒤 용돈 벌어볼까…'수익률 300%' 노리는 바이오 공모주는?",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "404a9aa9",
+      "title": "“韓 금융 잡아라”…해외 블록체인 각축전 [도예리의 디지털자산 노트...",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "185379e9",
+      "title": "NH농협금융, 인도네시아 마야파다그룹 초청 연수",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "30f6c14a",
+      "title": "“공모주 대세는 피지컬 AI”…빅웨이브·브릴스에 ‘10조 뭉칫돈’ 모...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2d87b72e",
+      "title": "“나도 주식 해볼래” 초등생까지 투자 열풍…ETF 학습지도 등장",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ee3f5eb6",
+      "title": "남의 회사 주식을 허락 없이 찍어낸다? 로빈후드가 연 기묘한 시장 [비...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "18b25ff2",
+      "title": "국장은 쉬어도 美증시는 열린다…추석 연휴 투자자 ‘3대 체크포인트’...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e6414806",
+      "title": "\"현금 급해\" 주식 팔았는데 돈 못 빼 '발 동동'...추석 뒤 바뀌는 '5가지...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d1819020",
+      "title": "에이판다 “부동산 대출채권 1호 STO로, 안정적 중수익 제공\"[인터뷰]",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "16d73fe1",
+      "title": "현대차 담은 피지컬 AI ETF, 55%나 빠진 주가에 '어쩌나'",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "미래에셋자산운용"
+    },
+    {
+      "hash": "b25b0e9b",
+      "title": "[Wealth 컨슈머] 증권사, 금현물 투자 고객 잡기…이벤트·적립식 서비스",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "fd81f3fc",
+      "title": "상반기 웃었던 증권주, 3분기 17%↓…반등 가능할까",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "목표주가"
+    },
+    {
+      "hash": "44b9897a",
+      "title": "[기고]온체인 금융 시대…정부가 검토할 세가지",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[기고]"
+    },
+    {
+      "hash": "90cec8dc",
+      "title": "추석 상여금 굴려볼까…예금·파킹형·미국지수 ETF '선택지'",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "케이뱅크"
+    },
+    {
+      "hash": "70bb9c53",
+      "title": "토큰증권 시대 개막, 판 커진다",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한자산운용"
+    }
+  ]
+}
