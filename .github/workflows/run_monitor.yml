@@ -5,6 +5,10 @@ on:
   repository_dispatch:
     types: [run_monitor]
 
+# seen_articles.json / filter_log 커밋·push 용 GITHUB_TOKEN 쓰기 권한
+permissions:
+  contents: write
+
 jobs:
   run:
     runs-on: ubuntu-latest
