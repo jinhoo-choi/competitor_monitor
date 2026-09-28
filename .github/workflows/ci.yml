@@ -19,4 +19,4 @@ jobs:
       - name: 파이썬 구문 검증
         run: python -m py_compile monitor_v2.py
       - name: 워크플로 YAML 검증
-        run: python -c "import yaml,glob,sys; [yaml.safe_load(open(f)) for f in glob.glob('.github/workflows/*.yml')]; print('yaml ok')"
+        run: pip install -q pyyaml && python -c "import yaml,glob,sys; [yaml.safe_load(open(f)) for f in glob.glob('.github/workflows/*.yml')]; print('yaml ok')"
