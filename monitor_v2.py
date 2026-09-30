@@ -296,6 +296,7 @@ ALIAS_MAP = {
     "미래에셋": "미래에셋증권", "미래에셋대우": "미래에셋증권",
     "토스": "토스증권",
     "BNK": "BNK투자증권", "BNK증권": "BNK투자증권",
+    "DB금융투자": "DB증권",   # 구사명
 }
 
 def canonicalize_company(entity: str) -> str:
@@ -318,7 +319,7 @@ SECURITIES_WHITELIST = {
     "미래에셋증권","토스증권",
     # 그 외 국내 증권사 (제휴·신사업 기사 탐지 대상)
     "하나증권","대신증권","유안타증권","한화투자증권","교보증권","IBK투자증권",
-    "현대차증권","DB금융투자","BNK투자증권","다올투자증권","SK증권","LS증권",
+    "현대차증권","DB증권","BNK투자증권","다올투자증권","SK증권","LS증권",
     "이베스트투자증권","상상인증권","케이프투자증권","부국증권","신영증권",
     "유진투자증권","한양증권","흥국증권","유화증권","리딩투자증권",
     "코리아에셋투자증권","카카오페이증권","우리투자증권","iM증권","하이투자증권",
@@ -344,7 +345,7 @@ def _surface_re(canon: str):
         alts = [re.escape(canon), rf"{re.escape(brand)}(?:투자)?證"]
     else:
         alts = [re.escape(canon), rf"{re.escape(brand)}\s*(?:투자|금융투자)?\s*(?:증권|證)"]
-    if canon.endswith("금융투자"):
+    if canon.endswith("금융투자") or canon == "DB증권":   # DB증권 구사명(DB금융투자) 표기 유지
         alts.append(rf"{re.escape(brand)}\s*금융투자")
     return re.compile("|".join(alts), re.IGNORECASE)
 
@@ -420,7 +421,14 @@ def is_incidental_mention(company: str, title: str, body: str) -> bool:
     if not rgx:
         return False
     # ① 제목에 등장하면 주체로 인정 (제목은 기사의 주어를 담는다)
-    if rgx.search(title or ""):
+    #    예외: 선두 주어가 비증권사이고 증권사는 '~에(도) N억' 수혜자로만 등장
+    #    실사례(9/30): 「한화생명, 애큐온캐피탈 4400억에 품는다…한화투자증권에도 2500억」
+    mt = rgx.search(title or "")
+    if mt:
+        lead = re.match(r"\s*([^,…]+?),", title)
+        if (lead and not find_securities_in_text(lead.group(1))
+                and re.match(r"\s*(?:에게|에)도?\s*[\d,.]+\s*(?:조|억)", title[mt.end():])):
+            return True
         return False
     # ② 본문 등장 중 '부수 신호가 아닌' 등장이 하나라도 있으면 주체로 인정
     found = False
