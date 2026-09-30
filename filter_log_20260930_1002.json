@@ -1,0 +1,499 @@
+{
+  "time": "2026-09-30T10:02:05.861117+09:00",
+  "total": 65,
+  "sent": 2,
+  "hard_excl": 11,
+  "excl_stats": {
+    "[금융 브리핑]": 1,
+    "[기획]": 1,
+    "KB운용": 1,
+    "자산운용": 1,
+    "사회공헌": 1,
+    "미래에셋자산운용": 2,
+    "미래에셋운용": 1,
+    "야구장": 1,
+    "[솔리다임 IPO②]": 1,
+    "케이뱅크": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.1371,
+    "calls": 13,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 11818,
+        "out": 41,
+        "cost_usd": 0.012
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 10,
+        "in": 59192,
+        "out": 3931,
+        "cost_usd": 0.0788
+      },
+      "claude-sonnet-5|2차분석": {
+        "calls": 2,
+        "in": 12327,
+        "out": 614,
+        "cost_usd": 0.0462
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "fd3786e5",
+      "title": "DL이앤씨, 성수2지구 금융지원 체계 구축…5대 은행·5대 증권사와 맞손",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a2661930",
+      "title": "DL이앤씨, 성수2지구 금융지원 강화…5대 은행·증권사와 업무협약",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c11425b8",
+      "title": "“성수2지구 금융역량 총결집”…DL이앤씨, 주요 금융기관과 협력체계 ...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b84e711e",
+      "title": "DL이앤씨, 성수2지구 금융지원 강화⋯10개 금융기관과 MOU",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "01a6b195",
+      "title": "[MTS 사용기] 삼성證 \"mPOP\", 종목 탐색부터 포트폴리오 구성까지",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "c8bb0afe",
+      "title": "삼성증권, \"CEO가 직접 듣는다\"… '소비자보호 원년' 선언",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "540f8758",
+      "title": "[실전재테크]美중간선거 한달 앞으로…주식대응 전략은",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b2d2538c",
+      "title": "\"한국 회사 알려줘\" 큰손 몰린다...월가에 깃발 꽂은 K증권사들 전략은",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "632d167f",
+      "title": "'암살자(들)' 논란, 키움증권에도 불똥…유해진 광고 댓글 차단",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f6c23daf",
+      "title": "국민성장펀드 2호 '선착순 6000억' 쟁탈전 … 1호 투자자는 가입 제한",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d0f54ed6",
+      "title": "DL이앤씨, 성수2지구 재개발서 10개 금융사와 협력",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c515bf5d",
+      "title": "2차 '국민참여성장펀드' 오늘 출시…1차 때처럼 조기 완판될까",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "07404aa9",
+      "title": "오늘 ‘2차 국민참여성장펀드’ 출시…이번에도 흥행할까",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "96cedec3",
+      "title": "\"승패는 자금운용 역량\"...IMA로 실탄 장전한 증권사들",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "beaf0354",
+      "title": "결제만 하는 카드사는 그만, ‘생활금융’ 진화",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "61131b49",
+      "title": "KB증권, ‘OK캐쉬백에서 계좌개설+국내·해외주식 거래까지’ 서비스 출...",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "9a9c8f2f",
+      "title": "\"10월 증시 조정은 연말까지 매수 기회\"<메리츠證>",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e77fa046",
+      "title": "메리츠증권, 발행어음 16.7조 '새 실탄'...IB 성장엔진 다시 단다",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "857bf289",
+      "title": "개인이 호화 유람선에 투자를? ‘선박 조각투자’ 시범사업 본격",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "97596702",
+      "title": "미래에셋, '국민참여형 국민성장펀드 2호' 모집",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e310f47c",
+      "title": "미래에셋, 국민성장펀드 2호 출격…첨단 산업 지원 '세제·안전판' 결합",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5d9edb8c",
+      "title": "\"국민과 함께 미래 성장산업 투자\"… 미래에셋, '국민참여형 국민성장 ...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "851a5378",
+      "title": "대미투자 낙수효과 어디까지…엇갈린 한전 형제들",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d587df75",
+      "title": "[외화채 조달전략] [미래에셋증권] 창구 다변화 '굿'…금리는 '과제'",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0f96ff8a",
+      "title": "하나증권, 국민성장펀드 2차 판매…MTS서 계좌개설부터 가입까지",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d5d0a818",
+      "title": "'디지털 달러 전쟁' 스테이블코인이 바꾸는 송금·결제·투자",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d35eba1d",
+      "title": "[KBW 2026] 금융 '장 마감'을 묻다…24시간 온체인 거래·AI결제 부상",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "86f8ccc3",
+      "title": "카카오·네이버·토스, 스테이블코인법 통과 겨냥 인프라 경쟁",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3443de38",
+      "title": "[핀포인트] [토스] 오아시스 전략적 투자, 플랫폼 지표 강화",
+      "company": "토스증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "fa209c0a",
+      "title": "DL이앤씨, 성수2지구 사업에 10개 금융기관 손잡아",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e14926c8",
+      "title": "DL이앤씨, 성수2지구에 10개 금융사 연계…맞춤형 금융지원 강화",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1cb0b3df",
+      "title": "DL이앤씨, 성수2지구에 금융역량 총결집…10개 금융기관과 업무협약",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a30a8557",
+      "title": "美 거래소 크라켄 \"한국 주식도 토큰으로…해외 투자자 접근성 높일 것...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7f51fc32",
+      "title": "국민성장펀드 2차 가입방법, 조건·금액은?",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3d5720a2",
+      "title": "연말 세액공제 앞두고…대신증권, 연금 이벤트 진행",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7016362b",
+      "title": "대신증권, 연금자산 유치 경쟁…순입금 따라 최대 103만원 혜택",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d4bb0ff3",
+      "title": "[Invest]회사채 대신 CP 택하는 기업들…발행 가뭄 속 롯데·한진 약진",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ccee0152",
+      "title": "하나증권, 국내주식 입고 이벤트…11월 20일까지",
+      "company": "하나증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "c0d58fb8",
+      "title": "하나증권, 타사 주식 옮기면 최대 100만원 이자 지원",
+      "company": "하나증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "7c3aebe8",
+      "title": "링크알파, 금융사 AI 에이전트에 'AI 레디 데이터' 직접 공급",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6c797fda",
+      "title": "링크알파, '금융데이터 AI 마켓플레이스' 금융사에 공급한다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0092cc6c",
+      "title": "모건스탠리, '월가의 미래' 시험할 디지털자산 연구소 구축",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "69bcf6e3",
+      "title": "하나증권, 국민성장펀드 2차 판매…MTS로 가입 문턱 낮춘다",
+      "company": "하나증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "d322a0f8",
+      "title": "대신증권, 연금저축·IRP 순입금 이벤트 진행",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9175503b",
+      "title": "조각투자 장외거래소 넥스체인지 출범..대표에 정유신씨",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "dd7bf9a1",
+      "title": "조각투자 장외거래소 준비법인 넥스체인지 출범",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b2acf372",
+      "title": "조각투자거래소 준비법인 넥스체인지 출범…정유신 대표 \"핵심 플랫폼 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "03acc9bb",
+      "title": "2차 국민참여성장펀드 출시…서민 우선배정 50%로 확대",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "526bb685",
+      "title": "ISA 가입자 1000만명 돌파…10년 만에 '국민 재테크' 계좌",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "848eff58",
+      "title": "6000억 규모 2차 국민성장펀드 오늘 출시…주의할 점은",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8138e400",
+      "title": "하나증권, 제2차 국민참여형 국민성장펀드 판매…MTS 비대면 가입",
+      "company": "하나증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "ec5297ee",
+      "title": "16조원 조달길 열린 메리츠증권…발행어음 운용 전략은",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "b168da62",
+      "title": "[더벨][thebell note] 메리츠증권의 본게임",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "97c2dc9e",
+      "title": "DL이앤씨, 성수2지구에 5대 은행·증권사 10곳 금융 협력망 구축",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f5cb838e",
+      "title": "[금융 브리핑] 삼성증권·하나증권·대신증권",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[금융 브리핑]"
+    },
+    {
+      "hash": "6d63e99a",
+      "title": "[기획] 메리츠증권, 발행어음 출시 서두르지 않는 이유",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[기획]"
+    },
+    {
+      "hash": "1b166faa",
+      "title": "삼성·미래·KB운용, 총 6000억 ‘국민성장펀드 2호’ 출시… 손실완충벽...",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "KB운용"
+    },
+    {
+      "hash": "47bfb6a2",
+      "title": "KB자산운용, 미래 핵심산업 투자 확대···'국민성장펀드 2호' 모집",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용"
+    },
+    {
+      "hash": "8013968d",
+      "title": "금융권, '포용금융·사회공헌' 행보 확대…취약계층 보호부터 지역 상생...",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "사회공헌"
+    },
+    {
+      "hash": "35e43cdc",
+      "title": "국민참여성장펀드 2차 판매 돌입…6000억원 선착순 모집",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "미래에셋자산운용"
+    },
+    {
+      "hash": "06946872",
+      "title": "미래에셋자산운용·새마을금고, 국민참여형 펀드 2호 모집 시작...'MG새마...",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "미래에셋자산운용"
+    },
+    {
+      "hash": "d66e2ce5",
+      "title": "미래에셋운용, 국민참여형 국민성장펀드 2호 모집…목표 2000억원",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "미래에셋운용"
+    },
+    {
+      "hash": "6502e79d",
+      "title": "치킨·응원도구로 연금 알린다…삼성증권 야구장 이벤트",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "야구장"
+    },
+    {
+      "hash": "5be91049",
+      "title": "[솔리다임 IPO②] 카카오가 제동 건 美상장…SK하이닉스 이사회도 같은...",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[솔리다임 IPO②]"
+    },
+    {
+      "hash": "9e3088bb",
+      "title": "가상자산 동맹 줄줄이 연장… 10월 만료 케이뱅크·업비트 '동행' 이어갈...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "케이뱅크"
+    }
+  ]
+}
