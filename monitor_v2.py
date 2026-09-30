@@ -470,7 +470,7 @@ _THEME_RULES = [
 ]
 
 def _extract_theme_keys(title: str, company: str) -> list:
-    """[(키, 7일차단여부)] — 제목 기준"""
+    """[(키, 7일차단여부)] — 제목+AI요약 기준 (9/29 메리츠: 제목에 키워드 없는 재보도가 7일 차단 우회)"""
     return [(f"{company}::#{n}", persist) for n, rx, persist in _THEME_RULES if rx.search(title or "")]
 
 # ═══════════════════════════════════════════════
@@ -2209,7 +2209,7 @@ def main():
             if entity_key and entity_key in seen.get("events", set()) and not new_stage:
                 print(f"  [사건중복-폴백2(엔티티)] {result.get('_company','')} | {result.get('title','')[:45]} (키: {entity_key})")
                 continue
-            theme_keys = _extract_theme_keys(title_txt, co_for_key)
+            theme_keys = _extract_theme_keys(title_txt + " " + an.get("summary",""), co_for_key)
             _hit = next((k for k, persist in theme_keys if persist and k in seen.get("events", set())), "")
             if _hit and not new_stage:
                 print(f"  [사건중복-테마] {result.get('_company','')} | {result.get('title','')[:45]} (키: {_hit})")
@@ -2414,7 +2414,7 @@ def main():
         entity_fb = _extract_entity_key(a.get("title",""), co_fb)
         if entity_fb:
             new_events.add(entity_fb)
-        new_events.update(k for k, persist in _extract_theme_keys(a.get("title",""), co_fb) if persist)
+        new_events.update(k for k, persist in _extract_theme_keys(a.get("title","") + " " + an.get("summary",""), co_fb) if persist)
     save_seen(seen, sent_urls=sent_urls,
               new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
               new_events=new_events)
