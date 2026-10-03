@@ -1,0 +1,324 @@
+{
+  "time": "2026-10-03T10:01:58.785932+09:00",
+  "total": 41,
+  "sent": 2,
+  "hard_excl": 4,
+  "excl_stats": {
+    "키움투자자산운용": 1,
+    "신한자산운용": 2,
+    "[A 증권가 소식]": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.1483,
+    "calls": 13,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 8931,
+        "out": 38,
+        "cost_usd": 0.0091
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 9,
+        "in": 52250,
+        "out": 3589,
+        "cost_usd": 0.0702
+      },
+      "claude-sonnet-5|2차분석": {
+        "calls": 3,
+        "in": 18473,
+        "out": 902,
+        "cost_usd": 0.0689
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "5cb3acf1",
+      "title": "은행은 정보유출, 증권사는 전산장애···금융권 IT 사고 잇따라",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "4b86f08f",
+      "title": "대형 증권사, 최근 3년 전산사고 배상 70억…증시 호황에도 보안 '뒷전'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1e970981",
+      "title": "대형 증권사 10곳, 3년간 전산사고 배상 70억…\"인프라 투자 필요\"",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "140d7f89",
+      "title": "증권사 전산사고에 70억 물어줬다…3년간 113건 발생",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "83f1d453",
+      "title": "키움증권, 대화형 'AI 검색' 출시...\"말하듯 물으면 메뉴·시세 바로 안...",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "717e0ae0",
+      "title": "비트코인 8만달러선 회복…ETF 자금 유입에 투자심리 개선 [e가상자산]",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "58a2cee0",
+      "title": "메뉴 몰라도 질문하면 '척척'… 키움증권, '영웅문S#' AI 검색 출시",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "74a8bfe8",
+      "title": "유해진 광고 내리고 댓글 차단…키움증권 “새 캠페인 준비 중”",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ed8e77a8",
+      "title": "키움증권, ‘암살자(들)’ 논란 속 유해진 광고 종료",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "062d2eec",
+      "title": "키움증권, 유해진 광고캠페인 종료…'암살자(들)' 논란 광고계로 번지나...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "bd784a1e",
+      "title": "'암살자들' 논란 속 유해진 광고 종료…키움증권 \"계획된 일정\"",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d9ae2126",
+      "title": "2차 국민참여성장펀드 사흘 만에 '절반 완판'…6일부터 온라인 판매 늘...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d84f1f9e",
+      "title": "2차 국민참여성장펀드, 사흘간 2996억 판매…목표액 절반 채워",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "614f3b65",
+      "title": "손보사까지 M&A 보폭 넓히는 교보생명…'투자 여력'이 관건",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a291c180",
+      "title": "동양생명, 우리금융 보험축 도약…보장성·AI 정조준",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "737159c4",
+      "title": "AI 해킹 공포 전 금융권 확산…은행권 잇단 공격에 '비상'",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c9126711",
+      "title": "KB증권 'My연금' 개편…자산 조회부터 매매까지 연결",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "18312b0a",
+      "title": "KB증권, MTS 'My연금' 서비스 전면 개편...\"편의성 제고\"",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "4dc7bf75",
+      "title": "한화투자증권, 9000억 자본확충…종투사 직행 아닌 ‘이중 포석’",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0aa1a3ac",
+      "title": "NH투자증권, 퇴직연금 DC형 이벤트",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "355a667a",
+      "title": "중상위 증권사, '종투사' 진입 위한 자본확충 본격화...발행어음 진출 ...",
+      "company": "한화투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "75630542",
+      "title": "뱅크샐러드, 코스닥 상장 시동…AI 금융플랫폼 확장",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "ea9f0a82",
+      "title": "뱅크샐러드, 코스닥 상장예비심사 청구 IPO 본격화...주관사 미래에셋증...",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "a8b547c5",
+      "title": "SMBC닛코증권, 유니스왑 훅에 자금세탁방지 넣어 2027년 중반 일본 디파...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "fc9c61a4",
+      "title": "교보생명, SBI·서클·비댁스와 디지털자산 금융 활용 논의",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "645376f5",
+      "title": "한국투자증권-카카오그룹, 디지털자산 금융서비스 손잡는다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7e4f8856",
+      "title": "다올투자증권, 생성형 AI 연계 'MCP 트레이딩' 정식 출시",
+      "company": "다올투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "7827e415",
+      "title": "[다음주 한국은행 및 금융위·금감원 일정]",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8acd2acb",
+      "title": "LG씨엔에스 소폭 상승…다올투자증권 \"금융 규제 완화·GPUaaS 성장 주목...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "43a585c5",
+      "title": "비대면 계좌개설 안심차단, 앱 신청·영업점 해제",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "831d6ce5",
+      "title": "한화생명, 9400억 승부수…종합금융그룹 전환 속도",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7bdb08e5",
+      "title": "대화창이 MTS로, 카톡이 지갑으로…증권가 'AI·플랫폼' 영토확장 경쟁",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "54b85591",
+      "title": "1000만명 몰린 ISA…증권사 웃지만 ‘속 빈 계좌’ 숙제",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "39ba6d13",
+      "title": "교보생명, 스테이블코인·RWA 금융 적용 모색…글로벌 협력 강화",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "312135d8",
+      "title": "퇴직연금 이전 상품별로 달라…ETF·예금은 조건부 실물 이전",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f6ca7fdb",
+      "title": "금융위, 중소형주 리포트 발간 비율 도입...'매도의견' 익명 허용",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9ccb3d3f",
+      "title": "[미국 특징주] 로빈후드 주식 토큰발 투기 열풍...주식이 밈코인의 '판돈...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ad12de15",
+      "title": "키움 이어 미래에셋도… '전자산업 쌀' MLCC ETF 경쟁",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "키움투자자산운용"
+    },
+    {
+      "hash": "6e1e7609",
+      "title": "[만나보니] [신한자산운용] 박수민 ETF전략실장 \"뜨고 나서 만들면 늦어...",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한자산운용"
+    },
+    {
+      "hash": "741e895b",
+      "title": "신한자산운용, 글로벌 DRAM 반도체 ETF 7일 상장",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한자산운용"
+    },
+    {
+      "hash": "813d0482",
+      "title": "[A 증권가 소식] 한국투자증권, 용인 선한사마리아원에 '꿈 도서관 9호'...",
+      "company": "NH투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "[A 증권가 소식]"
+    }
+  ]
+}
