@@ -1,0 +1,232 @@
+{
+  "time": "2026-10-04T10:01:29.612801+09:00",
+  "total": 29,
+  "sent": 1,
+  "hard_excl": 1,
+  "excl_stats": {
+    "증권주": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.047,
+    "calls": 6,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 7499,
+        "out": 26,
+        "cost_usd": 0.0076
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 5,
+        "in": 29569,
+        "out": 1963,
+        "cost_usd": 0.0394
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "17f5726d",
+      "title": "이번주 공모주 청약, 엘리스그룹 1개사",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "832f2ca7",
+      "title": "“월급날마다 주식 사면 돈 벌까”…변동장서 '적립식 투자' 따져보니",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "693b29c9",
+      "title": "잇따른 연휴, 주식 못 파는데 급전 필요하다면?…연휴 전 알아둘 증권계...",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "72ba1649",
+      "title": "[공모주달력]징검다리 휴일 속 빼곡한 일정…엘리스그룹 청약 돌입",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6ef2ed92",
+      "title": "[이번주 IPO]10월 둘째 주 수요예측·청약 일정",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a82f537d",
+      "title": "증권사, AI 입은 API 서비스 확대… 개인도 자동매매 쉽게",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ea662f69",
+      "title": "협상 더 필요하지만…대미 투자 소식에 원전·플랜트 업계 반색[Pick코노...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "16768da0",
+      "title": "국민연금, 삼성·미래에셋·키움 '차익실현'…대신은 추가 매수",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "09c30cbd",
+      "title": "\"계좌만 만들어도 5만원\"…증권사들 현금·주식·상품권 쏜다",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "3d173b85",
+      "title": "현금·주식 2300억 뿌린 증권사…서학개미에 2년간 980억 쏟았다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "125b9996",
+      "title": "iM뱅크·바로저축銀 등 금융권 해킹사고 최근 3년간 14건",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "cc5b3409",
+      "title": "[경제 이슈] 금융업계, 정보유출 확산...디지털금융 믿어도 될까",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "756143e3",
+      "title": "시중은행·2금융권까지… ‘AI 해킹’ 금융권 ‘비상’",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c49e31eb",
+      "title": "KB증권, IRP·연금저축 이벤트…12월 31일까지",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "e2b6f6d5",
+      "title": "[인사이트 뉴스] '중국계 AI'까지 동원됐나…금융권 덮친 AI 해킹, 1·2금...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "68b29175",
+      "title": "[증권 이모저모] 하나증권, 업계 첫 '외화 신종자본증권' 발행",
+      "company": "하나증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "147c13a4",
+      "title": "4일 캐시워크 돈버는퀴즈, 푸드루트·메리츠증권 MOUM 정답 확인",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a53eaad4",
+      "title": "NH투자증권, IMA 승부처는 ‘기업 발굴’",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "27418d9f",
+      "title": "NH투자증권, DC 신규가입 이벤트…2027년 1월 31일까지",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "5e80fbd0",
+      "title": "“사라 해서 샀는데, 내 주식 왜 이래?”…증권사 ‘매수’ 리포트만 내...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "52f2cc33",
+      "title": "수익률 높아지니 \"미장 타자\"…美 주식에 개미 자금 1900억달러 몰려",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5411e96c",
+      "title": "달라진 DAT…하이퍼리퀴드 토큰으로 사업 키운 '하이페리온디파이'[인터...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9154d79a",
+      "title": "월 4900원에 쇼핑·콘텐츠·금융까지…카카오·네이버 '구독전쟁' 점화",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "41359fc1",
+      "title": "이번주 국내 주요 금융일정(10.5~10.9)",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3d3c49ff",
+      "title": "다음주 금융당국 일정",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "49aa220b",
+      "title": "배당 정보 '한눈에'…증권가, MTS 배당 서비스 경쟁 불붙었다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "37b5e4b2",
+      "title": "42조 원 털고 떠난 외국인, 일본 채권 시장서 무슨 일 있었나",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "134e4982",
+      "title": "[코인 슈퍼위크] 발행길 열린 토큰증권, 원장에 갇혔다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "78b9ddbd",
+      "title": "그 많던 개미 증발에 금리 부담까지…불장에 웃던 증권주 '냉골'",
+      "company": "삼성증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "증권주"
+    }
+  ]
+}
