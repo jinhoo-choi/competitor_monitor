@@ -1,0 +1,261 @@
+{
+  "time": "2026-10-05T10:02:00.968127+09:00",
+  "total": 31,
+  "sent": 1,
+  "hard_excl": 4,
+  "excl_stats": {
+    "증권주": 1,
+    "신한자산운용": 1,
+    "라이프자산운용": 1,
+    "카카오뱅크": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.1858,
+    "calls": 15,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 7337,
+        "out": 35,
+        "cost_usd": 0.0075
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 8,
+        "in": 47148,
+        "out": 3194,
+        "cost_usd": 0.0631
+      },
+      "claude-sonnet-5|2차분석": {
+        "calls": 5,
+        "in": 30357,
+        "out": 1569,
+        "cost_usd": 0.1146
+      },
+      "claude-haiku-4-5-20251001|헤더요약": {
+        "calls": 1,
+        "in": 271,
+        "out": 51,
+        "cost_usd": 0.0005
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "cd98bdd5",
+      "title": "코스닥 900선 코앞…이주 코스닥 레버리지 16% 뛰어 수익률 싹쓸이[펀드...",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "ed55b066",
+      "title": "[기자수첩] 최대 실적 대형 증권사들, 전산 보안은 소홀",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9d909335",
+      "title": "시황 읽고 차트 분석·주식 주문까지···증권사 MTS 'AI 전쟁'",
+      "company": "증권업계",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "42335f58",
+      "title": "증권사 MTS, 매매앱 넘어 'AI·자산관리 플랫폼'으로",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "605f1d49",
+      "title": "[금융맞수] KB금융 vs 신한금융, 은행은 신한·비은행은 KB…리딩금융 승...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "306a9863",
+      "title": "신종자본증권으로 자본 쌓는 증권사···건전성 관리·영업 확대 '투트...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b066b2f2",
+      "title": "미국 주식시장이 하락하지 않는 이유… “변화가 돈이다” [조병문의 M...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e84ade5c",
+      "title": "증권사 CEO 증인 채택도 불발···'김빠진' 정무위 국감",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8db93f42",
+      "title": "[금융家] iM뱅크 ③ㅣ지역밀착 금융 '잰걸음'…호남 진출·중기 지원·캠...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "03ff2792",
+      "title": "AI 해킹에 금융권 7곳 뚫렸다…'보안 사각지대' 노렸다",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ff69ee59",
+      "title": "AI 활용 추정 해킹에…금융권 해킹 피해 줄줄이",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d9560f3b",
+      "title": "금융권 해킹 '일파만파'…보험·카드업계도 취약점 긴급 점검",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1ffb6e58",
+      "title": "연평균 59%씩 매출 느는데 투자 안할꺼야?[주末머니]",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c98d4dd2",
+      "title": "KB증권, 스탁뷰·깨비오·My연금 잇단 개편… 투자혁신 속도",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "73d85a21",
+      "title": "전 금융권 덮친 AI 해킹...‘보안 기본기’에 피해 엇갈려",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6c4b2ce7",
+      "title": "AI 해킹 위협 속 금융권, 피해 규모와 방어 성공의 비밀은?",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e5238f7c",
+      "title": "토큰증권, 투자대상 '무궁무진'…미술품·한우 넘어 IP까지 확대",
+      "company": "NH투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "927dbea5",
+      "title": "증권앱에 디지털자산, 거래소 인수까지… 전통금융 ‘코인 경계’ 허문...",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "7c2f4c22",
+      "title": "'지능생산' 다음은 '실행'···증권사 MTS 주문 버튼 삼켜버린 AI",
+      "company": "미래에셋증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "580ae0a3",
+      "title": "“주식 갖고 있으라더니” 솔리다임 중복상장···주주가치 보호 시험...",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b72a3f4b",
+      "title": "[플랫폼 인사이드] 카카오 월 4,900원 멤버십 참전…네이버·쿠팡 양강 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "140892c1",
+      "title": "금주 한국은행 및 금융당국(금융위·금감원) 주요일정",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ed4e6db1",
+      "title": "다올투자증권, 챗GPT·클로드서 주식 투자… 'MCP 트레이딩' 출시",
+      "company": "다올투자증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "094c3df5",
+      "title": "[코인이담] 발행보다 활용…KBW2026서 살펴본 온체인 금융의 미래",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a5a1efce",
+      "title": "STO 마지막 퍼즐은 스테이블코인···온체인 결제 연결 추진",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7e8aa16d",
+      "title": "[2026 국감-증권] 레버리지 ETF부터 엘리엇까지…자본시장 '투자자 보호...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "80fe902a",
+      "title": "[인터뷰] 앱토스 CEO \"미래 금융은 '온체인 경제'…韓서 기관 협업 기대...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d0324f5b",
+      "title": "고금리 시대 증시 투자…성과 내기 어려운 업종은",
+      "company": "키움증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "증권주"
+    },
+    {
+      "hash": "2a6cbef9",
+      "title": "마이크론이 보여준 메모리 호황…글로벌 D램 투자해볼까",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한자산운용"
+    },
+    {
+      "hash": "6a73c595",
+      "title": "주식 넘어 대체투자에 눈 돌리는 대학생들",
+      "company": "신한투자증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "라이프자산운용"
+    },
+    {
+      "hash": "192a1a94",
+      "title": "리플 XRP 서울 2026에 금융사 4곳 연사로 나섰지만…지분 투자자는 아니...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "카카오뱅크"
+    }
+  ]
+}
