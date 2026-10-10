@@ -1,0 +1,196 @@
+{
+  "time": "2026-10-10T10:01:37.351064+09:00",
+  "total": 22,
+  "sent": 2,
+  "hard_excl": 2,
+  "excl_stats": {
+    "반기 순이익": 1,
+    "투자의견": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.0689,
+    "calls": 8,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 6155,
+        "out": 26,
+        "cost_usd": 0.0063
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 5,
+        "in": 28678,
+        "out": 2048,
+        "cost_usd": 0.0389
+      },
+      "claude-sonnet-5|2차분석": {
+        "calls": 1,
+        "in": 6163,
+        "out": 315,
+        "cost_usd": 0.0232
+      },
+      "claude-haiku-4-5-20251001|헤더요약": {
+        "calls": 1,
+        "in": 285,
+        "out": 48,
+        "cost_usd": 0.0005
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "05815b02",
+      "title": "[N2 포커스] 메리츠증권, 이달 말 발행어음 출격…56조 시장 '9파전'",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "bd4caf01",
+      "title": "[IPO챗] 이번주 수요예측 10곳…진코스텍 등 2개사 상장",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1922d34a",
+      "title": "쇼핑하면 투자혜택 쌓인다… 증권사 MTS '생활금융' 확장",
+      "company": "키움증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "017a16ab",
+      "title": "700조 연금시장 쟁탈전…증권사로 '머니무브'",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "8e008b53",
+      "title": "상반기 축제였지만...3분기 성적표 우울한 증권가",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f8851c25",
+      "title": "대규모 개인정보 유출 금융권, 제재 불가피…신용도 영향은?",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f5ab651d",
+      "title": "“은행 앱 이제 필요 없나?”…금융상품 선택권 쥐는 AI",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3297e630",
+      "title": "KB증권, 10월 둘째주 HPSP 등 17종목 매수 추천",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7dad505b",
+      "title": "메리츠증권, 'PIB 프레스티지센터' 개소…고액자산가 WM 강화",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "772f6e92",
+      "title": "고금리 시대, 주식시장은 무엇을 봐야 하나",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0bfe72ea",
+      "title": "리플, 메리츠증권·팍소스·캔톤 제휴 3건 냈지만…XRP는 1.40달러로 밀렸...",
+      "company": "메리츠증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "dc6aaf90",
+      "title": "리플 프라임, 2,560억 달러 레버리지 ETF 금융 진출…XRP는 5% 넘게 하락",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "e890715c",
+      "title": "신한금융, 민단 80주년 기념식 참석…'금융보국' 정신 이어 재일동포 인...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "63fe1dc8",
+      "title": "미래에셋증권, 매도담보융자 금리 2%p 인하",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7ad76d1b",
+      "title": "미래에셋증권, 10월 둘째주 LG이노텍 등 8종목 매수 추천",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d138eae2",
+      "title": "비트코인ETF 설계자도 강조 “원화 스테이블코인 통화주권 위해 필요, 한...",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6c2d3965",
+      "title": "전북은행 쏙뱅크서 디지털자산 정보 한눈에",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "03c86380",
+      "title": "AI 다음 먹거리 찾는 LG CNS…디지털자산 플랫폼 강화",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "67efd141",
+      "title": "태국 SEC, 10월 16일 비트코인·이더 ETF 규정 시행…개별 상품 승인은 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "1de1b3bb",
+      "title": "주요 7개국 자산가 다수 암호화폐 보유…자문사는 여전히 보수적",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "54a6d6fc",
+      "title": "'역대급 이익' 축포 터트리더니…\"3분기 적자 예상\" 리딩증권에 무슨 일",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "반기 순이익"
+    },
+    {
+      "hash": "b3eabaae",
+      "title": "[美증시 특징주] 패스틀리, 증권사 목표가 파격상향에 15% 폭등…\"AI 숨은...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    }
+  ]
+}
