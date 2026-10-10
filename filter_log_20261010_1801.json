@@ -1,0 +1,171 @@
+{
+  "time": "2026-10-10T18:01:24.795094+09:00",
+  "total": 20,
+  "sent": 0,
+  "hard_excl": 3,
+  "excl_stats": {
+    "반기 순이익": 1,
+    "투자의견": 1,
+    "자산운용사": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.0293,
+    "calls": 4,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 5648,
+        "out": 20,
+        "cost_usd": 0.0057
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 3,
+        "in": 17242,
+        "out": 1256,
+        "cost_usd": 0.0235
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "05815b02",
+      "title": "[N2 포커스] 메리츠증권, 이달 말 발행어음 출격…56조 시장 '9파전'",
+      "company": "메리츠증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "bd4caf01",
+      "title": "[IPO챗] 이번주 수요예측 10곳…진코스텍 등 2개사 상장",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6e5041af",
+      "title": "\"제2의 엔비디아 놓칠라\"…상장 전인데 개미들 벌써 '들썩' [이수의 ETF줌...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c17c8ad7",
+      "title": "키움증권 \"GS건설, 플랜트 수익성 정상화에 수주 기대까지…실적 회복 ...",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "017a16ab",
+      "title": "700조 연금시장 쟁탈전…증권사로 '머니무브'",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "f5aa1ab8",
+      "title": "실소유주 '그림자 경영'에 갇힌 빗썸…IPO '첩첩산중'",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "8e008b53",
+      "title": "상반기 축제였지만...3분기 성적표 우울한 증권가",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "65ee7fd7",
+      "title": "\"증시 덮칠 '진짜 공포' 따로 있다\"…증권가 '무서운 경고' [분석+]",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f8851c25",
+      "title": "대규모 개인정보 유출 금융권, 제재 불가피…신용도 영향은?",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9d6ed027",
+      "title": "메리츠증권, '프레스티지 센터' 개소…\"리테일부문 강화\"",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "7dad505b",
+      "title": "메리츠증권, 'PIB 프레스티지센터' 개소…고액자산가 WM 강화",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "772f6e92",
+      "title": "고금리 시대, 주식시장은 무엇을 봐야 하나",
+      "company": "메리츠증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e890715c",
+      "title": "신한금융, 민단 80주년 기념식 참석…'금융보국' 정신 이어 재일동포 인...",
+      "company": "신한투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c11fa655",
+      "title": "고금리 시대 배당주 투자법…고배당보다 '실적·환원 지속성' 주목",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "63fe1dc8",
+      "title": "미래에셋증권, 매도담보융자 금리 2%p 인하",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d138eae2",
+      "title": "비트코인ETF 설계자도 강조 “원화 스테이블코인 통화주권 위해 필요, 한...",
+      "company": "토스증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "03c86380",
+      "title": "AI 다음 먹거리 찾는 LG CNS…디지털자산 플랫폼 강화",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "54a6d6fc",
+      "title": "'역대급 이익' 축포 터트리더니…\"3분기 적자 예상\" 리딩증권에 무슨 일",
+      "company": "미래에셋증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "반기 순이익"
+    },
+    {
+      "hash": "b3eabaae",
+      "title": "[美증시 특징주] 패스틀리, 증권사 목표가 파격상향에 15% 폭등…\"AI 숨은...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "투자의견"
+    },
+    {
+      "hash": "64840aa9",
+      "title": "\"2027년 증시 전망부터 스몰캡·미국 중간선거까지\"… 증권가 10월 세미...",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "자산운용사"
+    }
+  ]
+}
