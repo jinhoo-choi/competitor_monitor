@@ -1,0 +1,246 @@
+{
+  "time": "2026-10-11T10:01:52.100682+09:00",
+  "total": 29,
+  "sent": 2,
+  "hard_excl": 3,
+  "excl_stats": {
+    "신한자산운용": 1,
+    "토스뱅크": 1,
+    "생산적 금융": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.1239,
+    "calls": 11,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 7108,
+        "out": 29,
+        "cost_usd": 0.0073
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 6,
+        "in": 35859,
+        "out": 2389,
+        "cost_usd": 0.0478
+      },
+      "claude-sonnet-5|2차분석": {
+        "calls": 3,
+        "in": 18071,
+        "out": 937,
+        "cost_usd": 0.0683
+      },
+      "claude-haiku-4-5-20251001|헤더요약": {
+        "calls": 1,
+        "in": 275,
+        "out": 52,
+        "cost_usd": 0.0005
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "d79e650f",
+      "title": "증시 열기 식자 모객 총력…증권가 'MTS 전쟁'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8aa1e800",
+      "title": "[공모주달력]공모가 상단 확정, 멜콘·진코스텍 코스닥 입성",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8bc437c6",
+      "title": "제논, 코스닥 상장 공모 돌입…최대 268억 조달",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "41bb7931",
+      "title": "삼성증권, 발행어음 2차 특판 12일 출시",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "5b7cf337",
+      "title": "증시 떠나는 돈 잡아라…증권사들 발행어음 금리 높였다",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "d9fe8ff2",
+      "title": "답답한 증시 대신 발행어음?…증권사, 4∼5% 상품 잇달아 출시",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "b0f39949",
+      "title": "1차 때는 안그랬는데···국민참여성장펀드 인기 꺾였나",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e7bdb0ac",
+      "title": "미래에셋증권, 매도담보융자 금리 최대 2%p 인하 外",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d9575b21",
+      "title": "네이버, 3분기 영업익 15%↓ 전망…AI·커머스 투자에 수익성 둔화",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "19507e11",
+      "title": "'거래대금 감소·금리 상방 압력'…증권사, 3분기 실적 눈높이 낮아진다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a5194cff",
+      "title": "\"내 돈도 잠들어 있을까\"…15조7000억원 숨은 금융자산 찾는 법",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c6b9e7f2",
+      "title": "KB증권, '고객감동경영대상' 금융·증권부문 20년 연속 수상",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d1be0e99",
+      "title": "\"수익률 좇다간 큰일 난다\"…연금 관리 이렇게 하라는데 [김연지의 연금...",
+      "company": "KB증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "71602186",
+      "title": "KB증권 'KB M-able', 8년 연속 MTS 부문 대상",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e369b3f4",
+      "title": "美주식 주간거래 판 넓히는 증권사···거래 안정성 확보 속도",
+      "company": "IBK투자증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "559fb435",
+      "title": "NH농협금융, 건강증진형 금융상품 5종 출시…저탄소 전환금융 확대",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2bd75216",
+      "title": "스페이스X 주가·환율 동반 하락… 미래에셋증권 실적에 1조원 손실 부담",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9b00cbe6",
+      "title": "조각투자 넘어 채권ㆍ펀드로⋯토큰증권 시장 확장 채비",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "6d33c1d0",
+      "title": "호텔 홈피서 예약했는데 ‘눈덩이’ 수수료?…프라이스라인에 칼 빼든 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "62b50ff6",
+      "title": "SK증권 \"LG전자, 전년보다 이익 늘었지만 시장 기대 못 미쳐…환율·사업...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "641c0961",
+      "title": "네이버 주가 전망 [금주 주목할 게임 IT 주식]",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "84e5e6c4",
+      "title": "퇴직연금 실물이전 1년 8개월 16조…은행서 증권사로 5조 옮겨갔다",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "3a27e1d0",
+      "title": "\"손주 주식계좌, 2천만원 넣고 끝?\"…증여세부터 장기투자까지 따져봐야...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c9727851",
+      "title": "[르포]쇼핑갔다가 커피 마시며 상속 상담까지…백화점 입점한 증권사 가...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "961b5bd7",
+      "title": "증시 거래대금 36% 감소에 발목…삼성증권 실적도 숨 고르기",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "afe148e7",
+      "title": "코스피 7000인데···증권사 실적은 마냥 웃을 수 없는 이유",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "6f73310a",
+      "title": "삼성·하이닉스·마이크론 한 번에 '메모리 7 ETF' 나온다",
+      "company": "KB증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "신한자산운용"
+    },
+    {
+      "hash": "9a45a89d",
+      "title": "\"12년 키운 2조 대출 시장에 숟가락?\"…토스, 온투업 진출 추진에 금융권...",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    },
+    {
+      "hash": "f001876a",
+      "title": "생산적 금융 ISA 국내자산 전액 비과세…만기 땐 연금 300만원 공제까지",
+      "company": "미확인",
+      "decision": "HARD_EXCLUDED",
+      "reason": "생산적 금융"
+    }
+  ]
+}
