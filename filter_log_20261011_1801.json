@@ -1,0 +1,272 @@
+{
+  "time": "2026-10-11T18:01:57.574481+09:00",
+  "total": 33,
+  "sent": 3,
+  "hard_excl": 1,
+  "excl_stats": {
+    "토스뱅크": 1
+  },
+  "usage": {
+    "total_cost_usd": 0.1191,
+    "calls": 12,
+    "by_route": {
+      "claude-haiku-4-5-20251001|1차필터": {
+        "calls": 1,
+        "in": 8204,
+        "out": 35,
+        "cost_usd": 0.0084
+      },
+      "claude-haiku-4-5-20251001|2차분석": {
+        "calls": 8,
+        "in": 47677,
+        "out": 3283,
+        "cost_usd": 0.0641
+      },
+      "claude-sonnet-5|2차분석": {
+        "calls": 2,
+        "in": 12323,
+        "out": 612,
+        "cost_usd": 0.0461
+      },
+      "claude-haiku-4-5-20251001|헤더요약": {
+        "calls": 1,
+        "in": 273,
+        "out": 47,
+        "cost_usd": 0.0005
+      }
+    }
+  },
+  "entries": [
+    {
+      "hash": "fef6f8fb",
+      "title": "답답한 증시에 발행어음으로 고객 잡기…증권사, 연 4~5% 특판 경쟁",
+      "company": "삼성증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "b201363c",
+      "title": "‘증시 이탈 막아라’···연 4~5%대 특판 발행어음 경쟁하는 증권사들",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d79e650f",
+      "title": "증시 열기 식자 모객 총력…증권가 'MTS 전쟁'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "a5194cff",
+      "title": "\"내 돈도 잠들어 있을까\"…15조7000억원 숨은 금융자산 찾는 법",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "f07b4be3",
+      "title": "'엘리스그룹 공모주' 상장일은 20일...수요예측 결과 '흥행'",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c7a2a783",
+      "title": "증권업 거센 기저효과 온다....삼성증권, '실적 방어주'로 주목",
+      "company": "삼성증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "8aa1e800",
+      "title": "[공모주달력]공모가 상단 확정, 멜콘·진코스텍 코스닥 입성",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "8bc437c6",
+      "title": "제논, 코스닥 상장 공모 돌입…최대 268억 조달",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b2e236e5",
+      "title": "IPO 시장 10개사 수요예측 격돌...AI·로봇株 공모가 시험대",
+      "company": "삼성증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b0f39949",
+      "title": "1차 때는 안그랬는데···국민참여성장펀드 인기 꺾였나",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "e7bdb0ac",
+      "title": "미래에셋증권, 매도담보융자 금리 최대 2%p 인하 外",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d9575b21",
+      "title": "네이버, 3분기 영업익 15%↓ 전망…AI·커머스 투자에 수익성 둔화",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5b7cf337",
+      "title": "증시 떠나는 돈 잡아라…증권사들 발행어음 금리 높였다",
+      "company": "키움증권",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "19507e11",
+      "title": "'거래대금 감소·금리 상방 압력'…증권사, 3분기 실적 눈높이 낮아진다",
+      "company": "키움증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "0cfb3327",
+      "title": "잇단 해킹에 금융사 '보안 비용' 부담 확대…나신평 \"신용도 영향은 제...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "44e999cd",
+      "title": "금융사 정보유출, 단기 신용도에 영향 제한적…“향후 제재는 부담”",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "b04e1603",
+      "title": "\"'현금자산이 많으시네요' 맞춤문자 발송…방치된 계좌 깨운다\"",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "ca1f6a57",
+      "title": "'엠에스바이오 공모주' 수요예측 이어 청약도 흥행? 상장일 확정",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "c6b9e7f2",
+      "title": "KB증권, '고객감동경영대상' 금융·증권부문 20년 연속 수상",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d1be0e99",
+      "title": "\"수익률 좇다간 큰일 난다\"…연금 관리 이렇게 하라는데 [김연지의 연금...",
+      "company": "KB증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "aed0f990",
+      "title": "[포커스] 'STO 주도권' 누가 쥘까…KB·신한·하나證, 주도권 싸움 치열",
+      "company": "KB증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "e5ee52d5",
+      "title": "미래에셋증권 한국투자증권 3분기 나란히 아쉬운 실적, 증권업계 '톱2' ...",
+      "company": "NH투자증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "2bd75216",
+      "title": "스페이스X 주가·환율 동반 하락… 미래에셋증권 실적에 1조원 손실 부담",
+      "company": "미래에셋증권",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "d769a264",
+      "title": "전북은행, 보난자랩과 데이터 계약…디지털자산 서비스 확대",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "9b00cbe6",
+      "title": "조각투자 넘어 채권ㆍ펀드로⋯토큰증권 시장 확장 채비",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "6d33c1d0",
+      "title": "호텔 홈피서 예약했는데 ‘눈덩이’ 수수료?…프라이스라인에 칼 빼든 ...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "960a1fc4",
+      "title": "‘숏드’ 스푼랩스 프리IPO에…크래프톤, 1000억 투자 검토 [시그널]",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "641c0961",
+      "title": "네이버 주가 전망 [금주 주목할 게임 IT 주식]",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "84e5e6c4",
+      "title": "퇴직연금 실물이전 1년 8개월 16조…은행서 증권사로 5조 옮겨갔다",
+      "company": "미확인",
+      "decision": "DEDUP_EXCLUDED",
+      "reason": "중복 제거"
+    },
+    {
+      "hash": "21612d49",
+      "title": "벤처투자·토큰증권 앞세워…교보證, 신사업 영토 넓힌다 [스타즈 IR]",
+      "company": "교보증권",
+      "decision": "SENT",
+      "reason": ""
+    },
+    {
+      "hash": "44161a54",
+      "title": "매도대금 입금전 '이틀 대출'에 … 증권사 이자수익 급증",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "5829e109",
+      "title": "해외 주식토큰 2000종 넘었는데…韓디지털자산법, 입법 막혀 2년째 ‘발...",
+      "company": "미확인",
+      "decision": "AI_EXCLUDED",
+      "reason": "AI 필터링 제외"
+    },
+    {
+      "hash": "9a45a89d",
+      "title": "\"12년 키운 2조 대출 시장에 숟가락?\"…토스, 온투업 진출 추진에 금융권...",
+      "company": "토스증권",
+      "decision": "HARD_EXCLUDED",
+      "reason": "토스뱅크"
+    }
+  ]
+}
