@@ -1,4 +1,6 @@
 {
-  "operation": "collect-test",
-  "request_id": "subscription-real-news-verification-20261014"
+  "operation": "consume",
+  "job_id": "38485660280",
+  "self_test": true,
+  "request_id": "scheduled-verification-38485660280"
 }
