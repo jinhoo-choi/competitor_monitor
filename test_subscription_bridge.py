@@ -246,6 +246,25 @@ class SubscriptionRegression(unittest.TestCase):
                 self.assertEqual(Path('seen_articles.json').read_text(),snapshot)
             finally: os.chdir(cwd)
 
+    def test_queue_initialize_creates_private_only_for_matching_owner(self):
+        with patch.dict(os.environ, {'INSIGHT_QUEUE_TOKEN':'offline'}):
+            q=bridge.Queue({'queue_repository':'jinhoo-choi/insight-bot-data','queue_branch':'main','queue_prefix':'subscription/insight'})
+        responses=[{'login':'jinhoo-choi'},None,{'private':True,'default_branch':'main'},{'object':{'sha':'head'}}]
+        with patch.object(q,'api_request',side_effect=responses) as request:
+            q.initialize()
+        create=request.call_args_list[2]
+        self.assertEqual(create.args[0],'/user/repos')
+        self.assertIs(create.args[2]['private'],True)
+        self.assertIs(create.args[2]['auto_init'],True)
+
+    def test_queue_initialize_never_changes_public_repo_or_other_owner(self):
+        with patch.dict(os.environ, {'INSIGHT_QUEUE_TOKEN':'offline'}):
+            q=bridge.Queue({'queue_repository':'jinhoo-choi/insight-bot-data','queue_branch':'main','queue_prefix':'subscription/insight'})
+        for responses in [[{'login':'different'}],[{'login':'jinhoo-choi'},{'private':False}]]:
+            with patch.object(q,'api_request',side_effect=responses) as request, self.assertRaises(RuntimeError):
+                q.initialize()
+            self.assertTrue(all(len(c.args)<2 or c.args[1]=='GET' for c in request.call_args_list))
+
     def test_signal_never_evaluates_commands_and_blocks_branch_broadcast(self):
         for request in [dict(operation='consume',job_id='$(whoami)'),dict(operation='scheduled'),dict(operation='consume',job_id='id',dry_run='false')]:
             with self.assertRaises(ValueError): signal.arguments(request)

@@ -8,7 +8,7 @@ from pathlib import Path
 
 def arguments(signal):
     operation = signal.get("operation")
-    if operation not in {"connection", "collect-test", "consume", "rollback-check", "cancel", "recover-state"}:
+    if operation not in {"connection", "initialize", "collect-test", "consume", "rollback-check", "cancel", "recover-state"}:
         raise ValueError("지원하지 않는 요청")
     args = [operation]
     if operation in {"consume", "cancel", "recover-state"}:

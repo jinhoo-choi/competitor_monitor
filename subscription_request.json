@@ -1,4 +1,4 @@
 {
-  "operation": "connection",
-  "request_id": "initial-connection-verification"
+  "operation": "initialize",
+  "request_id": "credential-registered-initialize-20261014"
 }

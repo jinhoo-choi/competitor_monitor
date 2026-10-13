@@ -57,8 +57,11 @@ class Queue:
             raise RuntimeError("INSIGHT_QUEUE_TOKEN 미등록 — 비공개 저장소 연결 불가")
 
     def request(self, suffix, method="GET", payload=None):
+        return self.api_request("/repos/" + self.repo + suffix, method, payload)
+
+    def api_request(self, path, method="GET", payload=None):
         data = json.dumps(payload).encode() if payload is not None else None
-        req = urllib.request.Request("https://api.github.com/repos/" + self.repo + suffix,
+        req = urllib.request.Request("https://api.github.com" + path,
                                      data=data, method=method, headers={
                                          "Authorization": "Bearer " + self.token,
                                          "Accept": "application/vnd.github+json",
@@ -71,6 +74,27 @@ class Queue:
             if e.code == 404 and method == "GET":
                 return None
             raise RuntimeError(f"비공개 대기 저장소 {method} 실패 HTTP {e.code}") from None
+
+    def initialize(self):
+        """소유자가 요청한 새 비공개 큐를 등록된 PAT로 초기화한다."""
+        owner, name = self.repo.split("/")
+        user = self.api_request("/user")
+        if not user or user.get("login") != owner:
+            raise RuntimeError("큐 초기화 키의 소유자 불일치")
+        meta = self.request("")
+        if meta is None:
+            meta = self.api_request("/user/repos", "POST", {
+                "name": name, "private": True, "auto_init": True,
+                "description": "Private insight subscription input, analysis and delivery ledger"})
+        if not meta or not meta.get("private"):
+            raise RuntimeError("기존 공개 저장소를 큐로 사용하지 않음")
+        if not self.request("/git/ref/heads/" + urllib.parse.quote(self.branch, safe="")):
+            ref = self.request("/git/ref/heads/" + urllib.parse.quote(meta["default_branch"], safe=""))
+            if not ref:
+                raise RuntimeError("큐 초기 커밋 없음")
+            self.request("/git/refs", "POST", {"ref": "refs/heads/" + self.branch,
+                                              "sha": ref["object"]["sha"]})
+        print("비공개 인사이트 대기 저장소 초기화 확인; API0/SMTP0")
 
     def preflight(self):
         meta = self.request("")
@@ -399,7 +423,7 @@ def recover_state(config, queue, job_id):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("operation", choices=["scheduled", "collect-test", "consume", "ack", "connection", "rollback-check", "cancel", "recover-state"])
+    parser.add_argument("operation", choices=["scheduled", "collect-test", "consume", "ack", "connection", "initialize", "rollback-check", "cancel", "recover-state"])
     parser.add_argument("--job-id")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--self-test", action="store_true")
@@ -415,8 +439,10 @@ def main():
         print("운영 일시중지 — API/수집/발송0")
         return
     queue = Queue(config)
+    if args.operation == "initialize":
+        queue.initialize()
     queue.preflight()
-    if args.operation == "connection":
+    if args.operation in {"connection", "initialize"}:
         queue.preflight()
         path = "checks/" + str(os.environ.get("GITHUB_RUN_ID") or now().strftime("%Y%m%dT%H%M%S")) + ".json"
         probe = {"checked_at": now().isoformat(), "read_write": True, "paid_ai_calls": 0}

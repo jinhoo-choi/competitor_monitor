@@ -13,7 +13,7 @@
 ## 검수와 전환
 
 1. 기존 메일 회귀와 `test_subscription_bridge.py`를 오프라인에서 통과시킨다.
-2. 개발 브랜치의 `subscription_request.json`에 operation=connection을 기록해 실제 Actions secret으로 비공개 읽기·쓰기를 검수한다. 이 단계는 API·SMTP를 호출하지 않는다.
+2. 개발 브랜치의 `subscription_request.json`에 operation=initialize를 기록해 등록된 PAT로 요청한 새 비공개 큐를 초기화한다. 기존 공개 저장소·다른 소유자 키는 사용하지 않는다. operation=connection은 기존 큐 읽기·쓰기만 검수한다. 이 단계는 유료 AI API·SMTP를 호출하지 않는다.
 3. 검수 전용 회차(mode=verification)를 생성하고 실제 ChatGPT 예약이 private results JSON을 쓰게 한다. 분석 입력 ID, 해시, 정책 버전, 만료, 점수·등급, 원문 인용, 수치, 중·상 재검토를 검증한다.
 4. 동일 JSON을 이용한 검수 요청은 `self_test=true`로 제한한다. SMTP는 `TEST_MODE=1`의 기존 4중 방어로 본인에게만 보내고 seen 이력은 저장하지 않는다. 결과 없는 검수는 `dry_run=true`로 미리보기만 비공개 저장한다. 별개의 회차를 사용한다.
 5. 스키마·규칙·메일 렌더링과 본인 SMTP 서버 접수, seen 무변경을 확인한 뒤 main에 병합한다. 예약 프롬프트를 main 대상으로 확정하고 engine=subscription으로 명시적으로 전환한다.
