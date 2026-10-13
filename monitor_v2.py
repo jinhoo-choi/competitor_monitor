@@ -1887,7 +1887,7 @@ def _send_one(subject: str, html: str, addr: str) -> dict:
             else:
                 return {addr: (0, str(e))}
 
-def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
+def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None) -> dict:
     """수신자별 개별 발송(1인 1통).
     ⚠️ 설계 변경 이력: 기존엔 단일 메일에 To=본인고정 + 실수신자는 envelope으로만
     숨겨 보냈으나(순수 BCC), (a) 본인이 envelope에 빠져 있어 본인도 미착신,
@@ -1915,6 +1915,8 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None):
             # 전원 실패 = 사실상 발송 실패. "발송완료"로 오인되지 않도록 예외로 승격
             raise RuntimeError(f"SMTP 전원 발송 실패: {all_refused}")
         print(f"  ⚠️ 일부 수신자 발송 실패({len(all_refused)}/{len(targets)}): {list(all_refused.keys())}")
+    print(f"  [SMTP] 서버 접수 {len(targets) - len(all_refused)}/{len(targets)}명")
+    return all_refused
 
 def send_email(html: str, analyzed: list[dict], raw_count: int):
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
@@ -1924,13 +1926,14 @@ def send_email(html: str, analyzed: list[dict], raw_count: int):
     print(f"  ✅ 발송 완료 | {subject}")
 
 def send_email_no_result(subject: str, html: str):
-    """탐지 결과 없을 때 담당자에게만 발송"""
+    """결과 없음·하 등급 메일. 담당자 접수 실패는 호출자까지 전파한다."""
     receiver = _admin_receivers()
-    try:
-        _smtp_send(subject, html, receiver)
-        print(f"  결과없음 메일 → {receiver}")
-    except Exception as e:
-        print(f"  [WARN] 결과없음 메일 발송 실패: {e}")
+    refused = _smtp_send(subject, html, receiver)
+    # 본인 사본만 접수돼도 담당자에게 전달된 것으로 저장하면 안 된다.
+    failed_admin = {addr: refused[addr] for addr in receiver if addr in refused}
+    if failed_admin:
+        raise RuntimeError(f"담당자 메일 서버 접수 실패: {failed_admin}")
+    print(f"  결과없음 메일 → {receiver}")
 
 def send_email_error(error_msg: str, trace: str):
     """런타임 오류 시 담당자에게 오류 내용 발송"""
@@ -2460,3 +2463,4 @@ if __name__ == "__main__":
         except Exception as _me:
             print(f"오류 메일 발송 실패: {_me}")
         raise
+
