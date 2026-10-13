@@ -1,5 +1,11 @@
 # 인사이트봇 표준 테스트 절차
 
+> 구독 전환 검수는 [SUBSCRIPTION_MIGRATION.md](SUBSCRIPTION_MIGRATION.md)를 함께 적용한다.
+> 새 `subscription_consume.yml`은 개발 브랜치에서 전체 발송을 금지하고,
+> verification 회차 + self_test 요청 + 기존 TEST_MODE 4중 방어로 본인 발송만 허용한다.
+> `test_dispatch.yml`은 이제 유료 API 없이 비공개 검수 입력만 수집한다.
+> 구독 본인 검수에서도 정기 seen 이력을 저장·커밋하지 않는다.
+
 > 코드 수정 후 **정기 실행(10:00 / 17:00 KST)에 반영되기 전** 반드시 이 절차를 거친다.
 > 목적: 그룹(risk_aigent) 라이브 오발송 방지 + 실데이터 기반 회귀 검증.
 
@@ -101,3 +107,4 @@ TEST_MODE는 **실행 시점의 뉴스**를 수집한다. 심야·주말에 돌�
 | Actions 로그 | Azure blob 리다이렉트 → 외부 도구에서 직접 조회 불가. 스텝별 `conclusion`은 Jobs API로 확인 가능 |
 | raw.githubusercontent | CDN 캐시 지연. 최신 내용은 **Contents API + base64 디코드** 사용 |
 | `seen_articles.json` | `.gitignore` 차단 이력 있음 → 정기 워크플로는 `git add -f` 필수, Settings에서 Actions Read/Write 권한 확인 |
+

@@ -5,6 +5,12 @@ on:
   repository_dispatch:
     types: [run_monitor]
 
+permissions:
+  contents: write
+concurrency:
+  group: insight-production
+  cancel-in-progress: false
+
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -17,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: seen_articles.json 최신화
-        run: git pull --rebase origin main || true
+        run: git pull --ff-only origin main
 
       - name: Python 설정
         uses: actions/setup-python@v5
@@ -37,10 +43,11 @@ jobs:
           RECIPIENTS:          ${{ secrets.RECIPIENTS }}
           RECIPIENTS_CC:       ${{ secrets.RECIPIENTS_CC }}
           NO_RESULT_RECEIVER:  ${{ secrets.NO_RESULT_RECEIVER }}
-        run: python monitor_v2.py
+          INSIGHT_QUEUE_TOKEN: ${{ secrets.INSIGHT_QUEUE_TOKEN }}
+        run: python subscription_bridge.py scheduled
 
       - name: seen_articles.json 커밋
-        if: always()
+        if: success()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -56,3 +63,4 @@ jobs:
           done
           echo "::error::seen_articles.json push 실패 — 다음 실행 중복 발송 위험"
           exit 1
+

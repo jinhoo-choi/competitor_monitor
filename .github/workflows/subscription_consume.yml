@@ -1,0 +1,55 @@
+name: 인사이트 구독 연결·결과 검수
+
+on:
+  push:
+    branches: [main, codex/insight-subscription]
+    paths: [subscription_request.json]
+
+permissions:
+  contents: write
+concurrency:
+  group: insight-production
+  cancel-in-progress: false
+
+jobs:
+  consume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 최신 처리 이력 확인
+        if: github.ref == 'refs/heads/main'
+        run: git pull --ff-only origin main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: 결과 검증·본인 검수 또는 운영 반영 (유료 AI 키 미주입)
+        id: result
+        env:
+          INSIGHT_ENGINE: subscription
+          INSIGHT_QUEUE_TOKEN: ${{ secrets.INSIGHT_QUEUE_TOKEN }}
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          NO_RESULT_RECEIVER: ${{ secrets.NO_RESULT_RECEIVER }}
+        run: python subscription_request.py
+      - name: 발송 완료 처리 이력 저장
+        if: steps.result.outputs.production == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -f -A seen_articles.json 'filter_log_*.json'
+          if ! git diff --staged --quiet; then
+            git commit -m 'chore: subscription delivery seen state [skip ci]'
+            git push origin HEAD:main
+          fi
+      - name: 저장된 처리 이력 재확인 후 회차 종결
+        if: steps.result.outputs.production == 'true'
+        env:
+          INSIGHT_QUEUE_TOKEN: ${{ secrets.INSIGHT_QUEUE_TOKEN }}
+          JOB_ID: ${{ steps.result.outputs.job_id }}
+        run: python subscription_bridge.py ack --job-id "$JOB_ID"

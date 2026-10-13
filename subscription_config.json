@@ -1,0 +1,8 @@
+{
+  "engine": "api",
+  "queue_repository": "jinhoo-choi/insight-bot-data",
+  "queue_branch": "main",
+  "queue_prefix": "subscription/insight",
+  "job_ttl_minutes": 120,
+  "baseline_commit": "7f026d94808140b1ba6e69968f7f38e0cff78dc2"
+}
