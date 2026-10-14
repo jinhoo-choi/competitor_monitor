@@ -1,7 +1,6 @@
 {
   "operation": "consume",
-  "job_id": "historical-format-20261014T000304",
-  "dry_run": true,
-  "self_test": false,
-  "request_id": "historical-format-20261014T000304-render-only"
+  "job_id": "wording-owner-20261014T002425",
+  "self_test": true,
+  "request_id": "wording-owner-20261014T002425-owner-delivery"
 }
