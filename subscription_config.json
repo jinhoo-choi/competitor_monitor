@@ -1,5 +1,5 @@
 {
-  "engine": "api",
+  "engine": "subscription",
   "queue_repository": "jinhoo-choi/insight-bot-data",
   "queue_branch": "main",
   "queue_prefix": "subscription/insight",
