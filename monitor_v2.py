@@ -35,7 +35,8 @@ import anthropic
 # ═══════════════════════════════════════════════
 NAVER_CLIENT_ID     = os.environ["NAVER_CLIENT_ID"]
 NAVER_CLIENT_SECRET = os.environ["NAVER_CLIENT_SECRET"]
-ANTHROPIC_API_KEY   = os.environ["ANTHROPIC_API_KEY"]
+INSIGHT_ENGINE     = os.environ.get("INSIGHT_ENGINE", "api")
+ANTHROPIC_API_KEY   = os.environ.get("ANTHROPIC_API_KEY", "")
 GMAIL_USER          = os.environ["GMAIL_USER"]
 GMAIL_APP_PASSWORD  = os.environ["GMAIL_APP_PASSWORD"]
 
@@ -66,9 +67,14 @@ PRICES = {
     "claude-sonnet-5":           (3.00, 15.00),
 }
 USAGE = {}   # {(model, purpose): {"calls":n,"in":n,"out":n}}
+DELIVERY_GUARD = None  # 구독 경로만 사용: 전송 선기록·수신자별 영수증
 
 def _ai_create(model: str, purpose: str, **kw):
     """client.messages.create 래퍼 — 호출수·토큰을 용도별로 누적"""
+    if INSIGHT_ENGINE != "api":
+        raise RuntimeError("유료 AI API 호출 차단: 구독 분석 모드")
+    if client is None:
+        raise RuntimeError("API 모드 키 미설정")
     res = client.messages.create(model=model, **kw)
     try:
         k = (model, purpose)
@@ -99,7 +105,7 @@ TITLE_SIM_THRESHOLD = 80   # rapidfuzz 유사도 임계값 (88→80 완화)
 MAX_AI_FAILS        = 3    # circuit breaker
 
 # 전역 Anthropic client — 함수마다 중복 생성 방지 + build_email_html에서도 참조 가능
-client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY) if INSIGHT_ENGINE == "api" and ANTHROPIC_API_KEY else None
 
 # ═══════════════════════════════════════════════
 # 하드필터 — AI 전 차단 (비용·노이즈 절감)
@@ -754,6 +760,8 @@ def save_seen(seen: dict, sent_urls: set = None,
               new_title_norms: list = None, new_desc_norms: list = None,
               new_events: set = None):
     """atomic write. event_key는 날짜별로 묶어 7일 보존."""
+    if DELIVERY_GUARD is not None:
+        DELIVERY_GUARD.require_complete()
     if TEST_MODE:
         print("  [TEST_MODE] seen_articles.json 저장 스킵 (정기 실행 중복제거 상태 보존)")
         return
@@ -865,7 +873,7 @@ def fetch_naver_news(query: str, display: int = 5) -> list[dict]:
         return []
 
 # 일 1회 크론잡 기준 — 25시간으로 약간 여유
-NEWS_CUTOFF_HOURS = 15  # 일 2회 실행 기준 — 12시간 + 3시간 여유 (크론잡 지연 대비)
+NEWS_CUTOFF_HOURS = 17  # 18시→익일10시 최대16시간 + 지연 여유1시간
 
 def _is_within_cutoff(pub_date_str: str) -> bool:
     """pubDate가 NEWS_CUTOFF_HOURS 이내인지 확인, 파싱 실패 시 통과"""
@@ -881,6 +889,7 @@ def _is_within_cutoff(pub_date_str: str) -> bool:
 
 def fetch_article_body(url: str) -> str:
     """기사 본문 크롤링 — WAF 대응 헤더, 2MB 초과 스킵, 표준라이브러리만 사용"""
+    from html import unescape
     try:
         req = urllib.request.Request(url, headers={
             "User-Agent":      random.choice(USER_AGENTS),
@@ -895,15 +904,17 @@ def fetch_article_body(url: str) -> str:
             html_bytes = res.read()
 
         html_text = html_bytes.decode("utf-8", errors="replace")
+        # 스크립트 안의 HTML 템플릿·스타일을 실제 기사 본문으로 잡지 않는다.
+        html_text = re.sub(r"<(script|style)\b[^>]*>.*?</\1\s*>", " ",
+                           html_text, flags=re.DOTALL | re.IGNORECASE)
 
         # 핵심 영역 ID/class 패턴으로 추출
         for pattern in [
             r'id=["\'](?:dic_area|articleBodyContents|articeBody|article-body)["\'][^>]*>(.*?)</(?:div|article)',
             r'class=["\'][^"\']*(?:article-body|news-body|view-content|newsct_article)[^"\']*["\'][^>]*>(.*?)</(?:div|article)',
         ]:
-            m = re.search(pattern, html_text, re.DOTALL | re.IGNORECASE)
-            if m:
-                chunk = re.sub(r"<[^>]+>", " ", m.group(0))
+            for m in re.finditer(pattern, html_text, re.DOTALL | re.IGNORECASE):
+                chunk = unescape(re.sub(r"<[^>]+>", " ", m.group(1)))
                 chunk = re.sub(r"\s+", " ", chunk).strip()
                 if len(chunk) > 50:
                     return chunk[:600]
@@ -912,7 +923,8 @@ def fetch_article_body(url: str) -> str:
         chunks = re.findall(r"<p[^>]*>(.*?)</p>", html_text, re.DOTALL | re.IGNORECASE)
         texts = []
         for c in chunks:
-            t = re.sub(r"<[^>]+>", "", c).strip()
+            t = unescape(re.sub(r"<[^>]+>", " ", c)).strip()
+            t = re.sub(r"\s+", " ", t)
             if len(t) > 20:
                 texts.append(t)
         result = " ".join(texts)
@@ -1164,9 +1176,9 @@ ACTION_RULES = """
 MAX_ANALYZE_ARTICLES = 15  # AI 비용 폭증 방지 상한
 GRADE_LIMITS = {"상": 2, "중": 3, "하": 5}  # 영향도 상한 — 초과 시 다음 등급 강등/제거
 
-def analyze_article(art: dict) -> dict:
+def analyze_article(art: dict, external_analysis: dict = None) -> dict:
     global _ai_fail_count
-    if _ai_fail_count >= MAX_AI_FAILS:
+    if external_analysis is None and _ai_fail_count >= MAX_AI_FAILS:
         return {**art, "analysis": None}
 
     # 본문 크롤링 결과 우선, 없으면 description 사용
@@ -1247,11 +1259,11 @@ JSON only, 다른 텍스트 없이:
 
     try:
         # 1차: Haiku로 스코어링 (전량, 저비용)
-        analysis = _call_and_parse("claude-haiku-4-5-20251001")
+        analysis = dict(external_analysis) if external_analysis is not None else _call_and_parse("claude-haiku-4-5-20251001")
 
         # 2차: impact_score 5.0 이상만 Sonnet 재분석 (고비용, 고정밀)
         try:
-            if float(analysis.get("impact_score", 0)) >= 5.0:
+            if external_analysis is None and float(analysis.get("impact_score", 0)) >= 5.0:
                 analysis = _call_and_parse("claude-sonnet-5")
         except Exception as e:
             print(f"    [WARN] Sonnet 재분석 실패, Haiku 결과 유지: {e}")
@@ -1360,6 +1372,8 @@ JSON only, 다른 텍스트 없이:
     except Exception as e:
         _ai_fail_count += 1
         print(f"  [WARN] 2차 분석 오류 ({_ai_fail_count}/{MAX_AI_FAILS}): {e}")
+        if external_analysis is not None:
+            raise RuntimeError("구독 분석 결과의 규칙 검증 실패") from e
         return {**art, "analysis": None}
 
 # ═══════════════════════════════════════════════
@@ -1626,10 +1640,16 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
     low   = [a for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="하"]
     no_an = [a for a in analyzed if not a.get("analysis")]
 
-    # 헤더 한줄 요약 — Claude API로 50자 이내 단일 문장 생성
+    # API 모드는 기존 한줄 요약, 구독 모드는 확정된 카드 건수로 생성한다.
     top_arts = high + mid
     summary_list = ""
-    if top_arts:
+    if top_arts and INSIGHT_ENGINE == "subscription":
+        one_line = f"경쟁사 동향: 영향도 상 {len(high)}건·중 {len(mid)}건을 확인했습니다."
+        summary_list = (
+            f'<p style="margin:0;font-size:11px;color:#95d5b2;font-family:Arial,sans-serif;'
+            f'line-height:1.6;word-break:keep-all;">{one_line}</p>'
+        )
+    elif top_arts and INSIGHT_ENGINE == "api":
         try:
             titles_text = "\n".join(
                 f"- [{a['analysis'].get('impact_level','')}] {a.get('_company','')} | "
@@ -1861,6 +1881,8 @@ def _send_one(subject: str, html: str, addr: str) -> dict:
     msg["Date"]       = formatdate(localtime=True)
     msg["Message-ID"] = make_msgid(domain="gmail.com")
     msg.attach(MIMEText(html, "html", "utf-8"))
+    if DELIVERY_GUARD is not None and not DELIVERY_GUARD.before(addr):
+        return {}  # 이전 서버 접수가 영구 기록된 수신자는 재발송하지 않음
 
     for attempt in range(3):
         try:
@@ -1869,17 +1891,28 @@ def _send_one(subject: str, html: str, addr: str) -> dict:
                 server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
                 refused = server.sendmail(GMAIL_USER, [addr], msg.as_string())
             if refused:
+                if DELIVERY_GUARD is not None:
+                    DELIVERY_GUARD.after(addr, "rejected")
                 print(f"  ⚠️ [SMTP 거부] {addr}: {refused.get(addr)}")
                 return refused
+            if DELIVERY_GUARD is not None:
+                DELIVERY_GUARD.after(addr, "accepted")
             return {}
         except smtplib.SMTPRecipientsRefused as e:
+            if DELIVERY_GUARD is not None:
+                DELIVERY_GUARD.after(addr, "rejected")
             # 단건발송(수신자 1명)에서 전원거부는 dict가 아니라 예외로 옴 — e.recipients에 상세정보 있음
             # 영구거부(5xx)는 재시도해도 결과 동일하므로 즉시 확정, 재시도 생략
             print(f"  ⚠️ [SMTP 영구거부] {addr}: {e.recipients.get(addr)}")
             return e.recipients
         except smtplib.SMTPAuthenticationError:
+            if DELIVERY_GUARD is not None:
+                DELIVERY_GUARD.after(addr, "rejected")
             raise
         except Exception as e:
+            if DELIVERY_GUARD is not None:
+                DELIVERY_GUARD.after(addr, "uncertain")
+                raise RuntimeError("SMTP 전송 상태 미확인 — 자동 재전송 금지") from e
             wait = 10 * (2 ** attempt)
             print(f"  [WARN] {addr} 발송 오류 ({attempt+1}/3): {e} — {wait}초 후 재시도")
             if attempt < 2:
@@ -1974,7 +2007,7 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
     # 오래된 로그 정리
     try:
         logs = sorted(f for f in os.listdir(".") if f.startswith("filter_log_") and f.endswith(".json"))
-        for old in logs[:-7]:
+        for old in (logs[:-7] if DELIVERY_GUARD is None else []):
             os.remove(old)
     except Exception:
         pass
@@ -2006,6 +2039,13 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
         })
 
     excl_stats = Counter(e["reason"] for e in entries if e["decision"]=="HARD_EXCLUDED")
+    if DELIVERY_GUARD is not None:
+        DELIVERY_GUARD.save_log({"time": now.isoformat(), "total": len(all_arts),
+                                 "sent": len(final), "hard_excl": len(hard_excluded),
+                                 "excl_stats": dict(excl_stats), "usage": _usage_summary(),
+                                 "entries": entries})
+        print("  필터링 로그 비공개 저장 완료")
+        return
     try:
         with open(log_path, "w", encoding="utf-8") as f:
             json.dump({
@@ -2069,12 +2109,14 @@ def preflight() -> bool:
 # ═══════════════════════════════════════════════
 # 메인
 # ═══════════════════════════════════════════════
-def main():
+def main(provider=None):
     print(f"\n{'='*55}")
     print(f"KIS eBiz 인사이트봇 v3 | {datetime.now(KST).strftime('%Y-%m-%d %H:%M KST')}")
     print(f"{'='*55}")
 
     if not preflight():
+        if provider is not None:
+            raise RuntimeError("SMTP 사전 검증 실패 — 구독 회차 발송 보류")
         return
 
     seen = load_seen()
@@ -2082,7 +2124,7 @@ def main():
 
     # ── 1) 병렬 수집
     print("\n[1/6] 네이버 뉴스 수집 중 (병렬)...")
-    raw = collect_articles(seen)
+    raw = provider.collect(seen) if provider is not None else collect_articles(seen)
     print(f"  → 신규 수집: {len(raw)}건")
 
     if not raw:
@@ -2099,6 +2141,8 @@ def main():
 
     if not articles:
         print("  하드필터 이후 기사 없음. 종료.")
+        if DELIVERY_GUARD is not None:
+            DELIVERY_GUARD.change(lambda job: job.update(no_delivery_required=True))
         save_seen(seen)
         return
 
@@ -2110,7 +2154,7 @@ def main():
 
     # ── 3) AI 1차 필터링
     print("\n[3/6] AI 1차 필터링 중...")
-    relevant = filter_relevant_articles(articles)
+    relevant = provider.relevant(articles) if provider is not None else filter_relevant_articles(articles)
     print(f"  → AI 선별: {len(relevant)}건 (전체 {len(raw)}건 중)")
 
     if not relevant:
@@ -2126,6 +2170,8 @@ def main():
     from concurrent.futures import ThreadPoolExecutor, as_completed as _asc
 
     def _fetch_body(art: dict) -> dict:
+        if provider is not None:
+            return art  # 구독 입력의 검증된 본문·미수집 표시를 그대로 사용
         # ── originallink(언론사 원문) 우선, link(네이버 중계) 폴백
         link = art.get("originallink") or art.get("link","")
         if link:
@@ -2188,7 +2234,7 @@ def main():
 
     for i, art in enumerate(relevant):
         print(f"  [{i+1}/{len(relevant)}] {art['_company']} | {art['title'][:38]}...")
-        result = analyze_article(art)
+        result = analyze_article(art, external_analysis=provider.analysis_for(art)) if provider is not None else analyze_article(art)
         an = result.get("analysis")
         if an:
             title_txt = result.get("title","")
@@ -2463,4 +2509,5 @@ if __name__ == "__main__":
         except Exception as _me:
             print(f"오류 메일 발송 실패: {_me}")
         raise
+
 
