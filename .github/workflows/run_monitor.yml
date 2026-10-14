@@ -37,7 +37,6 @@ jobs:
         env:
           NAVER_CLIENT_ID:     ${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
-          ANTHROPIC_API_KEY:   ${{ secrets.ANTHROPIC_API_KEY }}
           GMAIL_USER:          ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD:  ${{ secrets.GMAIL_APP_PASSWORD }}
           RECIPIENTS:          ${{ secrets.RECIPIENTS }}
@@ -63,4 +62,3 @@ jobs:
           done
           echo "::error::seen_articles.json push 실패 — 다음 실행 중복 발송 위험"
           exit 1
-
