@@ -1,0 +1,21 @@
+name: 부정여론 검수 비공개 큐 키 연결
+on:
+  push:
+    branches: [codex/negative-queue-setup]
+    paths: [negative_queue_setup_request.json]
+permissions:
+  contents: read
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pynacl
+      - name: 같은 소유자의 부정여론 검수 Secret 암호화 등록
+        env:
+          INSIGHT_QUEUE_TOKEN: ${{ secrets.INSIGHT_QUEUE_TOKEN }}
+        run: python setup_negative_queue.py
