@@ -174,6 +174,28 @@ class StallRegression(unittest.TestCase):
             self.assertEqual(bridge.cli(), 1)
         self.api.assert_not_called()
 
+    def test_cli_exposes_only_safe_queue_diagnostics(self):
+        for message, public in (
+                ('비공개 대기 저장소 PUT 실패 HTTP 403', True),
+                ('비공개 저장소 쓰기 후 읽기 검증 실패', True),
+                ('SMTP failure owner@example.invalid https://private.invalid/article 비공개기사', False)):
+            output = StringIO()
+            with self.subTest(message=message), patch.object(bridge, 'main', side_effect=RuntimeError(message)), patch.object(bridge, 'notify_error') as notice, redirect_stdout(output):
+                self.assertEqual(bridge.cli(), 1)
+                self.assertEqual(message in output.getvalue(), public)
+                notice.assert_called_once()
+                self.assertEqual(str(notice.call_args.args[0]), message)
+
+    def test_error_notice_owner_copy_does_not_mask_admin_refusal(self):
+        def send(subject, html, address):
+            return {address: (550, 'refused')} if address == 'admin@example.invalid' else {}
+        output = StringIO()
+        with patch.dict(os.environ, {'GMAIL_USER': 'owner@example.invalid', 'GMAIL_APP_PASSWORD': 'offline'}), patch.object(bridge, 'import_bot', return_value=bot), patch.object(bot, 'NO_RESULT_RECEIVER', 'admin@example.invalid'), patch.object(bot, '_send_one', side_effect=send), redirect_stdout(output):
+            bridge.notify_error(RuntimeError('offline'), 'safe context')
+        self.assertIn('접수 미확인', output.getvalue())
+        self.assertNotIn('알림 SMTP 접수;', output.getvalue())
+        self.assertNotIn('@example.invalid', output.getvalue())
+
 
 class StatePushRegression(unittest.TestCase):
     def setUp(self):

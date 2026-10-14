@@ -275,10 +275,11 @@ def notify_error(error, context=""):
             bot.DELIVERY_GUARD = None
             # 기존 오류 메일 함수의 주소·SMTP 오류 출력도 공개 로그에 남기지 않는다.
             with redirect_stdout(StringIO()):
-                bot.send_email_error("인사이트 구독 경로 보류: " + str(error), details)
+                accepted = bot.send_email_error("인사이트 구독 경로 보류: " + str(error), details)
         finally:
             bot.DELIVERY_GUARD = guard
-        print("담당자 오류 알림 시도; 운영 영수증 변경0/API0")
+        print("담당자 오류 알림 SMTP 접수; 운영 영수증 변경0/API0" if accepted
+              else "담당자 오류 알림 접수 미확인; Actions 실패 상태 확인")
     except Exception as notification_error:
         print("담당자 오류 알림 실패:", type(notification_error).__name__)
 
@@ -509,7 +510,18 @@ def cli():
     try:
         main()
     except Exception as error:
-        print("인사이트 구독 경로 보류:", type(error).__name__)
+        detail = str(error)
+        public_messages = {
+            "INSIGHT_QUEUE_TOKEN 미등록 — 비공개 저장소 연결 불가",
+            "대기 저장소 접근 실패 또는 비공개가 아님",
+            "전용 대기 브랜치 없음",
+            "비공개 저장소 쓰기 후 읽기 검증 실패",
+        }
+        # 큐 API의 HTTP 상태와 고정된 연결 오류만 공개한다. SMTP/기사 세부는 알림에만 전달.
+        if detail not in public_messages and not re.fullmatch(
+                r"비공개 대기 저장소 (?:GET|PUT|POST) 실패 HTTP [0-9]{3}", detail):
+            detail = "상세 오류는 담당자 알림과 비공개 회차를 확인하세요."
+        print("인사이트 구독 경로 보류:", type(error).__name__, detail)
         notify_error(error)
         return 1
     return 0
