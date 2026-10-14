@@ -1346,12 +1346,11 @@ JSON only, 다른 텍스트 없이:
 
         # ② 끝까지 본문 미수집(유사기사 보완도 실패) → 점수/등급 강제 하향
         # description만으로 분석한 결과는 신뢰도가 낮으므로 보수적으로 처리
-        if art.get("_body_failed") and not art.get("_body_from_similar"):
+        if art.get("_body_failed") and (external_analysis is not None or not art.get("_body_from_similar")):
             orig_lvl   = analysis.get("impact_level","하")
             orig_score = analysis.get("impact_score", 3.0)
-            # 상 → 중, 중 → 하, 하 → 하 유지
-            level_down = {"상": "중", "중": "하", "하": "하"}
-            analysis["impact_level"] = level_down.get(orig_lvl, "하")
+            # 4.9점 이하의 등급은 항상 하. 구독 분석은 유사 본문으로 예외를 두지 않는다.
+            analysis["impact_level"] = "하"
             # 점수 상한 4.9 (하 영역 유지)
             analysis["impact_score"] = min(float(orig_score), 4.9)
             print(f"    [본문미수집 하향] {art.get('_company','')} | {orig_lvl}→{analysis['impact_level']} / {orig_score}→{analysis['impact_score']}")

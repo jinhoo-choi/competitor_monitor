@@ -184,7 +184,7 @@ def validate(job, result, current_seen_hash, at=None):
         if level != ("상" if score >= 7 else "중" if score >= 5 else "하"):
             raise ValueError("등급·점수 불일치")
         for field, bound in {"company_name": 40, "event_key": 40, "impact_domain": 20,
-                             "summary": 90, "action_point": 100}.items():
+                             "summary": 90, "action_point": 80}.items():
             if not isinstance(a.get(field), str) or not a[field].strip() or len(a[field]) > bound:
                 raise ValueError("분석 필수 필드·길이 오류: " + field)
         if a.get("threat_type") not in THREATS or not isinstance(a.get("impact_tags"), dict):
@@ -193,7 +193,13 @@ def validate(job, result, current_seen_hash, at=None):
             tag = a["impact_tags"].get(key)
             if not isinstance(tag, str) or not tag.strip() or len(tag) > bound:
                 raise ValueError("영향 태그 미완성")
-        source = " ".join([article.get("title", ""), article.get("description", ""), article.get("_body", "")])
+        if article.get("_body_failed"):
+            if score > 4.9 or level != "하" or "[본문 미수집]" not in a["summary"]:
+                raise ValueError("본문 미수집 점수·등급·표시 오류")
+            # 실패한 페이지에 남은 메뉴·스크립트나 유사 기사 본문은 근거로 쓰지 않는다.
+            source = article.get("description", "") or ""
+        else:
+            source = " ".join([article.get("title", ""), article.get("description", ""), article.get("_body", "")])
         quote = a.get("evidence_quote", "")
         if not isinstance(quote, str) or len(quote) < 8 or quote not in source:
             raise ValueError("원문 근거 인용 없음")
