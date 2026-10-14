@@ -1,0 +1,24 @@
+name: Risk private queue secret setup
+on:
+  push:
+    branches: [codex/risk-queue-setup]
+    paths: [risk_queue_setup_request.json]
+permissions:
+  contents: read
+concurrency:
+  group: risk-queue-setup
+  cancel-in-progress: false
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install PyNaCl
+      - name: Encrypt existing queue credential for same-owner risk repository
+        env:
+          INSIGHT_QUEUE_TOKEN: ${{ secrets.INSIGHT_QUEUE_TOKEN }}
+        run: python setup_risk_queue.py
