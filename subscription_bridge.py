@@ -10,6 +10,7 @@ import math
 import os
 import re
 import sys
+import time
 import traceback
 import urllib.error
 import urllib.parse
@@ -68,13 +69,24 @@ class Queue:
                                          "Accept": "application/vnd.github+json",
                                          "X-GitHub-Api-Version": "2022-11-28",
                                          "Content-Type": "application/json"})
-        try:
-            with urllib.request.urlopen(req, timeout=30) as response:
-                return json.load(response)
-        except urllib.error.HTTPError as e:
-            if e.code == 404 and method == "GET":
-                return None
-            raise RuntimeError(f"비공개 대기 저장소 {method} 실패 HTTP {e.code}") from None
+        # Retry only reads. A lost PUT/POST response may already have committed.
+        attempts = 3 if method == "GET" else 1
+        for attempt in range(attempts):
+            try:
+                with urllib.request.urlopen(req, timeout=30) as response:
+                    return json.load(response)
+            except urllib.error.HTTPError as e:
+                if e.code == 404 and method == "GET":
+                    return None
+                if e.code in {429, 500, 502, 503, 504} and attempt + 1 < attempts:
+                    time.sleep(attempt + 1)
+                    continue
+                raise RuntimeError(f"비공개 대기 저장소 {method} 실패 HTTP {e.code}") from None
+            except (urllib.error.URLError, TimeoutError):
+                if attempt + 1 < attempts:
+                    time.sleep(attempt + 1)
+                    continue
+                raise RuntimeError(f"비공개 대기 저장소 {method} 네트워크 실패") from None
 
     def initialize(self):
         """소유자가 요청한 새 비공개 큐를 등록된 PAT로 초기화한다."""
