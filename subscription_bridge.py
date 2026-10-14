@@ -10,6 +10,7 @@ import math
 import os
 import re
 import sys
+import traceback
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -258,6 +259,30 @@ def import_bot():
     return monitor_v2
 
 
+def notify_error(error, context=""):
+    """기존 담당자 경로에 알림을 시도한다. 운영 영수증과 공개 로그는 격리한다."""
+    if not os.environ.get("GMAIL_USER") or not os.environ.get("GMAIL_APP_PASSWORD"):
+        print("담당자 오류 알림 생략 — SMTP 설정 없음; Actions 실패 상태 확인")
+        return
+    try:
+        bot = import_bot()
+        details = context or traceback.format_exc()
+        run_id = os.environ.get("GITHUB_RUN_ID", "")
+        if run_id.isdigit():
+            details += "\nActions: https://github.com/jinhoo-choi/competitor_monitor/actions/runs/" + run_id
+        guard = bot.DELIVERY_GUARD
+        try:
+            bot.DELIVERY_GUARD = None
+            # 기존 오류 메일 함수의 주소·SMTP 오류 출력도 공개 로그에 남기지 않는다.
+            with redirect_stdout(StringIO()):
+                bot.send_email_error("인사이트 구독 경로 보류: " + str(error), details)
+        finally:
+            bot.DELIVERY_GUARD = guard
+        print("담당자 오류 알림 시도; 운영 영수증 변경0/API0")
+    except Exception as notification_error:
+        print("담당자 오류 알림 실패:", type(notification_error).__name__)
+
+
 def collect(config, queue, mode="production"):
     bot = import_bot()
     state_hash = seen_hash()
@@ -268,7 +293,19 @@ def collect(config, queue, mode="production"):
     index, index_sha = queue.get("index.json")
     index = index or {"jobs": []}
     for old_id in index["jobs"]:
-        old, _ = queue.get("jobs/" + old_id + ".json")
+        old, old_sha = queue.get("jobs/" + old_id + ".json")
+        if (old and old.get("schema_version") == SCHEMA
+                and old.get("status") == "pending" and old.get("receipts") == {}
+                and not old.get("delivered_at") and not old.get("seen_after_hash")
+                and datetime.fromisoformat(old["expires_at"]) <= now()):
+            # SMTP 예약 기록이 전혀 없는 회차만 CAS로 종결한다. 입력·결과·seen은 보존.
+            old.update(status="expired", expired_at=now().isoformat())
+            queue.put("jobs/" + old_id + ".json", old, old_sha)
+            print("미발송 구독 회차 자동 만료:", old_id)
+            notify_error(RuntimeError("미발송 구독 회차 만료: " + old_id),
+                         "입력과 처리 이력은 보존했습니다. 다음 회차는 17시간 범위만 수집하므로 "
+                         "만료 입력 전체의 재수집은 보장되지 않습니다. 비공개 회차 기록을 확인하세요.")
+            continue
         if old and old.get("status") in {"pending", "sending", "uncertain", "delivery_complete"}:
             raise RuntimeError("미종결 구독 회차 존재 — 신규 회차·롤백 중복 방지")
     if queue.get("jobs/" + job_id + ".json")[0] is not None:
@@ -360,7 +397,10 @@ def consume(config, queue, job_id, dry_run=False, self_test=False):
                                                     seen_after_snapshot=Path("seen_articles.json").read_text(encoding="utf-8")))
         print("본인 발송 검수 완료; API0/처리 이력 변경0" if self_test else "구독 결과 발송 접수 완료; API0/처리 이력 커밋 대기")
     except Exception:
-        bot.DELIVERY_GUARD.change(lambda j: j.update(status="uncertain"))
+        # 영수증 선기록 전 실패는 재검수 가능하다. 한 건이라도 예약되면 계속 보호한다.
+        bot.DELIVERY_GUARD.change(lambda j: j.update(
+            status="pending" if j.get("receipts") == {} and not j.get("delivered_at")
+            and not j.get("seen_after_hash") else "uncertain"))
         raise
     finally:
         bot.DELIVERY_GUARD = None
@@ -465,9 +505,15 @@ def main():
         rollback_check(queue)
 
 
-if __name__ == "__main__":
+def cli():
     try:
         main()
     except Exception as error:
-        print("인사이트 구독 경로 보류:", type(error).__name__, str(error))
-        sys.exit(1)
+        print("인사이트 구독 경로 보류:", type(error).__name__)
+        notify_error(error)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(cli())

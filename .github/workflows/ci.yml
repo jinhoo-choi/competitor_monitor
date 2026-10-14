@@ -20,8 +20,8 @@ jobs:
         run: python -m py_compile monitor_v2.py subscription_bridge.py subscription_request.py
       - name: 메일 실패·상태 저장 오프라인 회귀
         run: |
-          pip install -r requirements.txt
-          python -m unittest -v test_delivery_regress test_subscription_bridge
+          pip install -r requirements.txt pyyaml
+          python -m unittest -v test_delivery_regress test_subscription_bridge test_subscription_stall
       - name: 워크플로 YAML 검증
         run: pip install -q pyyaml && python -c "import yaml,glob,sys; [yaml.safe_load(open(f)) for f in glob.glob('.github/workflows/*.yml')]; print('yaml ok')"
 

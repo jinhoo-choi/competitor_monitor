@@ -45,7 +45,19 @@ jobs:
           git add -f -A seen_articles.json 'filter_log_*.json'
           if ! git diff --staged --quiet; then
             git commit -m 'chore: subscription delivery seen state [skip ci]'
-            git push origin HEAD:main
+            for attempt in 1 2 3; do
+              git push origin HEAD:main && exit 0
+              if [ "$attempt" -lt 3 ]; then
+                if ! git pull --rebase -q origin main; then
+                  git rebase --abort || true
+                  echo "::error::처리 이력 충돌 — 재발송 없이 수동 확인 필요"
+                  exit 1
+                fi
+                sleep $((attempt * 5))
+              fi
+            done
+            echo "::error::처리 이력 push 3회 실패 — 회차 종결 보류"
+            exit 1
           fi
       - name: 저장된 처리 이력 재확인 후 회차 종결
         if: steps.result.outputs.production == 'true'
@@ -53,3 +65,15 @@ jobs:
           INSIGHT_QUEUE_TOKEN: ${{ secrets.INSIGHT_QUEUE_TOKEN }}
           JOB_ID: ${{ steps.result.outputs.job_id }}
         run: python subscription_bridge.py ack --job-id "$JOB_ID"
+      - name: 발송 후 저장·종결 실패 담당자 알림
+        if: failure() && steps.result.outcome == 'success'
+        env:
+          NAVER_CLIENT_ID: notification-only
+          NAVER_CLIENT_SECRET: notification-only
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          NO_RESULT_RECEIVER: ${{ secrets.NO_RESULT_RECEIVER }}
+        run: >-
+          python -c "import subscription_bridge as bridge;
+          bridge.notify_error(RuntimeError('발송 후 이력 저장 또는 회차 종결 실패'),
+          '발송 영수증을 보존하고 재발송을 중지했습니다. 비공개 회차 상태와 Actions를 확인하세요.')"
