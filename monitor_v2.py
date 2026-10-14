@@ -1986,10 +1986,14 @@ def send_email_error(error_msg: str, trace: str):
   <p style="color:#888;">GitHub Actions 워크플로우 로그에서 상세 확인 바랍니다.<br>담당자: 최진후 차장</p>
 </body></html>"""
     try:
-        _smtp_send(f"[경쟁사봇 오류] {now_str}", html, receiver)
+        refused = _smtp_send(f"[경쟁사봇 오류] {now_str}", html, receiver)
+        if any(addr in refused for addr in receiver):
+            return False
         print(f"  오류 메일 발송 → {receiver}")
+        return True
     except Exception as e:
         print(f"  [WARN] 오류 메일 발송 실패: {e}")
+        return False
 
 # ═══════════════════════════════════════════════
 # 필터링 로그 저장
