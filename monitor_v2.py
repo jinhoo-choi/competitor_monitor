@@ -889,6 +889,7 @@ def _is_within_cutoff(pub_date_str: str) -> bool:
 
 def fetch_article_body(url: str) -> str:
     """기사 본문 크롤링 — WAF 대응 헤더, 2MB 초과 스킵, 표준라이브러리만 사용"""
+    from html import unescape
     try:
         req = urllib.request.Request(url, headers={
             "User-Agent":      random.choice(USER_AGENTS),
@@ -903,15 +904,17 @@ def fetch_article_body(url: str) -> str:
             html_bytes = res.read()
 
         html_text = html_bytes.decode("utf-8", errors="replace")
+        # 스크립트 안의 HTML 템플릿·스타일을 실제 기사 본문으로 잡지 않는다.
+        html_text = re.sub(r"<(script|style)\b[^>]*>.*?</\1\s*>", " ",
+                           html_text, flags=re.DOTALL | re.IGNORECASE)
 
         # 핵심 영역 ID/class 패턴으로 추출
         for pattern in [
             r'id=["\'](?:dic_area|articleBodyContents|articeBody|article-body)["\'][^>]*>(.*?)</(?:div|article)',
             r'class=["\'][^"\']*(?:article-body|news-body|view-content|newsct_article)[^"\']*["\'][^>]*>(.*?)</(?:div|article)',
         ]:
-            m = re.search(pattern, html_text, re.DOTALL | re.IGNORECASE)
-            if m:
-                chunk = re.sub(r"<[^>]+>", " ", m.group(0))
+            for m in re.finditer(pattern, html_text, re.DOTALL | re.IGNORECASE):
+                chunk = unescape(re.sub(r"<[^>]+>", " ", m.group(1)))
                 chunk = re.sub(r"\s+", " ", chunk).strip()
                 if len(chunk) > 50:
                     return chunk[:600]
@@ -920,7 +923,8 @@ def fetch_article_body(url: str) -> str:
         chunks = re.findall(r"<p[^>]*>(.*?)</p>", html_text, re.DOTALL | re.IGNORECASE)
         texts = []
         for c in chunks:
-            t = re.sub(r"<[^>]+>", "", c).strip()
+            t = unescape(re.sub(r"<[^>]+>", " ", c)).strip()
+            t = re.sub(r"\s+", " ", t)
             if len(t) > 20:
                 texts.append(t)
         result = " ".join(texts)
