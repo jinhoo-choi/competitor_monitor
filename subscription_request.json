@@ -1,4 +1,7 @@
 {
-  "operation": "connection",
-  "request_id": "stall-guard-diagnostic-check-20261014T015300Z"
+  "operation": "consume",
+  "job_id": "38539211586",
+  "dry_run": false,
+  "self_test": false,
+  "request_id": "38539211586-subscription-20261014092637Z"
 }
