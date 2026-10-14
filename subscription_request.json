@@ -1,7 +1,4 @@
 {
-  "operation": "consume",
-  "job_id": "38493349004",
-  "dry_run": false,
-  "self_test": false,
-  "request_id": "38493349004-native-20261014T012739Z"
+  "operation": "connection",
+  "request_id": "stall-guard-main-check-20261014T014600Z"
 }
