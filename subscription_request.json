@@ -1,6 +1,7 @@
 {
   "operation": "consume",
-  "job_id": "38485660280",
-  "self_test": true,
-  "request_id": "scheduled-verification-38485660280"
+  "job_id": "historical-format-20261014T000304",
+  "dry_run": true,
+  "self_test": false,
+  "request_id": "historical-format-20261014T000304-render-only"
 }
