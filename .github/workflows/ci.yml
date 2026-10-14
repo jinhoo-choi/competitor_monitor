@@ -21,6 +21,6 @@ jobs:
       - name: 메일 실패·상태 저장 오프라인 회귀
         run: |
           pip install -r requirements.txt pyyaml
-          python -m unittest -v test_delivery_regress test_subscription_bridge test_subscription_stall test_subscription_network
+          python -m unittest -v test_delivery_regress test_subscription_bridge test_subscription_stall test_subscription_network test_subscription_policy
       - name: 워크플로 YAML 검증
         run: pip install -q pyyaml && python -c "import yaml,glob,sys; [yaml.safe_load(open(f)) for f in glob.glob('.github/workflows/*.yml')]; print('yaml ok')"
