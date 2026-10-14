@@ -73,6 +73,24 @@ class SubscriptionRegression(unittest.TestCase):
 
     def analysis(self): return next(iter(self.result['analyses'].values()))
 
+    def test_body_extraction_ignores_page_controls_scripts_and_attributes(self):
+        text = ('예시증권은 모바일 주문 화면에 실시간 잔고와 ETF 정보를 통합했다고 밝혔다. '
+                '이용자는 같은 화면에서 차트와 보유 수량을 확인하고 주문할 수 있다.')
+        pages = [
+            '<div class="article-view-content">본문크기 본문 글씨 줄이기 본문 글씨 키우기</div>'
+            '<article><p>' + text + '</p></article>',
+            '<div class="article-body"><p>' + text.replace('ETF ', 'ETF&nbsp;') + '</p></div>',
+            '<script>const template=\'<div id="article-body">' + '광고 메뉴 문구 ' * 20
+            + '</div>\';</script><div id="article-body">' + text + '</div>',
+        ]
+        for page in pages:
+            response = MagicMock()
+            response.__enter__.return_value = response
+            response.headers = {}
+            response.read.return_value = page.encode()
+            with self.subTest(page=page[:60]), patch.object(bot.urllib.request, 'urlopen', return_value=response):
+                self.assertEqual(bot.fetch_article_body('https://news.example.invalid/story'), text)
+
     def test_valid_result_keeps_normal_news_without_paid_api(self):
         provider = bridge.Provider(self.job, self.result, bot, 'seen')
         with patch.object(bot, '_ai_create', side_effect=AssertionError('paid API forbidden')) as api:
