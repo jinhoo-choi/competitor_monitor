@@ -150,13 +150,13 @@ class StallRegression(unittest.TestCase):
         self.api.assert_not_called()
         self.smtp.assert_not_called()
 
-    def test_error_notice_uses_admin_route_without_production_receipts(self):
+    def test_error_notice_uses_owner_only_without_production_receipts(self):
         existing_guard = MagicMock()
         output = StringIO()
         with patch.dict(os.environ, {'GMAIL_USER': 'owner@example.invalid', 'GMAIL_APP_PASSWORD': 'offline', 'GITHUB_RUN_ID': '123'}), patch.object(bridge, 'import_bot', return_value=bot), patch.object(bot, 'NO_RESULT_RECEIVER', 'admin@example.invalid'), patch.object(bot, 'DELIVERY_GUARD', existing_guard), patch.object(bot, '_send_one', return_value={}) as sender, redirect_stdout(output):
             bridge.notify_error(RuntimeError('offline failure'), 'safe context')
             self.assertIs(bot.DELIVERY_GUARD, existing_guard)
-        self.assertEqual({c.args[2] for c in sender.call_args_list}, {'admin@example.invalid', 'owner@example.invalid'})
+        self.assertEqual({c.args[2] for c in sender.call_args_list}, {bot.OPERATIONAL_OWNER})
         self.assertNotIn('risk_aigent@googlegroups.com', {c.args[2] for c in sender.call_args_list})
         self.assertIn('/actions/runs/123', sender.call_args.args[1])
         self.assertNotIn('@example.invalid', output.getvalue())
@@ -186,9 +186,9 @@ class StallRegression(unittest.TestCase):
                 notice.assert_called_once()
                 self.assertEqual(str(notice.call_args.args[0]), message)
 
-    def test_error_notice_owner_copy_does_not_mask_admin_refusal(self):
+    def test_error_notice_owner_refusal_is_reported(self):
         def send(subject, html, address):
-            return {address: (550, 'refused')} if address == 'admin@example.invalid' else {}
+            return {address: (550, 'refused')} if address == bot.OPERATIONAL_OWNER else {}
         output = StringIO()
         with patch.dict(os.environ, {'GMAIL_USER': 'owner@example.invalid', 'GMAIL_APP_PASSWORD': 'offline'}), patch.object(bridge, 'import_bot', return_value=bot), patch.object(bot, 'NO_RESULT_RECEIVER', 'admin@example.invalid'), patch.object(bot, '_send_one', side_effect=send), redirect_stdout(output):
             bridge.notify_error(RuntimeError('offline'), 'safe context')
@@ -275,3 +275,4 @@ sys.exit(0)
 
 if __name__ == '__main__':
     unittest.main()
+
