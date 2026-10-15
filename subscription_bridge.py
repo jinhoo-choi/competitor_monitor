@@ -32,6 +32,15 @@ def digest(value):
                                       separators=(",", ":")).encode()).hexdigest()
 
 
+def policy_hash():
+    return digest(json.loads(Path('subscription_policy.json').read_text(encoding='utf-8')))
+
+
+def require_live_policy(queue, expected):
+    if expected != policy_hash() or expected != queue.policy_hash():
+        raise RuntimeError('분석 정책 원문 변경 — 재분석 전 발송 보류')
+
+
 def seen_hash():
     p = Path("seen_articles.json")
     if not p.exists():
@@ -127,6 +136,12 @@ class Queue:
             raise RuntimeError("대기 자료 형식 오류")
         return json.loads(base64.b64decode(obj["content"])), obj["sha"]
 
+    def policy_hash(self):
+        obj = self.api_request('/repos/jinhoo-choi/competitor_monitor/contents/subscription_policy.json?ref=main')
+        if not obj or obj.get('type') != 'file':
+            raise RuntimeError('현재 분석 정책 읽기 실패')
+        return digest(json.loads(base64.b64decode(obj['content'])))
+
     def put(self, path, value, sha=None):
         payload = {"branch": self.branch,
                    "message": "chore: insight subscription state [skip ci]",
@@ -151,6 +166,8 @@ def validate(job, result, current_seen_hash, at=None):
         raise ValueError("처리 이력 변경 — 중복 가능성으로 보류")
     if result.get("analysis_engine") != "chatgpt_subscription":
         raise ValueError("구독 분석 엔진 증거 없음")
+    if job['input'].get('policy_hash') != policy_hash() or result.get('policy_hash') != job['input']['policy_hash']:
+        raise ValueError('분석 정책 원문 해시 불일치')
     items = job["input"]["items"]
     by_id = {a["article_id"]: a for a in items}
     if len(by_id) != len(items):
@@ -249,6 +266,7 @@ class DeliveryGuard:
         skip = False
         def reserve(job):
             nonlocal skip
+            require_live_policy(self.queue, job["input"].get("policy_hash"))
             old = job.setdefault("receipts", {}).get(key)
             if old == "accepted":
                 skip = True
@@ -305,7 +323,9 @@ def notify_error(error, context=""):
 def collect(config, queue, mode="production"):
     bot = import_bot()
     state_hash = seen_hash()
+    rules_hash = policy_hash()
     queue.preflight()
+    require_live_policy(queue, rules_hash)
     job_id = str(os.environ.get("GITHUB_RUN_ID") or now().strftime("%Y%m%dT%H%M%S"))
     if not JOB_ID.fullmatch(job_id):
         raise ValueError("회차 ID 오류")
@@ -342,11 +362,12 @@ def collect(config, queue, mode="production"):
         list(pool.map(body, passed))
     for article in raw:
         article["article_id"] = article_id(article)
+    require_live_policy(queue, rules_hash)
     created = now()
     job = {"schema_version": SCHEMA, "job_id": job_id, "status": "pending", "mode": mode,
            "created_at": created.isoformat(),
            "expires_at": (created + timedelta(minutes=config["job_ttl_minutes"])).isoformat(),
-           "input": {"policy_version": POLICY_VERSION, "seen_hash": state_hash,
+           "input": {"policy_version": POLICY_VERSION, "policy_hash": rules_hash, "seen_hash": state_hash,
                      "raw_articles": raw, "items": passed}, "receipts": {}}
     job["input_hash"] = digest(job["input"])
     queue.put("jobs/" + job_id + ".json", job)
@@ -383,6 +404,7 @@ def consume(config, queue, job_id, dry_run=False, self_test=False):
     if (dry_run or self_test) and job.get("mode") != "verification":
         raise RuntimeError("운영 회차를 검수로 종결할 수 없음")
     provider = Provider(job, result, bot, seen_hash())
+    require_live_policy(queue, job["input"]["policy_hash"])
     # 규칙 정규화도 메일 직전에 몰아서 하지 않고 전부 먼저 확인한다.
     normalized = []
     for article in job["input"]["items"]:
