@@ -110,10 +110,30 @@ class DeliveryRegression(unittest.TestCase):
         mocks["analyze_article"].return_value["_body_failed"] = True
         send = self.sender()
         bot.main()
-        self.assertEqual(mocks["save_seen"].call_args.kwargs["sent_urls"], set())
+        mocks["save_seen"].assert_not_called()
+        self.assertEqual(len(send.call_args_list), 1)
         alerts = [c for c in send.call_args_list if "오류" in c.args[0]]
-        self.assertEqual([c.args[2] for c in alerts], ["owner@example.invalid"])
+        self.assertEqual([c.args[2] for c in alerts], [bot.OPERATIONAL_OWNER])
         self.assertIn("원문 확인 미완료", alerts[0].args[1])
+
+    def test_mixed_run_sends_valid_findings_and_owner_alert(self):
+        mocks = self.main_fixture()
+        valid = copy.deepcopy(mocks["analyze_article"].return_value)
+        valid["analysis"].update(impact_level="중", impact_score=6)
+        withheld = copy.deepcopy(valid)
+        withheld.update(title="다른 기사", link="https://example.invalid/withheld", _body_failed=True)
+        mocks["collect_articles"].return_value = [valid, withheld]
+        mocks["hard_filter"].return_value = ([valid, withheld], [])
+        mocks["filter_relevant_articles"].return_value = [valid, withheld]
+        mocks["analyze_article"].side_effect = copy.deepcopy([valid, withheld])
+        send = self.sender()
+        bot.main()
+        mocks["save_seen"].assert_called_once()
+        self.assertEqual(mocks["save_seen"].call_args.kwargs["sent_urls"], {valid["link"]})
+        self.assertEqual([a["link"] for a in mocks["build_email_html"].call_args.args[0]], [valid["link"]])
+        alerts = [c for c in send.call_args_list if "오류" in c.args[0]]
+        self.assertEqual([c.args[2] for c in alerts], [bot.OPERATIONAL_OWNER])
+        self.assertTrue(any("오류" not in c.args[0] for c in send.call_args_list))
 
     def test_group_delivery_retains_partial_failure_behavior(self):
         self.sender({"group@example.invalid"})
@@ -162,10 +182,10 @@ class OwnerAlertRegression(unittest.TestCase):
         with patch.object(bot, "GMAIL_USER", "owner@example.invalid"), \
              patch.object(bot, "NO_RESULT_RECEIVER", "executives@example.invalid"), \
              patch.object(bot, "DELIVERY_GUARD", guard), \
-             patch.object(bot, "_smtp_send") as send:
+             patch.object(bot, "_send_one") as send:
             def check(*args):
                 self.assertIsNone(bot.DELIVERY_GUARD)
-                self.assertEqual(args[2], ["owner@example.invalid"])
+                self.assertEqual(args[2], "111715@koreainvestment.com")
                 return {}
             send.side_effect = check
             self.assertTrue(bot.send_email_error("failure", "details"))
@@ -173,7 +193,7 @@ class OwnerAlertRegression(unittest.TestCase):
 
     def test_invalid_owner_fails_closed(self):
         for owner in ("", "a@example.invalid,b@example.invalid", "bad\nheader@example.invalid"):
-            with patch.object(bot, "GMAIL_USER", owner), patch.object(bot, "_smtp_send") as send:
+            with patch.object(bot, "OPERATIONAL_OWNER", owner), patch.object(bot, "_send_one") as send:
                 self.assertFalse(bot.send_email_error("failure", "details"))
                 send.assert_not_called()
 
