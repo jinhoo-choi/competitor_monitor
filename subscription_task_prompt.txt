@@ -12,3 +12,5 @@ score는 1~10 숫자로, 7 이상은 상, 5 이상 7 미만은 중, 5 미만은 
 verification: {"operation":"consume","job_id":"회차 ID","self_test":true,"request_id":"회차 ID와 이번 실행을 구별하는 문자열"}
 production: {"operation":"consume","job_id":"회차 ID","dry_run":false,"self_test":false,"request_id":"회차 ID와 이번 실행을 구별하는 문자열"}
 메일은 직접 보내지 않는다. 소비 워크플로가 스키마·중복·접수 상태를 검증해 기존 SMTP로 보낸다. GitHub 워크플로 요청만 성공한 경우 발송 완료라고 말하지 않는다. private job이 verified/completed가 되었는지와 Actions 결과를 확인한 근거로만 성공을 보고한다. 쓰기에 별도 사용자 확인이 요구되면 우회하지 말고 차단 사실을 보고한다. 구독 사용량이 부족하면 유료 API로 전환하지 말고 보류한다.
+
+정책 원문 고정: input.policy_hash를 수집 당시 정책의 canonical JSON SHA-256으로 검증하고 결과 최상위 policy_hash에 그대로 넣는다. 같은 버전이라도 현재 subscription_policy.json 내용 해시가 다르면 기존 결과를 재사용하지 않는다. 해시가 없는 legacy pending은 보류하고 이미 completed/verified인 회차를 재작성·재전송하지 않는다.

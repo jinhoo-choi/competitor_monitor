@@ -26,11 +26,11 @@ def fixture():
     article['article_id'] = bridge.article_id(article)
     job = {'schema_version': 1, 'job_id': 'offline-verification', 'status': 'pending',
            'mode': 'verification', 'expires_at': (bridge.now()+timedelta(hours=2)).isoformat(),
-           'input': {'policy_version': bridge.POLICY_VERSION, 'seen_hash': 'seen',
+           'input': {'policy_version': bridge.POLICY_VERSION, 'policy_hash': bridge.policy_hash(), 'seen_hash': 'seen',
                      'raw_articles': [copy.deepcopy(article)], 'items': [article]}, 'receipts': {}}
     job['input_hash'] = bridge.digest(job['input'])
     result = {'schema_version': 1, 'job_id': job['job_id'], 'input_hash': job['input_hash'],
-              'analysis_engine': 'chatgpt_subscription',
+              'analysis_engine': 'chatgpt_subscription', 'policy_hash': bridge.policy_hash(),
               'classifications': [{'article_id': article['article_id'], 'relevant': True, 'reason': '구체적 주문 기능 강화'}],
               'analyses': {article['article_id']: {
                   'company_name': '키움증권', 'event_key': '키움증권_해외주식주문_202610',
@@ -50,6 +50,8 @@ class MemoryQueue:
         self.rev = {p: '1' for p in self.files}
 
     def preflight(self): return True
+
+    def policy_hash(self): return bridge.policy_hash()
 
     def get(self, path): return copy.deepcopy(self.files.get(path)), self.rev.get(path)
 
@@ -72,6 +74,33 @@ class SubscriptionRegression(unittest.TestCase):
         self.addCleanup(self.quiet.__exit__, None, None, None)
 
     def analysis(self): return next(iter(self.result['analyses'].values()))
+
+    def test_same_version_policy_change_and_missing_hash_are_rejected(self):
+        for value in [None, '0'*64]:
+            result = copy.deepcopy(self.result)
+            result['policy_hash'] = value
+            with self.assertRaisesRegex(ValueError, '정책 원문 해시'):
+                bridge.validate(self.job, result, 'seen')
+        with patch.object(bridge, 'policy_hash', return_value='1'*64), self.assertRaisesRegex(ValueError, '정책 원문 해시'):
+            bridge.validate(self.job, self.result, 'seen')
+
+    def test_live_policy_change_blocks_consume_before_any_receipt(self):
+        self.job['mode'] = 'production'
+        self.queue.files['jobs/'+self.job['job_id']+'.json'] = copy.deepcopy(self.job)
+        with patch.object(bridge, 'import_bot', return_value=bot), patch.object(bridge, 'seen_hash', return_value='seen'), \
+                patch.object(self.queue, 'policy_hash', return_value='0'*64), \
+                patch.object(bot.smtplib, 'SMTP_SSL') as smtp, self.assertRaisesRegex(RuntimeError, '정책 원문 변경'):
+            bridge.consume(self.config, self.queue, self.job['job_id'])
+        smtp.assert_not_called()
+        self.assertEqual(self.queue.get('jobs/'+self.job['job_id']+'.json')[0]['receipts'], {})
+
+    def test_policy_change_between_recipients_does_not_reserve_next_recipient(self):
+        guard = bridge.DeliveryGuard(self.queue, self.job['job_id'])
+        self.assertTrue(guard.before('first@example.invalid'))
+        with patch.object(self.queue, 'policy_hash', return_value='0'*64), self.assertRaises(RuntimeError):
+            guard.before('second@example.invalid')
+        receipts = self.queue.get(guard.path)[0]['receipts']
+        self.assertEqual(len(receipts), 1)
 
     def test_body_extraction_ignores_page_controls_scripts_and_attributes(self):
         text = ('예시증권은 모바일 주문 화면에 실시간 잔고와 ETF 정보를 통합했다고 밝혔다. '
