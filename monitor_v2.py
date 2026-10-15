@@ -1390,8 +1390,39 @@ MAJOR_COMPETITORS = {
     "KB증권","NH투자증권","토스증권",
 }
 
+# Operational metadata stays private; never turn incomplete analysis into certainty.
+_OPERATIONAL_NOTES = []
+_OPERATIONAL_MARKERS = ("[본문 미수집]", "[유사기사 참고]", "[분석 실패]")
+
+
+def _withhold_reason(article):
+    analysis = article.get("analysis")
+    if not analysis:
+        return "분석 실패"
+    if article.get("_body_failed") or article.get("_body_from_similar"):
+        return "원문 확인 미완료"
+    def contains_marker(value):
+        if isinstance(value, str):
+            return any(marker in value for marker in _OPERATIONAL_MARKERS)
+        if isinstance(value, dict):
+            return any(contains_marker(v) for v in value.values())
+        if isinstance(value, list):
+            return any(contains_marker(v) for v in value)
+        return False
+    if contains_marker(analysis):
+        return "분석 운영 유의문구 포함"
+    return ""
+
+
+def _executive_articles(articles):
+    # Fail closed by withholding the affected card, not deleting its caveat.
+    return [article for article in articles if not _withhold_reason(article)]
+
+
 def _card_low(art: dict) -> str:
     """영향도 하 — 간략 리스트 아이템 (카드 없이)"""
+    if _withhold_reason(art):
+        return ""
     an      = art.get("analysis") or {}
     link    = art.get("link","#") or "#"
     company = art.get("_company","")
@@ -1446,23 +1477,8 @@ def _card(art: dict) -> str:
     company = art.get("_company", "")
     title   = art.get("title", "")
 
-    # ── 분석 실패 폴백
-    if not an:
-        safe_link  = link if link and link != "#" else ""
-        title_cell = (f'<a href="{safe_link}" style="color:#4a7abd;text-decoration:none;'
-                      f'font-family:Arial,sans-serif;">{title[:50]}</a>'
-                      if safe_link else f'<span style="font-family:Arial,sans-serif;">{title[:50]}</span>')
-        return (
-            '<tr><td style="height:10px;background:#f0f0f0;font-size:0;line-height:0;">&nbsp;</td></tr>'
-            f'<tr><td style="padding:0;">'
-            f'<table width="100%" cellpadding="0" cellspacing="0"'
-            f' style="background:#fafafa;border-top:2px solid #cccccc;border-right:1px solid #e0e0e0;">'
-            f'<tr><td style="padding:10px 16px;">'
-            f'<p style="margin:0 0 3px;font-size:10px;color:#aaa;font-family:Arial,sans-serif;letter-spacing:1px;">분석 실패</p>'
-            f'<p style="margin:0;font-size:13px;color:#666;font-family:Arial,sans-serif;">'
-            f'{company} &nbsp;|&nbsp; {title_cell}</p>'
-            f'</td></tr></table></td></tr>'
-        )
+    if _withhold_reason(art):
+        return ""
 
     lvl      = an.get("impact_level", "-")
     lc       = LVL_COLOR.get(lvl, "#555555")
@@ -1633,6 +1649,7 @@ def _card(art: dict) -> str:
 
 def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) -> str:
     from collections import Counter
+    analyzed = _executive_articles(analyzed)
     now_str = datetime.now(KST).strftime("%Y년 %m월 %d일 %H:%M KST")
     high  = [a for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="상"]
     mid   = [a for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="중"]
@@ -1667,6 +1684,8 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
                 }]
             )
             one_line = res.content[0].text.strip()
+            if any(marker in one_line for marker in _OPERATIONAL_MARKERS):
+                raise ValueError("헤더 요약에 운영 유의문구 포함")
             # 문장 중간 잘림 방지 — 마지막 완성 문장까지만 사용
             if len(one_line) > 55:
                 # 마침표·줄임표 기준 자르기
@@ -1682,7 +1701,7 @@ def build_email_html(analyzed: list[dict], raw_count: int, filtered_count: int) 
                 f'line-height:1.6;word-break:keep-all;">{one_line}</p>'
             )
         except Exception:
-            pass
+            _OPERATIONAL_NOTES.append("헤더 요약 생성 보류")
 
 
     # ① 영향도 하 리스트 카드 생성
@@ -1954,7 +1973,9 @@ def send_email(html: str, analyzed: list[dict], raw_count: int):
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
     subject = f"{TEST_PREFIX}[인사이트] {now_str} 기준"
     cc = RECIPIENTS_CC if RECIPIENTS_CC else None
-    _smtp_send(subject, html, RECIPIENTS_ALL, cc)
+    refused = _smtp_send(subject, html, RECIPIENTS_ALL, cc)
+    if refused:
+        _OPERATIONAL_NOTES.append("일부 수신자 SMTP 접수 실패: " + str(len(refused)) + "건")
     print(f"  ✅ 발송 완료 | {subject}")
 
 def send_email_no_result(subject: str, html: str):
@@ -1971,7 +1992,11 @@ def send_email_error(error_msg: str, trace: str):
     """런타임 오류 시 담당자에게 오류 내용 발송"""
     from html import escape as _esc
     now_str  = datetime.now(KST).strftime("%Y년 %m월 %d일 %H:%M")
-    receiver = _admin_receivers()
+    # A single bare mailbox only: never interpret a list or executive override.
+    if not re.fullmatch(r"[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+", GMAIL_USER):
+        print("  [WARN] 담당자 주소 미설정 또는 형식 오류; 알림 발송 보류")
+        return False
+    receiver = [GMAIL_USER]  # Existing documented self-test owner; never group/admin override.
     html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="font-family:Arial,sans-serif;padding:20px;">
   <h2 style="color:#c0392b;">🚨 경쟁사 영향봇 — 런타임 오류</h2>
@@ -1984,15 +2009,20 @@ def send_email_error(error_msg: str, trace: str):
               white-space:pre-wrap;word-break:break-all;font-size:12px;">{_esc(trace[-3000:])}</pre>
   <p style="color:#888;">GitHub Actions 워크플로우 로그에서 상세 확인 바랍니다.<br>담당자: 최진후 차장</p>
 </body></html>"""
+    global DELIVERY_GUARD
+    guard = DELIVERY_GUARD
     try:
+        DELIVERY_GUARD = None  # Owner alerts must not consume executive delivery receipts.
         refused = _smtp_send(f"[경쟁사봇 오류] {now_str}", html, receiver)
         if any(addr in refused for addr in receiver):
             return False
         print(f"  오류 메일 발송 → {receiver}")
         return True
     except Exception as e:
-        print(f"  [WARN] 오류 메일 발송 실패: {e}")
+        print(f"  [WARN] 오류 메일 발송 실패: {type(e).__name__}")
         return False
+    finally:
+        DELIVERY_GUARD = guard
 
 # ═══════════════════════════════════════════════
 # 필터링 로그 저장
@@ -2113,6 +2143,17 @@ def preflight() -> bool:
 # 메인
 # ═══════════════════════════════════════════════
 def main(provider=None):
+    _OPERATIONAL_NOTES.clear()
+    try:
+        return _run_main(provider)
+    finally:
+        if _OPERATIONAL_NOTES and not DRY_RUN:
+            # Best effort only; owner alert failure never resends an executive report.
+            send_email_error("임원 보고에서 보류한 분석이 있습니다.",
+                             "\n".join(dict.fromkeys(_OPERATIONAL_NOTES)))
+
+
+def _run_main(provider=None):
     print(f"\n{'='*55}")
     print(f"KIS eBiz 인사이트봇 v3 | {datetime.now(KST).strftime('%Y-%m-%d %H:%M KST')}")
     print(f"{'='*55}")
@@ -2238,6 +2279,10 @@ def main(provider=None):
     for i, art in enumerate(relevant):
         print(f"  [{i+1}/{len(relevant)}] {art['_company']} | {art['title'][:38]}...")
         result = analyze_article(art, external_analysis=provider.analysis_for(art)) if provider is not None else analyze_article(art)
+        reason = _withhold_reason(result)
+        if reason:
+            _OPERATIONAL_NOTES.append(reason + ": " + result.get("title", "")[:160])
+            continue
         an = result.get("analysis")
         if an:
             title_txt = result.get("title","")
@@ -2512,5 +2557,6 @@ if __name__ == "__main__":
         except Exception as _me:
             print(f"오류 메일 발송 실패: {_me}")
         raise
+
 
 
