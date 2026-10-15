@@ -105,6 +105,16 @@ class DeliveryRegression(unittest.TestCase):
             bot.main()
         mocks["save_seen"].assert_not_called()
 
+    def test_withheld_analysis_not_marked_as_sent(self):
+        mocks = self.main_fixture()
+        mocks["analyze_article"].return_value["_body_failed"] = True
+        send = self.sender()
+        bot.main()
+        self.assertEqual(mocks["save_seen"].call_args.kwargs["sent_urls"], set())
+        alerts = [c for c in send.call_args_list if "오류" in c.args[0]]
+        self.assertEqual([c.args[2] for c in alerts], ["owner@example.invalid"])
+        self.assertIn("원문 확인 미완료", alerts[0].args[1])
+
     def test_group_delivery_retains_partial_failure_behavior(self):
         self.sender({"group@example.invalid"})
         refused = bot._smtp_send("subject", "html", ["group@example.invalid"])
@@ -117,6 +127,65 @@ class DeliveryRegression(unittest.TestCase):
         self.assertEqual([call.args[2] for call in send.call_args_list],
                          ["owner@example.invalid"])
 
+
+
+
+class OwnerAlertRegression(unittest.TestCase):
+    def article(self):
+        return {"title": "키움증권 서비스 오류 개선", "_company": "키움증권",
+                "analysis": {"impact_level": "중", "impact_score": 6.0,
+                             "summary": "서비스 장애 대응 기능 개선", "action_point": "투자 위험 유의사항 확인"}}
+
+    def test_verified_findings_and_business_cautions_remain(self):
+        article = self.article()
+        with patch.object(bot, "INSIGHT_ENGINE", "subscription"):
+            html = bot.build_email_html([article], 1, 1)
+        self.assertIn("서비스 장애 대응 기능 개선", html)
+        self.assertIn("투자 위험 유의사항 확인", html)
+
+    def test_incomplete_cards_withheld_without_mutation(self):
+        for change in ({"_body_failed": True}, {"_body_from_similar": True}, {"analysis": None}):
+            article = self.article(); article.update(change)
+            before = copy.deepcopy(article)
+            with patch.object(bot, "INSIGHT_ENGINE", "subscription"):
+                html = bot.build_email_html([article], 1, 1)
+            self.assertNotIn(article["title"], html)
+            self.assertEqual(article, before)
+            self.assertEqual(bot._card(article), "")
+            self.assertEqual(bot._card_low(article), "")
+        article = self.article()
+        article["analysis"]["summary"] += " [본문 미수집]"
+        self.assertEqual(bot._executive_articles([article]), [])
+
+    def test_error_only_owner_and_guard_restored(self):
+        guard = object()
+        with patch.object(bot, "GMAIL_USER", "owner@example.invalid"), \
+             patch.object(bot, "NO_RESULT_RECEIVER", "executives@example.invalid"), \
+             patch.object(bot, "DELIVERY_GUARD", guard), \
+             patch.object(bot, "_smtp_send") as send:
+            def check(*args):
+                self.assertIsNone(bot.DELIVERY_GUARD)
+                self.assertEqual(args[2], ["owner@example.invalid"])
+                return {}
+            send.side_effect = check
+            self.assertTrue(bot.send_email_error("failure", "details"))
+            self.assertIs(bot.DELIVERY_GUARD, guard)
+
+    def test_invalid_owner_fails_closed(self):
+        for owner in ("", "a@example.invalid,b@example.invalid", "bad\nheader@example.invalid"):
+            with patch.object(bot, "GMAIL_USER", owner), patch.object(bot, "_smtp_send") as send:
+                self.assertFalse(bot.send_email_error("failure", "details"))
+                send.assert_not_called()
+
+    def test_run_alerts_are_separate_and_dry_run_silent(self):
+        def run(provider): bot._OPERATIONAL_NOTES.append("원문 확인 미완료")
+        with patch.object(bot, "_run_main", side_effect=run), \
+             patch.object(bot, "send_email_error", return_value=True) as alert, \
+             patch.object(bot, "DRY_RUN", False):
+            bot.main()
+            alert.assert_called_once()
+            with patch.object(bot, "DRY_RUN", True): bot.main()
+            alert.assert_called_once()
 
 if __name__ == "__main__":
     unittest.main()
