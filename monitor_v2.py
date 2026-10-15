@@ -1391,6 +1391,7 @@ MAJOR_COMPETITORS = {
 }
 
 # Operational metadata stays private; never turn incomplete analysis into certainty.
+OPERATIONAL_OWNER = "111715@koreainvestment.com"
 _OPERATIONAL_NOTES = []
 _OPERATIONAL_MARKERS = ("[본문 미수집]", "[유사기사 참고]", "[분석 실패]")
 
@@ -1993,10 +1994,10 @@ def send_email_error(error_msg: str, trace: str):
     from html import escape as _esc
     now_str  = datetime.now(KST).strftime("%Y년 %m월 %d일 %H:%M")
     # A single bare mailbox only: never interpret a list or executive override.
-    if not re.fullmatch(r"[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+", GMAIL_USER):
+    if not re.fullmatch(r"[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+", OPERATIONAL_OWNER):
         print("  [WARN] 담당자 주소 미설정 또는 형식 오류; 알림 발송 보류")
         return False
-    receiver = [GMAIL_USER]  # Existing documented self-test owner; never group/admin override.
+    receiver = [OPERATIONAL_OWNER]  # User-approved fixed owner; never executive/admin overrides.
     html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="font-family:Arial,sans-serif;padding:20px;">
   <h2 style="color:#c0392b;">🚨 경쟁사 영향봇 — 런타임 오류</h2>
@@ -2013,7 +2014,7 @@ def send_email_error(error_msg: str, trace: str):
     guard = DELIVERY_GUARD
     try:
         DELIVERY_GUARD = None  # Owner alerts must not consume executive delivery receipts.
-        refused = _smtp_send(f"[경쟁사봇 오류] {now_str}", html, receiver)
+        refused = _send_one(f"[경쟁사봇 오류] {now_str}", html, OPERATIONAL_OWNER)
         if any(addr in refused for addr in receiver):
             return False
         print(f"  오류 메일 발송 → {receiver}")
@@ -2479,6 +2480,12 @@ def _run_main(provider=None):
         if link: seen_final_links.add(link)
         if len(title) > 15: seen_final_titles.append(title)
         analyzed.append(a)
+
+    # Incomplete coverage is not a clean no-result report. Keep the run owner-only
+    # and leave dedup state untouched so withheld articles can be reconsidered.
+    if not analyzed and _OPERATIONAL_NOTES:
+        print("  분석 보류 — 담당자 알림만 발송; 처리 이력 유지")
+        return
 
     # ── 6) 저장 및 발송
     print(f"\n[6/6] 메일 발송 중...")
