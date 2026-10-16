@@ -1391,7 +1391,7 @@ MAJOR_COMPETITORS = {
 }
 
 # Operational metadata stays private; never turn incomplete analysis into certainty.
-OPERATIONAL_OWNER = "111715@koreainvestment.com"
+OPERATIONAL_OWNER = "myboy3743@gmail.com"
 _OPERATIONAL_NOTES = []
 _OPERATIONAL_MARKERS = ("[본문 미수집]", "[유사기사 참고]", "[분석 실패]")
 
