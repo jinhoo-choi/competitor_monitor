@@ -185,7 +185,7 @@ class OwnerAlertRegression(unittest.TestCase):
              patch.object(bot, "_send_one") as send:
             def check(*args):
                 self.assertIsNone(bot.DELIVERY_GUARD)
-                self.assertEqual(args[2], "111715@koreainvestment.com")
+                self.assertEqual(args[2], "myboy3743@gmail.com")
                 return {}
             send.side_effect = check
             self.assertTrue(bot.send_email_error("failure", "details"))
