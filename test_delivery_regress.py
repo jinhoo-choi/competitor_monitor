@@ -112,9 +112,12 @@ class DeliveryRegression(unittest.TestCase):
         bot.main()
         mocks["save_seen"].assert_not_called()
         self.assertEqual(len(send.call_args_list), 1)
-        alerts = [c for c in send.call_args_list if "오류" in c.args[0]]
+        alerts = [c for c in send.call_args_list if "검토 필요" in c.args[0]]
         self.assertEqual([c.args[2] for c in alerts], [bot.OPERATIONAL_OWNER])
         self.assertIn("원문 확인 미완료", alerts[0].args[1])
+        self.assertNotIn("런타임 오류", alerts[0].args[1])
+        self.assertEqual(mocks["save_filter_log"].call_args.args[4],
+                         {mocks["analyze_article"].return_value["title"]: "원문 확인 미완료"})
 
     def test_mixed_run_sends_valid_findings_and_owner_alert(self):
         mocks = self.main_fixture()
@@ -131,9 +134,10 @@ class DeliveryRegression(unittest.TestCase):
         mocks["save_seen"].assert_called_once()
         self.assertEqual(mocks["save_seen"].call_args.kwargs["sent_urls"], {valid["link"]})
         self.assertEqual([a["link"] for a in mocks["build_email_html"].call_args.args[0]], [valid["link"]])
-        alerts = [c for c in send.call_args_list if "오류" in c.args[0]]
+        alerts = [c for c in send.call_args_list if "검토 필요" in c.args[0]]
         self.assertEqual([c.args[2] for c in alerts], [bot.OPERATIONAL_OWNER])
-        self.assertTrue(any("오류" not in c.args[0] for c in send.call_args_list))
+        self.assertTrue(any("[인사이트]" in c.args[0] for c in send.call_args_list))
+        self.assertEqual(mocks["save_filter_log"].call_args.args[4], {"다른 기사": "원문 확인 미완료"})
 
     def test_group_delivery_retains_partial_failure_behavior(self):
         self.sender({"group@example.invalid"})
@@ -197,6 +201,36 @@ class OwnerAlertRegression(unittest.TestCase):
                 self.assertFalse(bot.send_email_error("failure", "details"))
                 send.assert_not_called()
 
+    def test_notice_and_error_labels_keep_owner_and_receipts_isolated(self):
+        guard = object()
+        for operational in (False, True):
+            with self.subTest(operational=operational), patch.object(bot, "DELIVERY_GUARD", guard), \
+                 patch.object(bot, "TEST_PREFIX", "[TEST] "), patch.object(bot, "_send_one", return_value={}) as send:
+                self.assertTrue(bot.send_email_error("검증 <항목>", "본문 & 확인", operational=operational))
+                subject, html, receiver = send.call_args.args
+                self.assertEqual(receiver, bot.OPERATIONAL_OWNER)
+                self.assertTrue(subject.startswith("[TEST] "))
+                self.assertIn("검토 필요" if operational else "오류", subject)
+                self.assertIn("확인 항목" if operational else "스택 트레이스", html)
+                self.assertEqual("런타임 오류" in html, not operational)
+                self.assertIn("검증 &lt;항목&gt;", html)
+                self.assertIs(bot.DELIVERY_GUARD, guard)
+
+    def test_private_log_distinguishes_withheld_from_duplicate(self):
+        valid = {"title": "정상 기사", "analysis": {"impact_level": "중"}}
+        withheld = {"title": "보류 기사"}
+        duplicate = {"title": "중복 기사"}
+        from unittest.mock import MagicMock
+        guard = MagicMock()
+        with patch.object(bot, "DELIVERY_GUARD", guard):
+            bot.save_filter_log([valid, withheld, duplicate], [], [valid, withheld, duplicate],
+                                [valid], {"보류 기사": "원문 확인 미완료"})
+        entries = {e["title"]: e for e in guard.save_log.call_args.args[0]["entries"]}
+        self.assertEqual(entries["정상 기사"]["decision"], "SENT")
+        self.assertEqual(entries["보류 기사"]["decision"], "WITHHELD")
+        self.assertEqual(entries["보류 기사"]["reason"], "원문 확인 미완료")
+        self.assertEqual(entries["중복 기사"]["decision"], "DEDUP_EXCLUDED")
+
     def test_run_alerts_are_separate_and_dry_run_silent(self):
         def run(provider): bot._OPERATIONAL_NOTES.append("원문 확인 미완료")
         with patch.object(bot, "_run_main", side_effect=run), \
@@ -204,6 +238,7 @@ class OwnerAlertRegression(unittest.TestCase):
              patch.object(bot, "DRY_RUN", False):
             bot.main()
             alert.assert_called_once()
+            self.assertEqual(alert.call_args.kwargs, {"operational": True})
             with patch.object(bot, "DRY_RUN", True): bot.main()
             alert.assert_called_once()
 

@@ -295,10 +295,11 @@ def import_bot():
     return monitor_v2
 
 
-def notify_error(error, context=""):
+def notify_error(error, context="", *, operational=False):
     """기존 담당자 경로에 알림을 시도한다. 운영 영수증과 공개 로그는 격리한다."""
+    label = "검토 필요" if operational else "오류"
     if not os.environ.get("GMAIL_USER") or not os.environ.get("GMAIL_APP_PASSWORD"):
-        print("담당자 오류 알림 생략 — SMTP 설정 없음; Actions 실패 상태 확인")
+        print(f"담당자 {label} 알림 생략 — SMTP 설정 없음; Actions·비공개 회차 상태 확인")
         return
     try:
         bot = import_bot()
@@ -311,13 +312,14 @@ def notify_error(error, context=""):
             bot.DELIVERY_GUARD = None
             # 기존 오류 메일 함수의 주소·SMTP 오류 출력도 공개 로그에 남기지 않는다.
             with redirect_stdout(StringIO()):
-                accepted = bot.send_email_error("인사이트 구독 경로 보류: " + str(error), details)
+                kwargs = {"operational": True} if operational else {}
+                accepted = bot.send_email_error("인사이트 구독 경로 보류: " + str(error), details, **kwargs)
         finally:
             bot.DELIVERY_GUARD = guard
-        print("담당자 오류 알림 SMTP 접수; 운영 영수증 변경0/API0" if accepted
-              else "담당자 오류 알림 접수 미확인; Actions 실패 상태 확인")
+        print(f"담당자 {label} 알림 SMTP 접수; 운영 영수증 변경0/API0" if accepted
+              else f"담당자 {label} 알림 접수 미확인; Actions·비공개 회차 상태 확인")
     except Exception as notification_error:
-        print("담당자 오류 알림 실패:", type(notification_error).__name__)
+        print(f"담당자 {label} 알림 실패:", type(notification_error).__name__)
 
 
 def collect(config, queue, mode="production"):
@@ -343,7 +345,8 @@ def collect(config, queue, mode="production"):
             print("미발송 구독 회차 자동 만료:", old_id)
             notify_error(RuntimeError("미발송 구독 회차 만료: " + old_id),
                          "입력과 처리 이력은 보존했습니다. 다음 회차는 17시간 범위만 수집하므로 "
-                         "만료 입력 전체의 재수집은 보장되지 않습니다. 비공개 회차 기록을 확인하세요.")
+                         "만료 입력 전체의 재수집은 보장되지 않습니다. 비공개 회차 기록을 확인하세요.",
+                         operational=True)
             continue
         if old and old.get("status") in {"pending", "sending", "uncertain", "delivery_complete"}:
             raise RuntimeError("미종결 구독 회차 존재 — 신규 회차·롤백 중복 방지")
