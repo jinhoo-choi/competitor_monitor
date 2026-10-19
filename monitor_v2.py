@@ -1989,8 +1989,8 @@ def send_email_no_result(subject: str, html: str):
         raise RuntimeError(f"담당자 메일 서버 접수 실패: {failed_admin}")
     print(f"  결과없음 메일 → {receiver}")
 
-def send_email_error(error_msg: str, trace: str):
-    """런타임 오류 시 담당자에게 오류 내용 발송"""
+def send_email_error(error_msg: str, trace: str, *, operational=False):
+    """장애와 검토 필요 알림을 구분해 기존 담당자 경로로 발송한다."""
     from html import escape as _esc
     now_str  = datetime.now(KST).strftime("%Y년 %m월 %d일 %H:%M")
     # A single bare mailbox only: never interpret a list or executive override.
@@ -1998,14 +1998,19 @@ def send_email_error(error_msg: str, trace: str):
         print("  [WARN] 담당자 주소 미설정 또는 형식 오류; 알림 발송 보류")
         return False
     receiver = [OPERATIONAL_OWNER]  # User-approved fixed owner; never executive/admin overrides.
+    label = "검토 필요" if operational else "런타임 오류"
+    subject_label = "검토 필요" if operational else "오류"
+    detail_label = "검토 내용" if operational else "오류 내용"
+    trace_label = "확인 항목" if operational else "스택 트레이스"
+    color = "#b45309" if operational else "#c0392b"
     html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
 <body style="font-family:Arial,sans-serif;padding:20px;">
-  <h2 style="color:#c0392b;">🚨 경쟁사 영향봇 — 런타임 오류</h2>
+  <h2 style="color:{color};">경쟁사 영향봇 — {label}</h2>
   <p style="color:#666;">{now_str} KST</p>
-  <h3>오류 내용</h3>
-  <pre style="background:#fef2f2;border-left:4px solid #c0392b;padding:12px;
+  <h3>{detail_label}</h3>
+  <pre style="background:#fef2f2;border-left:4px solid {color};padding:12px;
               white-space:pre-wrap;word-break:break-all;">{_esc(str(error_msg))}</pre>
-  <h3>스택 트레이스</h3>
+  <h3>{trace_label}</h3>
   <pre style="background:#f8f9fa;border:1px solid #dee2e6;padding:12px;
               white-space:pre-wrap;word-break:break-all;font-size:12px;">{_esc(trace[-3000:])}</pre>
   <p style="color:#888;">GitHub Actions 워크플로우 로그에서 상세 확인 바랍니다.<br>담당자: 최진후 차장</p>
@@ -2014,10 +2019,10 @@ def send_email_error(error_msg: str, trace: str):
     guard = DELIVERY_GUARD
     try:
         DELIVERY_GUARD = None  # Owner alerts must not consume executive delivery receipts.
-        refused = _send_one(f"[경쟁사봇 오류] {now_str}", html, OPERATIONAL_OWNER)
+        refused = _send_one(f"{TEST_PREFIX}[경쟁사봇 {subject_label}] {now_str}", html, OPERATIONAL_OWNER)
         if any(addr in refused for addr in receiver):
             return False
-        print(f"  오류 메일 발송 → {receiver}")
+        print(f"  {subject_label} 메일 발송 → {receiver}")
         return True
     except Exception as e:
         print(f"  [WARN] 오류 메일 발송 실패: {type(e).__name__}")
@@ -2028,7 +2033,8 @@ def send_email_error(error_msg: str, trace: str):
 # ═══════════════════════════════════════════════
 # 필터링 로그 저장
 # ═══════════════════════════════════════════════
-def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: list, final: list):
+def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: list, final: list,
+                    withheld_reasons=None):
     """어떤 기사가 어디서 걸렸는지 JSON 로그 저장 (최근 7개 보존)
     articles_passed: 하드필터 통과본
     hard_excluded: 하드필터 제외본
@@ -2058,6 +2064,8 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
         t = a.get("title","")
         if t in hard_excl_map:
             decision, reason = "HARD_EXCLUDED", hard_excl_map[t]
+        elif t in (withheld_reasons or {}):
+            decision, reason = "WITHHELD", withheld_reasons[t]
         elif t not in ai_filtered_set:
             decision, reason = "AI_EXCLUDED", "AI 필터링 제외"
         elif t not in sent_titles:
@@ -2151,7 +2159,7 @@ def main(provider=None):
         if _OPERATIONAL_NOTES and not DRY_RUN:
             # Best effort only; owner alert failure never resends an executive report.
             send_email_error("임원 보고에서 보류한 분석이 있습니다.",
-                             "\n".join(dict.fromkeys(_OPERATIONAL_NOTES)))
+                             "\n".join(dict.fromkeys(_OPERATIONAL_NOTES)), operational=True)
 
 
 def _run_main(provider=None):
@@ -2275,6 +2283,7 @@ def _run_main(provider=None):
         relevant = relevant[:MAX_ANALYZE_ARTICLES]
     ai_filtered_list = list(relevant)
     analyzed, new_title_norms, new_desc_norms = [], [], []
+    withheld_reasons = {}
     runtime_events: set = set()  # 런타임 event_key 세트 — 파일 없어도 당일 중복 차단
 
     for i, art in enumerate(relevant):
@@ -2283,6 +2292,7 @@ def _run_main(provider=None):
         reason = _withhold_reason(result)
         if reason:
             _OPERATIONAL_NOTES.append(reason + ": " + result.get("title", "")[:160])
+            withheld_reasons[art.get("title", "")] = reason
             continue
         an = result.get("analysis")
         if an:
@@ -2485,6 +2495,7 @@ def _run_main(provider=None):
     # and leave dedup state untouched so withheld articles can be reconsidered.
     if not analyzed and _OPERATIONAL_NOTES:
         print("  분석 보류 — 담당자 알림만 발송; 처리 이력 유지")
+        save_filter_log(articles, hard_excluded, ai_filtered_list, [], withheld_reasons)
         return
 
     # ── 6) 저장 및 발송
@@ -2538,7 +2549,7 @@ def _run_main(provider=None):
     except Exception:
         print("  [WARN] seen_articles.json 저장 확인 실패")
 
-    save_filter_log(articles, hard_excluded, ai_filtered_list, analyzed)
+    save_filter_log(articles, hard_excluded, ai_filtered_list, analyzed, withheld_reasons)
 
     high = sum(1 for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="상")
     mid  = sum(1 for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="중")

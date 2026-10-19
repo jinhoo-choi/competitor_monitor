@@ -58,6 +58,7 @@ class StallRegression(unittest.TestCase):
         collector.save_seen.assert_not_called()
         notify.assert_called_once()
         self.assertIn('보장되지', notify.call_args.args[1])
+        self.assertEqual(notify.call_args.kwargs, {'operational': True})
         self.api.assert_not_called()
         self.smtp.assert_not_called()
 
@@ -168,6 +169,18 @@ class StallRegression(unittest.TestCase):
         with patch.dict(os.environ, {'GMAIL_APP_PASSWORD': ''}), patch.object(bridge, 'import_bot') as imported:
             bridge.notify_error(RuntimeError('offline'))
             imported.assert_not_called()
+
+    def test_expiration_notice_uses_review_label_without_receipts(self):
+        guard = MagicMock()
+        with patch.dict(os.environ, {'GMAIL_USER': 'owner@example.invalid', 'GMAIL_APP_PASSWORD': 'offline'}), \
+             patch.object(bridge, 'import_bot', return_value=bot), patch.object(bot, 'DELIVERY_GUARD', guard), \
+             patch.object(bot, '_send_one', return_value={}) as sender:
+            bridge.notify_error(RuntimeError('미발송 구독 회차 만료'), '입력 보존', operational=True)
+        self.assertIn('검토 필요', sender.call_args.args[0])
+        self.assertNotIn('런타임 오류', sender.call_args.args[1])
+        self.assertEqual(sender.call_args.args[2], bot.OPERATIONAL_OWNER)
+        guard.before.assert_not_called()
+        guard.after.assert_not_called()
 
     def test_notice_failure_keeps_original_cli_failure(self):
         with patch.dict(os.environ, {'GMAIL_USER': 'owner@example.invalid', 'GMAIL_APP_PASSWORD': 'offline'}), patch.object(bridge, 'main', side_effect=RuntimeError('original failure')), patch.object(bridge, 'import_bot', return_value=bot), patch.object(bot, 'send_email_error', side_effect=OSError('notification failed')):
