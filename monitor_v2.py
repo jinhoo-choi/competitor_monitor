@@ -874,6 +874,7 @@ def fetch_naver_news(query: str, display: int = 5) -> list[dict]:
 
 # 일 1회 크론잡 기준 — 25시간으로 약간 여유
 NEWS_CUTOFF_HOURS = 17  # 18시→익일10시 최대16시간 + 지연 여유1시간
+ARTICLE_BODY_LIMIT = 4000  # 귀속·장애 범위가 나오는 후반 문단도 검증에 보존
 
 def _is_within_cutoff(pub_date_str: str) -> bool:
     """pubDate가 NEWS_CUTOFF_HOURS 이내인지 확인, 파싱 실패 시 통과"""
@@ -889,7 +890,7 @@ def _is_within_cutoff(pub_date_str: str) -> bool:
 
 def fetch_article_body(url: str) -> str:
     """기사 본문 크롤링 — WAF 대응 헤더, 2MB 초과 스킵, 표준라이브러리만 사용"""
-    from html import unescape
+    from html.parser import HTMLParser
     try:
         req = urllib.request.Request(url, headers={
             "User-Agent":      random.choice(USER_AGENTS),
@@ -904,31 +905,63 @@ def fetch_article_body(url: str) -> str:
             html_bytes = res.read()
 
         html_text = html_bytes.decode("utf-8", errors="replace")
-        # 스크립트 안의 HTML 템플릿·스타일을 실제 기사 본문으로 잡지 않는다.
-        html_text = re.sub(r"<(script|style)\b[^>]*>.*?</\1\s*>", " ",
-                           html_text, flags=re.DOTALL | re.IGNORECASE)
+        class BodyParser(HTMLParser):
+            # 중첩 div/사진의 첫 닫는 태그에서 기사를 끊지 않는다.
+            voids = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+                     "link", "meta", "param", "source", "track", "wbr"}
+            ignored = {"script", "style", "nav", "aside", "header", "footer", "figure"}
 
-        # 핵심 영역 ID/class 패턴으로 추출
-        for pattern in [
-            r'id=["\'](?:dic_area|articleBodyContents|articeBody|article-body)["\'][^>]*>(.*?)</(?:div|article)',
-            r'class=["\'][^"\']*(?:article-body|news-body|view-content|newsct_article)[^"\']*["\'][^>]*>(.*?)</(?:div|article)',
-        ]:
-            for m in re.finditer(pattern, html_text, re.DOTALL | re.IGNORECASE):
-                chunk = unescape(re.sub(r"<[^>]+>", " ", m.group(1)))
-                chunk = re.sub(r"\s+", " ", chunk).strip()
-                if len(chunk) > 50:
-                    return chunk[:600]
+            def __init__(self):
+                super().__init__(convert_charrefs=True)
+                self.stack, self.regions = [], []
 
-        # 전체 폴백: <p> 태그 텍스트 추출
-        chunks = re.findall(r"<p[^>]*>(.*?)</p>", html_text, re.DOTALL | re.IGNORECASE)
-        texts = []
-        for c in chunks:
-            t = unescape(re.sub(r"<[^>]+>", " ", c)).strip()
-            t = re.sub(r"\s+", " ", t)
-            if len(t) > 20:
-                texts.append(t)
-        result = " ".join(texts)
-        return result[:600] if result else ""
+            def handle_starttag(self, tag, attrs):
+                attrs = dict(attrs)
+                ident, classes = attrs.get("id", ""), attrs.get("class", "").split()
+                skip = (bool(self.stack and self.stack[-1][1]) or tag in self.ignored
+                        or bool(set(classes) & {"view-image", "view-tag", "googlead", "relation"}))
+                rank = None
+                if (attrs.get("itemprop") == "articleBody" or ident in
+                        {"dic_area", "articleBodyContents", "articeBody", "article-body",
+                         "article-view-content-div", "view-text"}):
+                    rank = 0
+                elif set(classes) & {"article-body", "news-body", "view-content",
+                                     "newsct_article", "article-view-content"}:
+                    rank = 1
+                elif tag == "article":
+                    rank = 2
+                region = None
+                if rank is not None and not skip:
+                    region = [rank, []]
+                    self.regions.append(region)
+                if tag not in self.voids:
+                    self.stack.append((tag, skip, region))
+
+            def handle_startendtag(self, tag, attrs):
+                self.handle_starttag(tag, attrs)
+                if tag not in self.voids:
+                    self.handle_endtag(tag)
+
+            def handle_endtag(self, tag):
+                for i in range(len(self.stack) - 1, -1, -1):
+                    if self.stack[i][0] == tag:
+                        del self.stack[i:]
+                        break
+
+            def handle_data(self, data):
+                if self.stack and not self.stack[-1][1]:
+                    for _, _, region in self.stack:
+                        if region is not None:
+                            region[1].append(data)
+
+        parser = BodyParser()
+        parser.feed(html_text)
+        candidates = [(rank, re.sub(r"\s+", " ", " ".join(parts)).strip())
+                      for rank, parts in parser.regions]
+        candidates = [(rank, text) for rank, text in candidates if len(text) > 50]
+        if not candidates:
+            return ""  # 페이지 전체 메뉴·관련기사를 원문으로 대체하지 않는다.
+        return min(candidates, key=lambda item: (item[0], -len(item[1])))[1][:ARTICLE_BODY_LIMIT]
     except Exception:
         return ""
 
@@ -1192,8 +1225,7 @@ def analyze_article(art: dict, external_analysis: dict = None) -> dict:
         body_note = " (※ 본문 미수집. description만 사용. summary는 30자 이내로 작성 후 끝에 [본문 미수집] 표기.)"
     else:
         body_note = ""
-    # 본문이 충분히 있으면 800자, 아니면 전체 사용
-    body_input   = body_text[:800] if len(body_text) > 200 else body_text
+    body_input = body_text[:ARTICLE_BODY_LIMIT]
 
     prompt = f"""{KIS_CONTEXT}
 {IMPACT_CRITERIA}
@@ -1318,7 +1350,8 @@ JSON only, 다른 텍스트 없이:
                     analysis["company_name"] = _rescued
                 else:
                     print(f"    [비증권 주체 드롭] {_why} | {_title[:45]}")
-                    return {**art, "analysis": None}
+                    return {**art, "analysis": None,
+                            "_analysis_failure_reason": "회사 귀속 확인 실패: " + _why}
 
         # ── event_key 정규화 — 날짜 부분을 코드에서 강제 현재 월로 교정
         # AI가 기사 내 날짜(출시 예정일 등)를 보고 과거/미래 날짜를 넣는 문제 방지
@@ -1399,7 +1432,7 @@ _OPERATIONAL_MARKERS = ("[본문 미수집]", "[유사기사 참고]", "[분석 
 def _withhold_reason(article):
     analysis = article.get("analysis")
     if not analysis:
-        return "분석 실패"
+        return article.get("_analysis_failure_reason") or "분석 실패"
     if article.get("_body_failed") or article.get("_body_from_similar"):
         return "원문 확인 미완료"
     def contains_marker(value):
@@ -1412,6 +1445,19 @@ def _withhold_reason(article):
         return False
     if contains_marker(analysis):
         return "분석 운영 유의문구 포함"
+    return ""
+
+
+def _industry_disruption_reason(article):
+    """업계 공통 장애는 담당자 검토로 보존한다. 임원 선별·회사 귀속은 바꾸지 않는다."""
+    title, body = article.get("title", ""), article.get("_body", "")
+    if (not body or article.get("_body_failed") or article.get("_body_from_similar")
+            or find_securities_in_text(title) or not re.search(r"증권사|증권업계|증권가", title)):
+        return ""
+    collective = re.search(r"(?:주요|상당수|대부분|여러|다수)\s*증권사|증권사들", body)
+    disruption = re.search(r"(?:시세|호가|주문|체결|매매|거래|MTS|HTS).{0,40}(?:중단|지연|차질|먹통|장애)", body)
+    if collective and disruption:
+        return "업계 공통 거래 장애: 영향 회사·시세/주문 범위·복구 여부 별도 확인"
     return ""
 
 
@@ -2078,6 +2124,8 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
             "company":  a.get("_company",""),
             "decision": decision,
             "reason":   reason,
+            **({"review_scope": INDUSTRY_TAG, "review_reason": a["_industry_review_reason"]}
+               if a.get("_industry_review_reason") else {}),
         })
 
     excl_stats = Counter(e["reason"] for e in entries if e["decision"]=="HARD_EXCLUDED")
@@ -2206,11 +2254,22 @@ def _run_main(provider=None):
         return
 
     # ── 3) AI 1차 필터링
+    for article in articles:
+        review_reason = _industry_disruption_reason(article)
+        if review_reason:
+            article["_industry_review_reason"] = review_reason
+            _OPERATIONAL_NOTES.append(review_reason + ": " + article.get("title", "")[:160])
     print("\n[3/6] AI 1차 필터링 중...")
     relevant = provider.relevant(articles) if provider is not None else filter_relevant_articles(articles)
     print(f"  → AI 선별: {len(relevant)}건 (전체 {len(raw)}건 중)")
 
     if not relevant:
+        if _OPERATIONAL_NOTES:
+            save_filter_log(articles, hard_excluded, [], [])
+            if DELIVERY_GUARD is not None:
+                DELIVERY_GUARD.change(lambda job: job.update(no_delivery_required=True,
+                                                            review_required=True))
+            return  # 정책상 미선별 회차는 담당자 검토만 남기고 임원 빈 메일은 보내지 않는다.
         print("  한투 영향 기사 없음.")
         subj = f"{TEST_PREFIX}[인사이트] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, build_empty_html())

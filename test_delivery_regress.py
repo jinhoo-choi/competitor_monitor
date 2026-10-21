@@ -144,6 +144,28 @@ class DeliveryRegression(unittest.TestCase):
         refused = bot._smtp_send("subject", "html", ["group@example.invalid"])
         self.assertIn("group@example.invalid", refused)
 
+    def test_industry_disruption_excluded_by_ai_goes_only_to_owner_review(self):
+        mocks = self.main_fixture('irrelevant')
+        article = mocks['collect_articles'].return_value[0]
+        article.update(title='국내 증권사 주간거래 시세 장애',
+                       _body='국내 주요 증권사의 미국 주식 실시간 시세 제공이 중단됐다.',
+                       _body_failed=False)
+        send = self.sender()
+        from unittest.mock import MagicMock
+        guard = MagicMock()
+        self.stack.enter_context(patch.object(bot, 'DELIVERY_GUARD', guard))
+        bot.main()
+        mocks['save_seen'].assert_not_called()
+        mocks['save_filter_log'].assert_called_once()
+        self.assertEqual(len(send.call_args_list), 1)
+        self.assertEqual(send.call_args.args[2], bot.OPERATIONAL_OWNER)
+        self.assertIn('검토 필요', send.call_args.args[0])
+        self.assertIn('업계 공통 거래 장애', send.call_args.args[1])
+        self.assertNotIn('런타임 오류', send.call_args.args[1])
+        state = {'receipts': {}}
+        guard.change.call_args.args[0](state)
+        self.assertEqual(state, {'receipts': {}, 'no_delivery_required': True, 'review_required': True})
+
     def test_test_mode_still_sends_only_owner(self):
         self.stack.enter_context(patch.object(bot, "TEST_MODE", True))
         send = self.sender()
@@ -166,6 +188,29 @@ class OwnerAlertRegression(unittest.TestCase):
             html = bot.build_email_html([article], 1, 1)
         self.assertIn("서비스 장애 대응 기능 개선", html)
         self.assertIn("투자 위험 유의사항 확인", html)
+
+    def test_industry_review_does_not_infer_affected_company_or_accept_speculation(self):
+        common = {'title': '국내 증권사 미국 주간거래 시세 먹통', '_company': '토스증권',
+                  '_body': '국내 주요 증권사의 주간거래 시세 조회가 중단됐다. 다른 ATS 주문은 정상이다.'}
+        self.assertTrue(bot._industry_disruption_reason(common))
+        self.assertEqual(common['_company'], '토스증권')
+        for change in ({'_body_failed': True}, {'_body_from_similar': True},
+                       {'title': '토스증권, 시세 공급망 다변화로 정상 서비스'},
+                       {'_body': '국내 주요 증권사는 미국 주식 시장 전망을 제시했다.'},
+                       {'_body': '토스증권 시세 조회가 중단됐다.'}):
+            with self.subTest(change=change):
+                self.assertFalse(bot._industry_disruption_reason({**common, **change}))
+
+    def test_industry_review_is_logged_separately_from_ai_exclusion(self):
+        from unittest.mock import MagicMock
+        article = {'title': '국내 증권사 시세 장애', '_industry_review_reason': '업계 공통 거래 장애'}
+        guard = MagicMock()
+        with patch.object(bot, 'DELIVERY_GUARD', guard):
+            bot.save_filter_log([article], [], [], [])
+        entry = guard.save_log.call_args.args[0]['entries'][0]
+        self.assertEqual(entry['decision'], 'AI_EXCLUDED')
+        self.assertEqual(entry['review_scope'], bot.INDUSTRY_TAG)
+        self.assertEqual(entry['review_reason'], '업계 공통 거래 장애')
 
     def test_incomplete_cards_withheld_without_mutation(self):
         for change in ({"_body_failed": True}, {"_body_from_similar": True}, {"analysis": None}):
