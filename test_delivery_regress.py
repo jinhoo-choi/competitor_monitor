@@ -242,5 +242,80 @@ class OwnerAlertRegression(unittest.TestCase):
             with patch.object(bot, "DRY_RUN", True): bot.main()
             alert.assert_called_once()
 
+
+class OwnCompanyExclusionRegression(unittest.TestCase):
+    """자사 별칭 경계 회귀. 네트워크·메일·유료 API·운영 이력 변경 없음."""
+
+    def test_independent_aliases_remain_excluded(self):
+        for text in (
+            '한국투자증권', '한국투자증권은 신규 서비스를 출시했다',
+            '한투', '[한투] 이벤트', '한투, 연금 상담 개시', '한투증권',
+            '한투는', '한투가', '한투의', '한투를', '한투와', '한투도',
+            '한투에서 신규 서비스를 출시했다', '한투에는', '한투로 이동',
+            '한투증권은', '한투증권이', '한투증권과', '한투에서도',
+            '한투만의', '한투보다', '한투와의', '한투부터', '한투까지는',
+            '신한투자증권과 한투의 경쟁', '뱅키스', 'eFriend Plus',
+        ):
+            with self.subTest(text=text):
+                self.assertIsNotNone(bot.KIS_EXCLUDE_RE.search(text))
+
+    def test_competitor_names_and_other_words_are_not_own_aliases(self):
+        for text in (
+            '신한투자증권', '신한투자', '신한투자증권은 Npay 챌린지 진행',
+            '신한투자증권의 서비스', '신한금융투자', '신한證', '신한投',
+            '대한투자증권', '한투자', '무한투자', '키움증권', '삼성증권',
+        ):
+            with self.subTest(text=text):
+                self.assertIsNone(bot.KIS_EXCLUDE_RE.search(text))
+
+    def test_collection_keeps_shinhan_and_excludes_actual_own_mentions(self):
+        cases = [
+            ('신한투자증권, Npay 챌린지 진행', '신한투자증권 신규 서비스', True),
+            ('신<b>한투</b>자증권, Npay 챌린지 진행', '신한투자 서비스', True),
+            ('한국<b>투자</b>증권 신규 서비스', '', False),
+            ('한<b>투</b>, 증권 서비스 출시', '', False),
+            ('증권 서비스 개편', '한투는 신규 서비스를 출시했다', False),
+            ('증권 서비스 개편', '한투', False),
+            ('증권 서비스 개편 한투', '신규 서비스 출시', False),
+            ('신한투자증권 신규 서비스', '한투와 경쟁', False),
+            ('키움증권 신규 서비스', '뱅키스 이벤트', False),
+            ('삼성증권 신규 서비스', 'eFriend 이벤트', False),
+        ]
+        for title, description, keep in cases:
+            article = {'title': title, 'description': description,
+                       'link': 'https://example.invalid/kis-regression'}
+            with self.subTest(title=title, description=description), \
+                 patch.object(bot, 'COMPETITORS', {'신한투자증권': ['fixture']}), \
+                 patch.object(bot, 'BROAD_KEYWORDS', {}), \
+                 patch.object(bot, '_crawl_keyword', return_value=('targeted', '신한투자증권', [article])), \
+                 patch.object(bot, '_is_within_cutoff', return_value=True), \
+                 patch.object(bot, 'is_duplicate', return_value=False), \
+                 patch.object(bot, 'get_press_tier', return_value=('fixture', 1)), \
+                 redirect_stdout(StringIO()):
+                result = bot.collect_articles({})
+                self.assertEqual(len(result), int(keep))
+
+    def test_analyzed_company_keeps_shinhan_but_drops_own_company(self):
+        for company, keep in (
+            ('신한투자증권', True), ('신한투자', True), ('신한금융투자', True),
+            ('키움증권', True), ('한국투자증권', False), ('한투', False),
+            ('한투증권', False), ('뱅키스', False), ('eFriend', False),
+        ):
+            article = {'title': company + ', Npay 챌린지 진행',
+                       '_body': bot.canonicalize_company(company) + '은 신규 디지털 서비스를 출시했다.',
+                       '_company': '미확인'}
+            analysis = {'company_name': company, 'impact_score': 4.2,
+                        'impact_level': '하', 'impact_domain': 'MTS플랫폼',
+                        'threat_type': '기능강화', 'event_key': company + '_서비스_202610'}
+            with self.subTest(company=company), \
+                 patch.object(bot, '_ai_create', side_effect=AssertionError('paid API forbidden')), \
+                 redirect_stdout(StringIO()):
+                result = bot.analyze_article(article, analysis)
+                self.assertEqual(result['analysis'] is not None, keep)
+                if keep:
+                    self.assertEqual(result['analysis']['impact_score'], 4.2)
+                    self.assertEqual(result['analysis']['impact_level'], '하')
+                    self.assertEqual(result['_company'], company)
+
 if __name__ == "__main__":
     unittest.main()

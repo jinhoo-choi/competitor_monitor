@@ -562,8 +562,12 @@ BROAD_KEYWORDS: dict = {
     "증권 플랫폼 출시":       3,
 }
 
-# 자사 기사 제외 패턴
-KIS_EXCLUDE_RE = re.compile(r"한국투자증권|한투|뱅키스|eFriend")
+# 자사 기사 제외 패턴 — '신한투자증권' 속 '한투'는 독립 약칭이 아니다.
+# 한투 뒤의 조사는 허용하되 다른 단어 내부의 부분 문자열은 제외하지 않는다.
+KIS_EXCLUDE_RE = re.compile(
+    r"한국투자증권|뱅키스|eFriend|"
+    r"(?<!\w)한투(?:증권)?(?=(?:[은는이가을를의와과도만]|에서?|으로|로|부터|까지|보다|처럼|하고|랑)*(?!\w))"
+)
 
 # ═══════════════════════════════════════════════
 # seen 관리 — URL 기반(24시간) + event_key 기반(7일)
@@ -961,15 +965,12 @@ def collect_articles(seen: dict) -> list[dict]:
                     # ── 24시간 필터
                     if not _is_within_cutoff(art.get("pubDate","")):
                         continue
-                    # ── 자사 기사 제외 — clean_html 전 원본 텍스트로 체크
-                    raw_title = art.get("title","")
-                    raw_desc  = art.get("description","")
-                    raw_text  = raw_title + raw_desc
-                    if KIS_EXCLUDE_RE.search(raw_title) or KIS_EXCLUDE_RE.search(raw_text):
-                        continue
-                    # ── clean_html 먼저 적용 (is_duplicate에서 title_norm 정확히 생성하기 위해)
+                    # ── HTML 강조 태그를 제거한 뒤 제목·설명을 각각 자사 판정
+                    # 제목 끝과 설명 시작을 붙여 약칭의 경계를 없애지 않는다.
                     for field in ("title","description"):
                         art[field] = clean_html(art.get(field,""))
+                    if any(KIS_EXCLUDE_RE.search(art[field]) for field in ("title", "description")):
+                        continue
                     # ── 금융 무관 기사 제외 — clean_html 후 제목 기준
                     if not FINANCE_RE.search(art.get("title","")):
                         continue
@@ -1013,6 +1014,7 @@ def filter_relevant_articles(articles: list[dict]) -> list[dict]:
 - 불확실하면 제외. 차라리 제외하는 것이 낫습니다.
 - 한국투자증권 자사 기사는 무조건 제외
   제목 또는 본문에 "한국투자증권", "한투", "뱅키스", "eFriend" 포함 시 무조건 제외
+  단, "한투"는 한국투자증권의 독립 약칭만 해당하며 "신한투자증권"·"신한투자" 내부의 부분 문자열은 해당하지 않음
 - 단순 실적·인사·사옥·채용·IB·법인영업 기사는 무조건 제외
 - 기사 본문에 명시된 내용만 판단하세요. 추론 금지.
 - 경쟁사 서비스·사업이 후퇴하거나 차질이 생기는 기사는 제외
