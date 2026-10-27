@@ -1318,6 +1318,13 @@ JSON only, 다른 텍스트 없이:
                     print(f"    [귀속교정] {_why} → {_rescued} | {_title[:40]}")
                     art["_company"]          = _rescued
                     analysis["company_name"] = _rescued
+                    key = analysis.get("event_key", "").strip()
+                    for prefix in (extracted, canonicalize_company(extracted)):
+                        if prefix and key.startswith(prefix):
+                            key = _rescued + key[len(prefix):]
+                            break
+                    analysis["event_key"] = key
+                    extracted = _rescued
                 else:
                     print(f"    [비증권 주체 드롭] {_why} | {_title[:45]}")
                     return {**art, "analysis": None}

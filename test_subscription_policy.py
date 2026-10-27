@@ -109,6 +109,22 @@ class SubscriptionPolicyRegression(unittest.TestCase):
         self.assertEqual(article['analysis']['impact_level'],'하')
         self.assertTrue(bot._withhold_reason(article))
 
+    def test_attribution_rescue_keeps_event_key_subject_and_partner_consistent(self):
+        self.article.update(title='삼성증권 MTS 해외주식 주문 강화',
+                            _body='삼성증권은 MTS 해외주식 주문 기능을 개선했다.',
+                            description='삼성증권 주문 기능 강화')
+        for old_company in ('미래에셋증권','두나무'):
+            for old_key in (old_company+'_해외주식주문_202610',old_company+'::해외주식주문',''):
+                analysis=copy.deepcopy(self.analysis)
+                analysis.update(company_name=old_company,event_key=old_key)
+                with self.subTest(old_company=old_company,key=old_key), \
+                     patch.object(bot,'_ai_create',side_effect=AssertionError('API forbidden')):
+                    article=bot.analyze_article(copy.deepcopy(self.article),analysis)
+                self.assertEqual(article['_company'],'삼성증권')
+                self.assertEqual(article['analysis']['company_name'],'삼성증권')
+                self.assertTrue(article['analysis']['event_key'].startswith('삼성증권'))
+                if old_key:self.assertIn('해외주식주문',article['analysis']['event_key'])
+
     def run_native_grades(self, scores, subscription=True):
         job, result = fixture()
         template_article = job['input']['items'][0]
