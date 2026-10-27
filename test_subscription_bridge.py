@@ -59,6 +59,12 @@ class MemoryQueue:
         if sha != self.rev.get(path): raise RuntimeError('CAS mismatch')
         self.files[path] = copy.deepcopy(value)
         self.rev[path] = str(int(self.rev.get(path, '0'))+1)
+        return {'content': {'sha': self.rev[path]}}
+
+    def history_source(self):
+        raw=getattr(self,'remote_history',Path('seen_articles.json').read_bytes())
+        blob=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
+        return raw,blob,'a'*40
 
 
 class SubscriptionRegression(unittest.TestCase):
@@ -139,6 +145,10 @@ class SubscriptionRegression(unittest.TestCase):
                 (bot,'preflight',True),(bot,'load_seen',{'ids':set(),'title_norms':[],'desc_norms':[],'events':set()}),
                 (bot,'save_seen',None),(bot,'save_filter_log',None)]:
                 stack.enter_context(patch.object(target,name,return_value=value))
+            observed_hash=stack.enter_context(patch.object(bridge,'seen_hash',return_value='seen'))
+            def saved_exact_plan(*args,**kwargs):
+                observed_hash.return_value=hashlib.sha256(bot.DELIVERY_GUARD.history_plan.encode()).hexdigest()
+            stack.enter_context(patch.object(bot,'save_seen',side_effect=saved_exact_plan))
             stack.enter_context(patch.object(bot.smtplib,'SMTP_SSL',return_value=server))
             stack.enter_context(patch.object(bot,'_ai_create',side_effect=AssertionError('paid API forbidden')))
             stack.enter_context(patch.object(bot,'fetch_article_body',side_effect=AssertionError('re-fetch forbidden')))
@@ -206,6 +216,20 @@ class SubscriptionRegression(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError,'INSIGHT_QUEUE_TOKEN'):
                 bridge.Queue({'queue_repository':'jinhoo-choi/insight-bot-data','queue_branch':'main','queue_prefix':'subscription/insight'})
 
+    def test_remote_history_uses_immutable_commit_and_checks_git_blob(self):
+        import base64
+        raw=b'{}\n';commit='b'*40
+        blob=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
+        with patch.dict(os.environ,{'INSIGHT_QUEUE_TOKEN':'offline'}):
+            queue=bridge.Queue({'queue_repository':'jinhoo-choi/insight-bot-data',
+                                'queue_branch':'main','queue_prefix':'subscription/insight'})
+        obj={'type':'file','content':base64.b64encode(raw).decode(),'sha':blob}
+        with patch.object(queue,'api_request',side_effect=[{'object':{'sha':commit}},obj]) as request:
+            self.assertEqual(queue.history_source(),(raw,blob,commit))
+            self.assertTrue(request.call_args.args[0].endswith('?ref='+commit))
+        with patch.object(queue,'api_request',side_effect=[{'object':{'sha':commit}},{**obj,'sha':'0'*40}]):
+            with self.assertRaisesRegex(RuntimeError,'blob'):queue.history_source()
+
     def test_guard_receipts_empty_or_uncertain_block_history(self):
         guard=bridge.DeliveryGuard(self.queue,self.job['job_id'])
         with self.assertRaises(RuntimeError): guard.require_complete()
@@ -265,10 +289,12 @@ class SubscriptionRegression(unittest.TestCase):
 
     def test_ack_needs_committed_seen_hash(self):
         job=self.queue.files['jobs/'+self.job['job_id']+'.json']
-        job.update(status='delivery_complete',seen_after_hash='after')
+        after=hashlib.sha256(b'after').hexdigest()
+        job.update(status='delivery_complete',seen_after_hash=after,receipts={'recipient':'accepted'})
+        self.queue.remote_history=b'after'
         with patch.object(bridge,'seen_hash',return_value='before'), self.assertRaises(RuntimeError):
             bridge.acknowledge(self.queue,self.job['job_id'])
-        with patch.object(bridge,'seen_hash',return_value='after'):
+        with patch.object(bridge,'seen_hash',return_value=after):
             bridge.acknowledge(self.queue,self.job['job_id'])
         self.assertEqual(self.queue.get('jobs/'+self.job['job_id']+'.json')[0]['status'],'completed')
 
@@ -318,6 +344,182 @@ class SubscriptionRegression(unittest.TestCase):
         with patch.dict(os.environ,{'GITHUB_REF':'refs/heads/codex/insight-subscription'}), self.assertRaises(ValueError):
             signal.arguments(dict(operation='consume',job_id='id'))
         self.assertEqual(signal.arguments(dict(operation='consume',job_id='id',self_test=True)),['consume','--job-id','id','--self-test'])
+
+
+class DeliveryIntegrityRegression(unittest.TestCase):
+    """Real native main, temporary history, memory CAS and fake SMTP only."""
+    def setUp(self):
+        self.stack=ExitStack();self.addCleanup(self.stack.close)
+        self.stack.enter_context(redirect_stdout(StringIO()))
+        root=Path(__file__).resolve().parent
+        tmp=Path(self.stack.enter_context(tempfile.TemporaryDirectory()))
+        for name in ('subscription_policy.json','subscription_config.json'):
+            (tmp/name).write_bytes((root/name).read_bytes())
+        (tmp/'seen_articles.json').write_text('{}\n')
+        previous=os.getcwd();os.chdir(tmp);self.addCleanup(os.chdir,previous)
+        self.job,self.result=fixture();self.job['mode']='production'
+        self.job['input']['seen_hash']=bridge.seen_hash()
+        self.job['input_hash']=bridge.digest(self.job['input']);self.result['input_hash']=self.job['input_hash']
+        self.queue=MemoryQueue(self.job,self.result);self.path='jobs/'+self.job['job_id']+'.json'
+        self.server=MagicMock();self.server.__enter__.return_value=self.server;self.server.sendmail.return_value={}
+        for name,value in {'INSIGHT_ENGINE':'subscription','TEST_MODE':False,'DRY_RUN':False,
+                           'GMAIL_USER':'owner@example.invalid','RECIPIENTS_ALL':['group@example.invalid'],
+                           'RECIPIENTS_CC':[],'NO_RESULT_RECEIVER':'owner@example.invalid'}.items():
+            self.stack.enter_context(patch.object(bot,name,value))
+        self.stack.enter_context(patch.object(bot,'preflight',return_value=True))
+        self.stack.enter_context(patch.object(bridge,'import_bot',return_value=bot))
+        self.stack.enter_context(patch.object(bot,'_ai_create',side_effect=AssertionError('API forbidden')))
+        self.stack.enter_context(patch.object(bot,'fetch_article_body',side_effect=AssertionError('recollection forbidden')))
+        self.stack.enter_context(patch.object(bot.smtplib,'SMTP_SSL',return_value=self.server))
+
+    def consume(self):return bridge.consume({'engine':'subscription'},self.queue,self.job['job_id'])
+
+    def test_stale_read_after_reservation_does_not_lose_accepted_write(self):
+        real_get=self.queue.get;real_put=self.queue.put;stale={}
+        def put(path,value,sha=None):
+            if path==self.path and 'sending' in value.get('receipts',{}).values():
+                stale['row']=real_get(path)
+            return real_put(path,value,sha)
+        def get(path):
+            row,sha=real_get(path)
+            if path==self.path and 'sending' in row.get('receipts',{}).values() and stale:
+                return copy.deepcopy(stale['row'])
+            return row,sha
+        with patch.object(self.queue,'get',side_effect=get),patch.object(self.queue,'put',side_effect=put):
+            self.consume()
+        state=real_get(self.path)[0]
+        self.assertEqual(state['status'],'delivery_complete')
+        self.assertEqual(list(state['receipts'].values()),['accepted','accepted'])
+        self.assertEqual(self.server.sendmail.call_count,2)
+
+    def test_accepted_data_survives_quit_failure_without_resend(self):
+        guard=bridge.DeliveryGuard(self.queue,self.job['job_id'])
+        self.server.__exit__.side_effect=OSError('QUIT failed after DATA')
+        with patch.object(bot,'DELIVERY_GUARD',guard):
+            self.assertEqual(bot._send_one('test','html','owner@example.invalid'),{})
+            self.assertEqual(bot._send_one('test','html','owner@example.invalid'),{})
+        self.assertEqual(self.server.sendmail.call_count,1)
+        self.assertEqual(list(self.queue.get(self.path)[0]['receipts'].values()),['accepted'])
+
+    def test_filter_and_runtime_log_failure_are_optional_after_accepted_data(self):
+        for prefix in ('filter-logs/','logs/'):
+            with self.subTest(prefix=prefix):
+                self.queue=MemoryQueue(self.job,self.result);Path('seen_articles.json').write_text('{}\n')
+                real_put=self.queue.put
+                def put(path,value,sha=None):
+                    if path.startswith(prefix):raise OSError('optional telemetry unavailable')
+                    return real_put(path,value,sha)
+                with patch.object(self.queue,'put',side_effect=put):self.consume()
+                state=self.queue.get(self.path)[0]
+                self.assertEqual(state['status'],'delivery_complete')
+                self.assertEqual(hashlib.sha256(state['seen_after_snapshot'].encode()).hexdigest(),state['seen_after_hash'])
+                self.assertEqual(bridge.seen_hash(),state['seen_after_hash'])
+                self.assertTrue(state['diagnostic_errors'])
+
+    def test_exact_plan_and_manifest_are_durable_before_first_data(self):
+        def send(sender,targets,payload):
+            state=self.queue.get(self.path)[0]
+            self.assertEqual(hashlib.sha256(state['planned_seen_snapshot'].encode()).hexdigest(),state['planned_seen_hash'])
+            self.assertEqual(len(state['expected_receipts']),2)
+            return {}
+        self.server.sendmail.side_effect=send
+        self.consume()
+        self.assertEqual(self.server.sendmail.call_count,2)
+
+    def test_history_write_failure_keeps_exact_recoverable_accepted_state(self):
+        with patch.object(bot.os,'replace',side_effect=OSError('history disk failed')):
+            with self.assertRaisesRegex(OSError,'history disk failed'):self.consume()
+        state=self.queue.get(self.path)[0]
+        self.assertEqual(state['status'],'delivery_complete')
+        self.assertEqual(list(state['receipts'].values()),['accepted','accepted'])
+        self.assertEqual(hashlib.sha256(state['seen_after_snapshot'].encode()).hexdigest(),state['seen_after_hash'])
+        calls=self.server.sendmail.call_count
+        with patch.object(bot.smtplib,'SMTP_SSL',side_effect=AssertionError('recovery may not send')):
+            bridge.recover_state({'engine':'paused'},self.queue,self.job['job_id'])
+            self.queue.remote_history=Path('seen_articles.json').read_bytes()
+            bridge.acknowledge(self.queue,self.job['job_id'])
+        self.assertEqual(self.server.sendmail.call_count,calls)
+        self.assertEqual(self.queue.get(self.path)[0]['status'],'completed')
+
+    def test_remote_main_tamper_blocks_ack_even_when_local_history_matches(self):
+        local=Path('seen_articles.json').read_bytes()
+        self.queue.files[self.path].update(status='delivery_complete',receipts={'r':'accepted'},
+            seen_after_hash=hashlib.sha256(local).hexdigest(),seen_after_snapshot=local.decode())
+        self.queue.remote_history=b'{"newer-main":true}\n'
+        with self.assertRaisesRegex(RuntimeError,'main'):
+            bridge.acknowledge(self.queue,self.job['job_id'])
+        self.assertEqual(self.queue.get(self.path)[0]['status'],'delivery_complete')
+        self.server.sendmail.assert_not_called()
+
+    def test_complete_requires_every_planned_recipient(self):
+        self.queue.files[self.path].update(expected_receipts=['first','second'],receipts={'first':'accepted'})
+        guard=bridge.DeliveryGuard(self.queue,self.job['job_id'])
+        with self.assertRaises(RuntimeError):guard.require_complete()
+
+    def test_native_owner_verification_preserves_history_and_recipient_isolation(self):
+        self.queue.files[self.path]['mode']='verification'
+        before=Path('seen_articles.json').read_bytes()
+        with patch.object(bot,'TEST_MODE',True),patch.object(bot,'RECIPIENTS_ALL',[]), \
+             patch.object(bot,'RECIPIENTS_CC',[]),patch.object(bot,'TEST_PREFIX','[TEST] '):
+            bridge.consume({'engine':'subscription'},self.queue,self.job['job_id'],self_test=True)
+        self.assertEqual(self.queue.get(self.path)[0]['status'],'verified')
+        self.assertEqual(Path('seen_articles.json').read_bytes(),before)
+        self.assertEqual([c.args[1] for c in self.server.sendmail.call_args_list],[['owner@example.invalid']])
+
+    def test_expiry_before_next_recipient_blocks_new_data(self):
+        guard=bridge.DeliveryGuard(self.queue,self.job['job_id'])
+        self.queue.files[self.path]['expires_at']=(bridge.now()-timedelta(seconds=1)).isoformat()
+        with patch.object(bot,'DELIVERY_GUARD',guard),self.assertRaisesRegex(RuntimeError,'만료'):
+            bot._send_one('test','html','owner@example.invalid')
+        self.server.sendmail.assert_not_called()
+
+    def test_partial_unknown_stays_locked_with_plan_and_never_retries_data(self):
+        self.server.sendmail.side_effect=[{},ConnectionResetError('DATA result unknown')]
+        with self.assertRaises(RuntimeError):self.consume()
+        state=self.queue.get(self.path)[0]
+        self.assertEqual(state['status'],'uncertain')
+        self.assertEqual(list(state['receipts'].values()),['accepted','uncertain'])
+        self.assertEqual(hashlib.sha256(state['planned_seen_snapshot'].encode()).hexdigest(),state['planned_seen_hash'])
+        with self.assertRaisesRegex(RuntimeError,'전송 상태'):self.consume()
+        self.assertEqual(self.server.sendmail.call_count,2)
+        self.assertEqual(Path('seen_articles.json').read_text(),'{}\n')
+
+    def test_concurrent_target_change_is_not_overwritten_by_cached_transition(self):
+        put=self.queue.put;changed=[]
+        def concurrent(path,value,sha=None):
+            response=put(path,value,sha)
+            if path==self.path and list(value.get('receipts',{}).values())==['accepted'] and not changed:
+                changed.append(True)
+                self.queue.files[path].update(status='uncertain',other_writer_hold=True)
+                self.queue.rev[path]=str(int(self.queue.rev[path])+1)
+            return response
+        with patch.object(self.queue,'put',side_effect=concurrent),self.assertRaises(RuntimeError):self.consume()
+        state=self.queue.get(self.path)[0]
+        self.assertEqual(state['status'],'uncertain');self.assertTrue(state['other_writer_hold'])
+        self.assertEqual(list(state['receipts'].values()),['accepted'])
+        self.assertEqual(self.server.sendmail.call_count,1)
+
+    def test_missing_reservation_write_proof_never_starts_data(self):
+        real_put=self.queue.put
+        def put(path,value,sha=None):
+            response=real_put(path,value,sha)
+            return {} if path==self.path and value.get('status')=='sending' else response
+        with patch.object(self.queue,'put',side_effect=put),self.assertRaisesRegex(RuntimeError,'쓰기 확인 SHA'):
+            self.consume()
+        self.server.sendmail.assert_not_called()
+        self.assertEqual(Path('seen_articles.json').read_text(),'{}\n')
+
+    def test_known_refusal_is_preserved_across_quit_failure_and_not_retried(self):
+        guard=bridge.DeliveryGuard(self.queue,self.job['job_id'])
+        refused={'owner@example.invalid':(550,b'refused')}
+        self.server.sendmail.return_value=refused
+        self.server.__exit__.side_effect=OSError('QUIT failed')
+        with patch.object(bot,'DELIVERY_GUARD',guard):
+            self.assertEqual(bot._send_one('test','html','owner@example.invalid'),refused)
+            with self.assertRaisesRegex(RuntimeError,'거부 기록'):
+                bot._send_one('test','html','owner@example.invalid')
+        self.assertEqual(self.server.sendmail.call_count,1)
+        self.assertEqual(list(self.queue.get(self.path)[0]['receipts'].values()),['rejected'])
 
 
 if __name__ == '__main__': unittest.main()

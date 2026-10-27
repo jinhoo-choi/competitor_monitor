@@ -760,15 +760,10 @@ def load_seen() -> dict:
     except Exception:
         return {"ids": set(), "title_norms": [], "desc_norms": [], "events": set()}
 
-def save_seen(seen: dict, sent_urls: set = None,
+def build_seen_snapshot(seen: dict = None, sent_urls: set = None,
               new_title_norms: list = None, new_desc_norms: list = None,
               new_events: set = None):
-    """atomic write. event_key는 날짜별로 묶어 7일 보존."""
-    if DELIVERY_GUARD is not None:
-        DELIVERY_GUARD.require_complete()
-    if TEST_MODE:
-        print("  [TEST_MODE] seen_articles.json 저장 스킵 (정기 실행 중복제거 상태 보존)")
-        return
+    """Build the existing history format without writing or sending."""
     now      = datetime.now(KST)
     cur_key  = now.strftime("%Y-%m-%d %H")
     cur_day  = now.strftime("%Y-%m-%d")
@@ -804,12 +799,34 @@ def save_seen(seen: dict, sent_urls: set = None,
         event_store[cur_day] = list(day_set)
     existing["events"] = event_store
 
+    return json.dumps(existing, ensure_ascii=False)
+
+
+def save_seen(seen: dict, sent_urls: set = None,
+              new_title_norms: list = None, new_desc_norms: list = None,
+              new_events: set = None):
+    """Atomic write of the exact pre-DATA plan after all receipts are accepted."""
+    if DELIVERY_GUARD is not None:
+        DELIVERY_GUARD.require_complete()
+    if TEST_MODE:
+        print("  [TEST_MODE] seen_articles.json 저장 스킵 (정기 실행 중복제거 상태 보존)")
+        return
+    snapshot=DELIVERY_GUARD.history_plan if DELIVERY_GUARD is not None else None
+    if snapshot is not None:
+        with open(SEEN_FILE,'rb') as file:
+            current_hash=hashlib.sha256(file.read()).hexdigest()
+        expected=hashlib.sha256(snapshot.encode()).hexdigest()
+        if current_hash not in {DELIVERY_GUARD.current[0]['input']['seen_hash'],expected}:
+            raise RuntimeError('이력 계획 이후 로컬 이력 변경 — 덮어쓰기 금지')
+    else:
+        snapshot=build_seen_snapshot(seen,sent_urls,new_title_norms,new_desc_norms,new_events)
+
     import tempfile as _tmp
     fd, tmp_path = _tmp.mkstemp(prefix="seen_", suffix=".tmp",
                                 dir=os.path.dirname(os.path.abspath(SEEN_FILE)) or ".")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(existing, f, ensure_ascii=False)
+            f.write(snapshot)
         os.replace(tmp_path, SEEN_FILE)
     except Exception:
         try: os.unlink(tmp_path)
@@ -1916,31 +1933,34 @@ def _send_one(subject: str, html: str, addr: str) -> dict:
         return {}  # 이전 서버 접수가 영구 기록된 수신자는 재발송하지 않음
 
     for attempt in range(3):
+        receipt_recorded=False
         try:
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
                 server.ehlo()
                 server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
                 refused = server.sendmail(GMAIL_USER, [addr], msg.as_string())
-            if refused:
                 if DELIVERY_GUARD is not None:
-                    DELIVERY_GUARD.after(addr, "rejected")
+                    DELIVERY_GUARD.after(addr, 'rejected' if refused else 'accepted',
+                                         message_id=msg['Message-ID'])
+                receipt_recorded=True
+            if refused:
                 print(f"  ⚠️ [SMTP 거부] {addr}: {refused.get(addr)}")
                 return refused
-            if DELIVERY_GUARD is not None:
-                DELIVERY_GUARD.after(addr, "accepted")
             return {}
-        except smtplib.SMTPRecipientsRefused as e:
-            if DELIVERY_GUARD is not None:
-                DELIVERY_GUARD.after(addr, "rejected")
-            # 단건발송(수신자 1명)에서 전원거부는 dict가 아니라 예외로 옴 — e.recipients에 상세정보 있음
-            # 영구거부(5xx)는 재시도해도 결과 동일하므로 즉시 확정, 재시도 생략
-            print(f"  ⚠️ [SMTP 영구거부] {addr}: {e.recipients.get(addr)}")
-            return e.recipients
-        except smtplib.SMTPAuthenticationError:
-            if DELIVERY_GUARD is not None:
-                DELIVERY_GUARD.after(addr, "rejected")
-            raise
         except Exception as e:
+            if receipt_recorded:
+                if DELIVERY_GUARD is not None:
+                    DELIVERY_GUARD.note('smtp_cleanup',e)
+                print('  [SMTP 정리 오류] DATA 결과와 접수 기록 보존; 재전송 없음')
+                return refused
+            if isinstance(e,smtplib.SMTPRecipientsRefused):
+                if DELIVERY_GUARD is not None:
+                    DELIVERY_GUARD.after(addr,'rejected',message_id=msg['Message-ID'])
+                return e.recipients
+            if isinstance(e,smtplib.SMTPAuthenticationError):
+                if DELIVERY_GUARD is not None:
+                    DELIVERY_GUARD.after(addr,'rejected',message_id=msg['Message-ID'])
+                raise
             if DELIVERY_GUARD is not None:
                 DELIVERY_GUARD.after(addr, "uncertain")
                 raise RuntimeError("SMTP 전송 상태 미확인 — 자동 재전송 금지") from e
@@ -1968,6 +1988,15 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None) -> 
         if blocked:
             print(f"  [TEST_MODE] 외부 수신자 차단: {blocked}")
         targets = [GMAIL_USER]
+
+    if DELIVERY_GUARD is not None:
+        snapshot=DELIVERY_GUARD.history_plan
+        if snapshot is None:
+            if TEST_MODE:
+                with open(SEEN_FILE,encoding='utf-8') as file:snapshot=file.read()
+            else:
+                snapshot=build_seen_snapshot()
+        DELIVERY_GUARD.prepare(targets,snapshot)
 
     all_refused = {}
     for addr in targets:
@@ -2514,24 +2543,6 @@ def _run_main(provider=None):
         save_filter_log(articles, hard_excluded, ai_filtered_list, [], withheld_reasons)
         return
 
-    # ── 6) 저장 및 발송
-    print(f"\n[6/6] 메일 발송 중...")
-    html = build_email_html(analyzed, len(raw), len(relevant))
-
-    if not analyzed:
-        # 탐지 기사 없으면 담당자에게만 발송
-        subj = f"{TEST_PREFIX}[인사이트] {now_str} — 해당 기사 없음"
-        send_email_no_result(subj, html)
-    else:
-        levels = {a["analysis"].get("impact_level") for a in analyzed if a.get("analysis")}
-        if levels <= {"하"}:
-            # 탐지됐지만 전부 '하' 등급뿐이면 전체발송 대신 담당자에게만 발송
-            subj = f"{TEST_PREFIX}[인사이트] {now_str} — 영향도 낮음(하)만 탐지"
-            send_email_no_result(subj, html)
-            print(f"  ℹ️ 전량 '하' 등급 — 담당자 전용 발송으로 전환")
-        else:
-            send_email(html, analyzed, len(raw))
-
     # ── 저장 — event_key + 폴백 키(회사명::위협유형::월) 함께 저장
     sent_urls  = {a.get("link","") for a in analyzed if a.get("link","")}
     new_events = set()
@@ -2554,6 +2565,28 @@ def _run_main(provider=None):
         if entity_fb:
             new_events.add(entity_fb)
         new_events.update(k for k, persist in _extract_theme_keys(a.get("title","") + " " + an.get("summary",""), co_fb) if persist)
+    if DELIVERY_GUARD is not None and not TEST_MODE:
+        DELIVERY_GUARD.history_plan = build_seen_snapshot(seen, sent_urls=sent_urls,
+            new_title_norms=new_title_norms, new_desc_norms=new_desc_norms, new_events=new_events)
+
+    # ── 6) 저장 및 발송
+    print(f"\n[6/6] 메일 발송 중...")
+    html = build_email_html(analyzed, len(raw), len(relevant))
+
+    if not analyzed:
+        # 탐지 기사 없으면 담당자에게만 발송
+        subj = f"{TEST_PREFIX}[인사이트] {now_str} — 해당 기사 없음"
+        send_email_no_result(subj, html)
+    else:
+        levels = {a["analysis"].get("impact_level") for a in analyzed if a.get("analysis")}
+        if levels <= {"하"}:
+            # 탐지됐지만 전부 '하' 등급뿐이면 전체발송 대신 담당자에게만 발송
+            subj = f"{TEST_PREFIX}[인사이트] {now_str} — 영향도 낮음(하)만 탐지"
+            send_email_no_result(subj, html)
+            print(f"  ℹ️ 전량 '하' 등급 — 담당자 전용 발송으로 전환")
+        else:
+            send_email(html, analyzed, len(raw))
+
     save_seen(seen, sent_urls=sent_urls,
               new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
               new_events=new_events)
