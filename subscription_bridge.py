@@ -142,6 +142,21 @@ class Queue:
             raise RuntimeError('현재 분석 정책 읽기 실패')
         return digest(json.loads(base64.b64decode(obj['content'])))
 
+    def history_source(self):
+        root='/repos/jinhoo-choi/competitor_monitor'
+        ref=self.api_request(root+'/git/ref/heads/main')
+        commit=(ref or {}).get('object',{}).get('sha','')
+        if not re.fullmatch(r'[0-9a-f]{40}',commit):
+            raise RuntimeError('main 이력 커밋 확인 실패')
+        obj=self.api_request(root+'/contents/seen_articles.json?ref='+commit)
+        if not obj or obj.get('type')!='file':
+            raise RuntimeError('main 처리 이력 읽기 실패')
+        raw=base64.b64decode(obj['content'])
+        blob=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
+        if blob!=obj.get('sha'):
+            raise RuntimeError('main 이력 blob 증거 불일치')
+        return raw,blob,commit
+
     def put(self, path, value, sha=None):
         payload = {"branch": self.branch,
                    "message": "chore: insight subscription state [skip ci]",
@@ -246,20 +261,52 @@ class Provider:
 
 
 class DeliveryGuard:
-    def __init__(self, queue, job_id):
+    def __init__(self, queue, job_id, current=None):
         self.queue, self.path = queue, "jobs/" + job_id + ".json"
         self.job_id = job_id
+        self.current=current
+        self.history_plan=None
+        self.diagnostics=[]
+
+    def note(self, stage, error):
+        self.diagnostics.append({'stage':stage,'error_type':type(error).__name__})
 
     def save_log(self, value):
-        self.queue.put("filter-logs/" + self.job_id + ".json", value)
+        try:
+            self.queue.put("filter-logs/" + self.job_id + ".json", value)
+        except Exception as error:
+            self.note('filter_log',error)
+            print('비공개 필터 로그 저장 보류; 접수·이력 고정본 보존')
 
     def change(self, fn):
-        job, sha = self.queue.get(self.path)
+        job, sha = self.current if self.current is not None else self.queue.get(self.path)
         if not job or not sha:
             raise RuntimeError("발송 선기록 읽기 실패")
+        job=copy.deepcopy(job)
         fn(job)
-        self.queue.put(self.path, job, sha)
+        response=self.queue.put(self.path, job, sha)
+        written=(response or {}).get('content',{}).get('sha')
+        if not isinstance(written,str) or not written:
+            raise RuntimeError('발송 상태 쓰기 확인 SHA 누락 — SMTP 재시도 금지')
+        self.current=job,written
         return job
+
+    def prepare(self, targets, snapshot):
+        json.loads(snapshot)
+        keys=[hashlib.sha256(a.encode()).hexdigest() for a in targets]
+        if not keys or len(keys)!=len(set(keys)):
+            raise RuntimeError('수신자 고정본 중복·누락')
+        expected=hashlib.sha256(snapshot.encode()).hexdigest()
+        def planned(job):
+            if 'expected_receipts' in job:
+                if job['expected_receipts']!=keys or job.get('planned_seen_hash')!=expected:
+                    raise RuntimeError('발송 도중 수신자·이력 계획 변경 금지')
+                return
+            if job.get('receipts') or seen_hash()!=job['input']['seen_hash']:
+                raise RuntimeError('발송 계획 전 접수·이력 변경')
+            job.update(expected_receipts=keys,planned_seen_snapshot=snapshot,planned_seen_hash=expected)
+        self.change(planned)
+        self.history_plan=snapshot
 
     def before(self, address):
         key = hashlib.sha256(address.encode()).hexdigest()
@@ -267,22 +314,36 @@ class DeliveryGuard:
         def reserve(job):
             nonlocal skip
             require_live_policy(self.queue, job["input"].get("policy_hash"))
+            if 'expected_receipts' in job and key not in job['expected_receipts']:
+                raise RuntimeError('고정 수신자 이외 발송 금지')
             old = job.setdefault("receipts", {}).get(key)
             if old == "accepted":
                 skip = True
                 return
+            if datetime.fromisoformat(job['expires_at'])<=now():
+                raise RuntimeError('회차 만료 — 새로운 SMTP 제출 금지')
             if old in {"sending", "uncertain"}:
                 raise RuntimeError("이전 전송 상태 미확인 — 재전송 금지")
+            if old == 'rejected':
+                raise RuntimeError('SMTP 거부 기록 존재 — 자동 재전송 금지')
             job["receipts"][key] = "sending"
         self.change(reserve)
         return not skip
 
-    def after(self, address, status):
+    def after(self, address, status, message_id=None):
         key = hashlib.sha256(address.encode()).hexdigest()
-        self.change(lambda job: job.setdefault("receipts", {}).__setitem__(key, status))
+        def observed(job):
+            if job.get('receipts',{}).get(key)=='accepted' and status!='accepted':
+                raise RuntimeError('확인된 접수 기록 변경 금지')
+            job.setdefault('receipts',{})[key]=status
+            job.setdefault('delivery_evidence',{})[key]={'status':status,'message_id':message_id,
+                                                       'observed_at':now().isoformat()}
+        self.change(observed)
 
     def require_complete(self):
-        job, _ = self.queue.get(self.path)
+        job, _ = self.current if self.current is not None else self.queue.get(self.path)
+        if job and 'expected_receipts' in job and set(job.get('receipts',{}))!=set(job['expected_receipts']):
+            raise RuntimeError('고정 수신자 접수 누락·추가')
         if not job or (not job.get("receipts") and not job.get("no_delivery_required")) or any(s != "accepted" for s in job.get("receipts", {}).values()):
             raise RuntimeError("미접수·미확인 수신자 존재 — 처리 이력 저장 보류")
 
@@ -424,23 +485,47 @@ def consume(config, queue, job_id, dry_run=False, self_test=False):
     if not self_test and job.get("mode") != "production":
         raise RuntimeError("검수 자료는 운영 발송에 사용할 수 없음")
     job.update(status="sending", sending_at=now().isoformat())
-    queue.put(path, job, sha)
-    bot.DELIVERY_GUARD = DeliveryGuard(queue, job_id)
+    reserved=queue.put(path, job, sha)
+    reserved_sha=(reserved or {}).get('content',{}).get('sha')
+    if not isinstance(reserved_sha,str) or not reserved_sha:
+        raise RuntimeError('발송 시작 쓰기 확인 SHA 누락 — SMTP 금지')
+    bot.DELIVERY_GUARD = DeliveryGuard(queue, job_id, current=(job,reserved_sha))
+    guard=bot.DELIVERY_GUARD
     try:
         # 주소·기사별 판정은 비공개 자료로 보관하고 공개 Actions 로그에는 남기지 않는다.
         output = StringIO()
         with redirect_stdout(output):
             bot.main(provider)
-        queue.put("logs/" + job_id + ".json", {"log": output.getvalue(), "paid_ai_calls": 0})
+        try:
+            queue.put("logs/" + job_id + ".json", {"log": output.getvalue(), "paid_ai_calls": 0})
+        except Exception as error:
+            guard.note('runtime_log',error)
         bot.DELIVERY_GUARD.require_complete()
         if self_test and seen_hash() != job["input"]["seen_hash"]:
             raise RuntimeError("검수 중 처리 이력 변경")
+        snapshot=guard.history_plan or Path('seen_articles.json').read_text(encoding='utf-8')
+        if guard.history_plan is not None and hashlib.sha256(snapshot.encode()).hexdigest()!=seen_hash():
+            raise RuntimeError('고정 이력과 로컬 저장 불일치 — 재발송 금지')
         bot.DELIVERY_GUARD.change(lambda j: j.update(status="verified" if self_test else "delivery_complete",
                                                     paid_ai_calls=0, delivered_at=now().isoformat(),
                                                     self_test=self_test, seen_after_hash=seen_hash(),
-                                                    seen_after_snapshot=Path("seen_articles.json").read_text(encoding="utf-8")))
+                                                    seen_after_snapshot=snapshot,history_write_complete=True,
+                                                    diagnostic_errors=guard.diagnostics))
         print("본인 발송 검수 완료; API0/처리 이력 변경0" if self_test else "구독 결과 발송 접수 완료; API0/처리 이력 커밋 대기")
     except Exception:
+        accepted_plan=False
+        try:
+            guard.require_complete()
+            accepted_plan=guard.history_plan is not None and not self_test
+        except RuntimeError:
+            pass
+        if accepted_plan:
+            # Exact pre-DATA plan + complete receipts permit history-only recovery.
+            guard.change(lambda j:j.update(status='delivery_complete',paid_ai_calls=0,
+                self_test=False,seen_after_snapshot=guard.history_plan,
+                seen_after_hash=hashlib.sha256(guard.history_plan.encode()).hexdigest(),
+                history_write_complete=False,diagnostic_errors=guard.diagnostics))
+            raise
         # 영수증 선기록 전 실패는 재검수 가능하다. 한 건이라도 예약되면 계속 보호한다.
         bot.DELIVERY_GUARD.change(lambda j: j.update(
             status="pending" if j.get("receipts") == {} and not j.get("delivered_at")
@@ -459,7 +544,16 @@ def acknowledge(queue, job_id):
         raise RuntimeError("전송 확인·처리 이력 커밋 전 종결 금지")
     if job.get("seen_after_hash") != seen_hash():
         raise RuntimeError("전송 후 처리 이력 불일치 — 종결 금지")
-    job.update(status="completed", completed_at=now().isoformat())
+    raw,blob,commit=queue.history_source()
+    if hashlib.sha256(raw).hexdigest()!=job.get('seen_after_hash'):
+        raise RuntimeError('원격 main 처리 이력 불일치 — 종결 금지')
+    receipts=job.get('receipts',{})
+    if (not receipts and not job.get('no_delivery_required')) or any(v!='accepted' for v in receipts.values()):
+        raise RuntimeError('접수 미확정 — ACK 금지')
+    if 'expected_receipts' in job and set(receipts)!=set(job['expected_receipts']):
+        raise RuntimeError('고정 수신자 접수 불일치 — ACK 금지')
+    job.update(status="completed", completed_at=now().isoformat(),history_saved=True,
+               history_blob_sha=blob,history_commit_sha=commit,history_write_complete=True)
     queue.put(path, job, sha)
 
 
