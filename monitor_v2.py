@@ -2427,7 +2427,9 @@ def _run_main(provider=None):
 
     analyzed = _dedup_same_event(analyzed)
 
-    # ── 등급 상한 적용: 상 2건·중 3건 초과 시 다음 등급으로 강등
+    # 구독 결과는 검증된 점수·등급을 보존한다. 건수로 강등하면
+    # 5점 이상이 '하'로 표시되어 입력 검증 및 발송 범위와 충돌한다.
+    # API 경로의 기존 상 2건·중 3건 강등과 하 5건 제한은 유지한다.
 
     def _impact_score(a: dict) -> float:
         try: return float(a.get("analysis",{}).get("impact_score", 0))
@@ -2444,8 +2446,9 @@ def _run_main(provider=None):
 
     regrade_log = []
     # 상 → 초과분 중으로 강등
-    over_high = bucket["상"][GRADE_LIMITS["상"]:]
-    bucket["상"] = bucket["상"][:GRADE_LIMITS["상"]]
+    over_high = bucket["상"][GRADE_LIMITS["상"]:] if provider is None else []
+    if provider is None:
+        bucket["상"] = bucket["상"][:GRADE_LIMITS["상"]]
     for a in over_high:
         a["analysis"]["impact_level"] = "중"
         regrade_log.append(f"  [강등] 상→중: {a['_company']} | {a['title'][:35]}")
@@ -2453,8 +2456,9 @@ def _run_main(provider=None):
 
     # 중 → 초과분 하로 강등 (강등된 것 포함, 재정렬)
     bucket["중"].sort(key=_impact_score, reverse=True)
-    over_mid = bucket["중"][GRADE_LIMITS["중"]:]
-    bucket["중"] = bucket["중"][:GRADE_LIMITS["중"]]
+    over_mid = bucket["중"][GRADE_LIMITS["중"]:] if provider is None else []
+    if provider is None:
+        bucket["중"] = bucket["중"][:GRADE_LIMITS["중"]]
     for a in over_mid:
         a["analysis"]["impact_level"] = "하"
         regrade_log.append(f"  [강등] 중→하: {a['_company']} | {a['title'][:35]}")
