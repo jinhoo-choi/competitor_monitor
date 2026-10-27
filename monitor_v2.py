@@ -1348,7 +1348,10 @@ JSON only, 다른 텍스트 없이:
 
         # ② 끝까지 본문 미수집(유사기사 보완도 실패) → 점수/등급 강제 하향
         # description만으로 분석한 결과는 신뢰도가 낮으므로 보수적으로 처리
-        if art.get("_body_failed") and (external_analysis is not None or not art.get("_body_from_similar")):
+        # Reuse the final withholding decision: a collected flag alone does not
+        # prove body availability when analysis marks it missing or unverified.
+        body_unavailable = bool(_withhold_reason({**art, "analysis": analysis}))
+        if body_unavailable and (external_analysis is not None or not art.get("_body_from_similar")):
             orig_lvl   = analysis.get("impact_level","하")
             orig_score = analysis.get("impact_score", 3.0)
             # 4.9점 이하의 등급은 항상 하. 구독 분석은 유사 본문으로 예외를 두지 않는다.
@@ -1359,7 +1362,7 @@ JSON only, 다른 텍스트 없이:
 
         # ── 라이선스·인가 사안 점수 하한 (본문 수집 성공 + 귀속검증 통과 건에만 적용)
         # 실사례(9/17): AI "분석 불가" 응답(impact_domain="-")에도 6.5 부여 → 공란 분석 제외
-        if not art.get("_body_failed") and analysis.get("impact_domain","-") != "-":
+        if not body_unavailable and analysis.get("impact_domain","-") != "-":
             if _LICENSE_RE.search((art.get("title","") or "") + " " + (art.get("_body","") or art.get("description","") or "")):
                 _cur = float(analysis.get("impact_score", 0))
                 if _cur < LICENSE_FLOOR_SCORE:

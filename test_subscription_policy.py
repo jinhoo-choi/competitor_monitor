@@ -82,6 +82,33 @@ class SubscriptionPolicyRegression(unittest.TestCase):
         self.assertEqual(normalized['impact_score'], 6.5)
         self.assertEqual(normalized['impact_level'], '중')
 
+    def test_unavailable_analysis_marker_blocks_license_floor_despite_collected_flag(self):
+        self.article.update(title='키움증권 발행어음 출시', _body_failed=False,
+                            _body='ⓒ 예시뉴스 무단전재 및 재배포 금지 추천기사 발행어음 출시')
+        for marker in ('[본문 미수집]', '[유사기사 참고]', '[분석 실패]'):
+            for score in (3.9, 8.2):
+                analysis=copy.deepcopy(self.analysis)
+                analysis.update(impact_score=score, impact_level='상' if score>=7 else '하',
+                                impact_domain='발행어음',summary=marker+' 본문 확인이 완료되지 않았다.')
+                before=copy.deepcopy((self.article,analysis))
+                with self.subTest(marker=marker,score=score), \
+                     patch.object(bot,'_ai_create',side_effect=AssertionError('API forbidden')):
+                    article=bot.analyze_article(copy.deepcopy(self.article),copy.deepcopy(analysis))
+                self.assertEqual(article['analysis']['impact_score'],min(score,4.9))
+                self.assertEqual(article['analysis']['impact_level'],'하')
+                self.assertIn(marker,article['analysis']['summary'])
+                self.assertTrue(bot._withhold_reason(article))
+                self.assertEqual((self.article,analysis),before)
+
+    def test_similar_body_without_failure_flag_is_not_verified_for_license_floor(self):
+        self.article.update(title='키움증권 발행어음 출시',_body_failed=False,_body_from_similar=True)
+        self.analysis.update(impact_score=3.9,impact_level='하',impact_domain='발행어음')
+        with patch.object(bot,'_ai_create',side_effect=AssertionError('API forbidden')):
+            article=bot.analyze_article(copy.deepcopy(self.article),copy.deepcopy(self.analysis))
+        self.assertEqual(article['analysis']['impact_score'],3.9)
+        self.assertEqual(article['analysis']['impact_level'],'하')
+        self.assertTrue(bot._withhold_reason(article))
+
     def run_native_grades(self, scores, subscription=True):
         job, result = fixture()
         template_article = job['input']['items'][0]
