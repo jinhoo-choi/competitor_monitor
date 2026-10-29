@@ -2075,7 +2075,7 @@ def send_email_error(error_msg: str, trace: str, *, operational=False):
 # 필터링 로그 저장
 # ═══════════════════════════════════════════════
 def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: list, final: list,
-                    withheld_reasons=None):
+                    withheld_reasons=None, *, analysis_limited=None):
     """어떤 기사가 어디서 걸렸는지 JSON 로그 저장 (최근 7개 보존)
     articles_passed: 하드필터 통과본
     hard_excluded: 하드필터 제외본
@@ -2096,6 +2096,11 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
     sent_titles      = {a.get("title","") for a in final}
     hard_excl_map    = {a.get("title",""): a.get("_excl_reason","") for a in hard_excluded}
     ai_filtered_set  = {a.get("title","") for a in ai_filtered}
+    # 상한 제외는 제목이 같은 별도 기사와 섞이지 않도록 입력 ID/URL로 식별한다.
+    def article_key(a):
+        return (a.get("article_id") or a.get("originallink") or a.get("link")
+                or a.get("title", ""))
+    limited_keys = {article_key(a) for a in (analysis_limited or [])}
     # 통과본 + 제외본 = 전체 수집 건수
     all_arts         = articles_passed + hard_excluded
 
@@ -2105,6 +2110,8 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
         t = a.get("title","")
         if t in hard_excl_map:
             decision, reason = "HARD_EXCLUDED", hard_excl_map[t]
+        elif article_key(a) in limited_keys:
+            decision, reason = "ANALYSIS_LIMIT_EXCLUDED", "심층 분석 상한 제외"
         elif t in (withheld_reasons or {}):
             decision, reason = "WITHHELD", withheld_reasons[t]
         elif t not in ai_filtered_set:
@@ -2122,9 +2129,16 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
         })
 
     excl_stats = Counter(e["reason"] for e in entries if e["decision"]=="HARD_EXCLUDED")
+    selection_stats = {} if analysis_limited is None else {
+        "ai_relevant": len(ai_filtered) + len(analysis_limited),
+        "analysis_selected": len(ai_filtered),
+        "analysis_limit_excl": len(analysis_limited),
+        "ai_excl": sum(e["decision"] == "AI_EXCLUDED" for e in entries),
+    }
     if DELIVERY_GUARD is not None:
         DELIVERY_GUARD.save_log({"time": now.isoformat(), "total": len(all_arts),
                                  "sent": len(final), "hard_excl": len(hard_excluded),
+                                 **selection_stats,
                                  "excl_stats": dict(excl_stats), "usage": _usage_summary(),
                                  "entries": entries})
         print("  필터링 로그 비공개 저장 완료")
@@ -2136,6 +2150,7 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
                 "total":      len(all_arts),
                 "sent":       len(final),
                 "hard_excl":  len(hard_excluded),
+                **selection_stats,
                 "excl_stats": dict(excl_stats),
                 "usage":      _usage_summary(),
                 "entries":    entries,
@@ -2256,7 +2271,7 @@ def _run_main(provider=None):
         subj = f"{TEST_PREFIX}[인사이트] {now_str} — 해당 기사 없음"
         send_email_no_result(subj, build_empty_html())
         save_seen(seen)
-        save_filter_log(articles, hard_excluded, [], [])
+        save_filter_log(articles, hard_excluded, [], [], analysis_limited=[])
         return
 
     # ── 4) 본문 크롤링 (병렬)
@@ -2316,11 +2331,13 @@ def _run_main(provider=None):
 
     # ── 5) AI 2차 심층 분석 (상한: MAX_ANALYZE_ARTICLES)
     print("\n[5/6] AI 2차 심층 분석 + event_key 중복제거...")
+    analysis_limited = []
     if len(relevant) > MAX_ANALYZE_ARTICLES:
         # 절단 전 우선순위 정렬 — 1군 언론 우선, targeted(8개사 정밀) 우선
         # (정렬 없이 AI 1차 반환 순서로 자르면 고임팩트 기사가 점수도 못 매겨보고 유실될 수 있음)
         relevant.sort(key=lambda a: (a.get("_tier","") != "1군", a.get("_source_type","") != "targeted"))
         print(f"  ⚠️ AI 선별 {len(relevant)}건 → 상위 {MAX_ANALYZE_ARTICLES}건만 분석 (1군언론·정밀수집 우선, 비용 상한)")
+        analysis_limited = relevant[MAX_ANALYZE_ARTICLES:]
         relevant = relevant[:MAX_ANALYZE_ARTICLES]
     ai_filtered_list = list(relevant)
     analyzed, new_title_norms, new_desc_norms = [], [], []
@@ -2540,7 +2557,8 @@ def _run_main(provider=None):
     # and leave dedup state untouched so withheld articles can be reconsidered.
     if not analyzed and _OPERATIONAL_NOTES:
         print("  분석 보류 — 담당자 알림만 발송; 처리 이력 유지")
-        save_filter_log(articles, hard_excluded, ai_filtered_list, [], withheld_reasons)
+        save_filter_log(articles, hard_excluded, ai_filtered_list, [], withheld_reasons,
+                        analysis_limited=analysis_limited)
         return
 
     # ── 저장 — event_key + 폴백 키(회사명::위협유형::월) 함께 저장
@@ -2598,7 +2616,8 @@ def _run_main(provider=None):
     except Exception:
         print("  [WARN] seen_articles.json 저장 확인 실패")
 
-    save_filter_log(articles, hard_excluded, ai_filtered_list, analyzed, withheld_reasons)
+    save_filter_log(articles, hard_excluded, ai_filtered_list, analyzed, withheld_reasons,
+                    analysis_limited=analysis_limited)
 
     high = sum(1 for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="상")
     mid  = sum(1 for a in analyzed if a.get("analysis") and a["analysis"].get("impact_level")=="중")
@@ -2624,6 +2643,7 @@ if __name__ == "__main__":
         except Exception as _me:
             print(f"오류 메일 발송 실패: {_me}")
         raise
+
 
 
 

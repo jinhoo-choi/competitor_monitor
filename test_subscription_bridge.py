@@ -522,4 +522,122 @@ class DeliveryIntegrityRegression(unittest.TestCase):
         self.assertEqual(list(self.queue.get(self.path)[0]['receipts'].values()),['rejected'])
 
 
+class AnalysisLimitLoggingRegression(unittest.TestCase):
+    """Real provider/main selection; all external I/O is mocked, not the cap/dedup."""
+    def run_selection(self, count, withheld=False):
+        job, result = fixture()
+        template = job['input']['items'][0]
+        analysis = next(iter(result['analyses'].values()))
+        items = []
+        for i in range(count + 2):
+            a = copy.deepcopy(template)
+            a.update(title=f'키움증권 주문 개선 기사 {i}', link=f'https://example.invalid/{i}',
+                     _tier='1군' if i % 2 else '2군',
+                     _source_type='targeted' if i % 3 else 'broad')
+            a['article_id'] = bridge.article_id(a)
+            items.append(a)
+        job['input'].update(items=items, raw_articles=copy.deepcopy(items))
+        job['input_hash'] = bridge.digest(job['input'])
+        result.update(input_hash=job['input_hash'], classifications=[
+            {'article_id': a['article_id'], 'relevant': i < count, 'reason': 'offline classification'}
+            for i, a in enumerate(items)])
+        priority = lambda a: (a['_tier'] != '1군', a['_source_type'] != 'targeted')
+        selected = sorted(items[:count], key=priority)[:15]
+        result['analyses'] = {a['article_id']: copy.deepcopy(analysis) for a in selected}
+        provider = bridge.Provider(job, result, bot, 'seen')
+        guard = MagicMock()
+        with ExitStack() as stack:
+            stack.enter_context(redirect_stdout(StringIO()))
+            for name, value in {'DELIVERY_GUARD': guard, 'DRY_RUN': False, 'TEST_MODE': False}.items():
+                stack.enter_context(patch.object(bot, name, value))
+            mocks = {}
+            for name, value in {'preflight': True, 'load_seen': {}, 'is_duplicate': False,
+                                'save_seen': None, 'send_email': None, 'send_email_no_result': None,
+                                'send_email_error': None, 'build_email_html': 'unchanged html'}.items():
+                mocks[name] = stack.enter_context(patch.object(bot, name, return_value=value))
+            stack.enter_context(patch.object(bot, 'hard_filter', side_effect=lambda raw: (raw, [])))
+            # Analysis uses validated external data; no paid API or article fetch allowed.
+            stack.enter_context(patch.object(bot, 'fetch_article_body', side_effect=AssertionError('network')))
+            stack.enter_context(patch.object(bot, 'filter_relevant_articles', side_effect=AssertionError('AI')))
+            analyze = stack.enter_context(patch.object(bot, 'analyze_article', wraps=bot.analyze_article))
+            if withheld:
+                stack.enter_context(patch.object(bot, '_withhold_reason', return_value='원문 확인 미완료'))
+            bot.main(provider)
+        actual_ids = [c.args[0]['article_id'] for c in analyze.call_args_list]
+        expected = selected if count > 15 else items[:count]
+        self.assertEqual(actual_ids, [a['article_id'] for a in expected])
+        return guard.save_log.call_args.args[0], mocks, items, selected
+
+    def test_real_27_relevant_15_selected_12_limited_with_dedup_after_cap(self):
+        log, mocks, items, selected = self.run_selection(27)
+        selected_titles = {a['title'] for a in selected}
+        limited = {a['title'] for a in items[:27]} - selected_titles
+        decisions = {e['title']: e['decision'] for e in log['entries']}
+        self.assertEqual({t for t, d in decisions.items() if d == 'ANALYSIS_LIMIT_EXCLUDED'}, limited)
+        self.assertEqual({k: log[k] for k in ('ai_relevant', 'analysis_selected', 'analysis_limit_excl', 'ai_excl')},
+                         dict(ai_relevant=27, analysis_selected=15, analysis_limit_excl=12, ai_excl=2))
+        # All selected articles describe one event. Existing dedup keeps one and does NOT backfill the cap.
+        self.assertEqual(sum(d == 'SENT' for d in decisions.values()), 1)
+        self.assertEqual(sum(d == 'DEDUP_EXCLUDED' for d in decisions.values()), 14)
+        mocks['send_email'].assert_called_once()
+        self.assertEqual(mocks['build_email_html'].call_args.args[1:], (29, 15))
+        mocks['save_seen'].assert_called_once()
+
+    def test_cap_boundaries_and_no_relevant(self):
+        for count in (0, 14, 15, 16):
+            with self.subTest(relevant=count):
+                log, mocks, _, _ = self.run_selection(count)
+                self.assertEqual(log['ai_relevant'], count)
+                self.assertEqual(log['analysis_selected'], min(count, 15))
+                self.assertEqual(log['analysis_limit_excl'], max(count - 15, 0))
+                self.assertEqual(log['ai_excl'], 2)
+                self.assertEqual(sum(e['decision'] == 'ANALYSIS_LIMIT_EXCLUDED' for e in log['entries']), max(count-15, 0))
+                if not count:
+                    mocks['send_email'].assert_not_called()
+                    mocks['send_email_no_result'].assert_called_once()
+
+    def test_withheld_coverage_keeps_limit_separate_and_does_not_save_seen(self):
+        log, mocks, _, _ = self.run_selection(27, withheld=True)
+        self.assertEqual(sum(e['decision'] == 'WITHHELD' for e in log['entries']), 15)
+        self.assertEqual(sum(e['decision'] == 'ANALYSIS_LIMIT_EXCLUDED' for e in log['entries']), 12)
+        self.assertEqual(log['ai_excl'], 2)
+        mocks['send_email'].assert_not_called()
+        mocks['send_email_no_result'].assert_not_called()
+        mocks['save_seen'].assert_not_called()
+
+    def test_private_and_local_log_match_with_same_title_different_article(self):
+        import json
+        selected = {'title': '동일 제목', 'link': 'https://example.invalid/selected'}
+        limited = {'title': '동일 제목', 'link': 'https://example.invalid/limited'}
+        irrelevant = {'title': '비관련'}
+        hard = {'title': '하드 제외', '_excl_reason': '광고'}
+        guard = MagicMock()
+        args = ([selected, limited, irrelevant], [hard], [selected], [selected])
+        with patch.object(bot, 'DELIVERY_GUARD', guard), redirect_stdout(StringIO()):
+            bot.save_filter_log(*args, analysis_limited=[limited])
+        private = guard.save_log.call_args.args[0]
+        with tempfile.TemporaryDirectory() as tmp:
+            cwd = os.getcwd()
+            try:
+                os.chdir(tmp)
+                with patch.object(bot, 'DELIVERY_GUARD', None), redirect_stdout(StringIO()):
+                    bot.save_filter_log(*args, analysis_limited=[limited])
+                local = json.loads(next(Path(tmp).glob('filter_log_*.json')).read_text())
+            finally:
+                os.chdir(cwd)
+        for payload in (private, local):
+            self.assertEqual([e['decision'] for e in payload['entries']],
+                             ['SENT', 'ANALYSIS_LIMIT_EXCLUDED', 'AI_EXCLUDED', 'HARD_EXCLUDED'])
+            self.assertEqual([payload[k] for k in ('ai_relevant', 'analysis_selected', 'analysis_limit_excl', 'ai_excl')], [2, 1, 1, 1])
+        private.pop('time'); local.pop('time')
+        self.assertEqual(private, local)
+
+    def test_legacy_dry_run_log_does_not_claim_ai_selection_counts(self):
+        guard = MagicMock()
+        with patch.object(bot, 'DELIVERY_GUARD', guard), redirect_stdout(StringIO()):
+            bot.save_filter_log([{'title': '하드필터만 완료'}], [], [{'title': '하드필터만 완료'}], [])
+        self.assertNotIn('ai_relevant', guard.save_log.call_args.args[0])
+
+
 if __name__ == '__main__': unittest.main()
+
