@@ -1971,7 +1971,7 @@ def _send_one(subject: str, html: str, addr: str) -> dict:
             else:
                 return {addr: (0, str(e))}
 
-def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None) -> dict:
+def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None, *, copy_sender=True) -> dict:
     """수신자별 개별 발송(1인 1통).
     ⚠️ 설계 변경 이력: 기존엔 단일 메일에 To=본인고정 + 실수신자는 envelope으로만
     숨겨 보냈으나(순수 BCC), (a) 본인이 envelope에 빠져 있어 본인도 미착신,
@@ -1979,15 +1979,18 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None) -> 
     무음으로 차단하는 경우가 많아 실수신자도 전원 미착신 — 7/18 10시 발송 사고 원인.
     → 수신자 한 명당 메일을 개별 발송해 헤더 To를 항상 실제 수신자와 일치시키고
       (스팸필터 회피), 서로에게는 여전히 노출되지 않으며(원래 목적 유지),
-      본인(GMAIL_USER)도 항상 사본을 받도록 대상에 포함."""
+      상태 알림은 기존 본인 사본을 유지하며 정기 보고는 명시 수신자만 사용한다."""
     real_recipients = list(to) + list(cc or [])
-    targets = list(dict.fromkeys(real_recipients + [GMAIL_USER]))  # 순서유지 중복제거
+    targets = list(dict.fromkeys(real_recipients + ([GMAIL_USER] if copy_sender else [])))
     if TEST_MODE:
         # ⚠️ 최종 방어선 — 시크릿/환경변수가 어떻게 설정돼 있든 본인 주소 외에는 절대 발송 금지
         blocked = [t for t in targets if t != GMAIL_USER]
         if blocked:
             print(f"  [TEST_MODE] 외부 수신자 차단: {blocked}")
         targets = [GMAIL_USER]
+
+    if not targets:
+        raise RuntimeError("정기 보고 수신자 미설정 — 발송 금지")
 
     if DELIVERY_GUARD is not None:
         snapshot=DELIVERY_GUARD.history_plan
@@ -2015,7 +2018,7 @@ def send_email(html: str, analyzed: list[dict], raw_count: int):
     now_str = datetime.now(KST).strftime("%m월 %d일 %H시")
     subject = f"{TEST_PREFIX}[인사이트] {now_str} 기준"
     cc = RECIPIENTS_CC if RECIPIENTS_CC else None
-    refused = _smtp_send(subject, html, RECIPIENTS_ALL, cc)
+    refused = _smtp_send(subject, html, RECIPIENTS_ALL, cc, copy_sender=False)
     if refused:
         _OPERATIONAL_NOTES.append("일부 수신자 SMTP 접수 실패: " + str(len(refused)) + "건")
     print(f"  ✅ 발송 완료 | {subject}")

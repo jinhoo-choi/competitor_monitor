@@ -364,7 +364,8 @@ class DeliveryIntegrityRegression(unittest.TestCase):
         self.server=MagicMock();self.server.__enter__.return_value=self.server;self.server.sendmail.return_value={}
         for name,value in {'INSIGHT_ENGINE':'subscription','TEST_MODE':False,'DRY_RUN':False,
                            'GMAIL_USER':'owner@example.invalid','RECIPIENTS_ALL':['group@example.invalid'],
-                           'RECIPIENTS_CC':[],'NO_RESULT_RECEIVER':'owner@example.invalid'}.items():
+                           # Keep existing two-target failure scenarios explicit.
+                           'RECIPIENTS_CC':['owner@example.invalid'],'NO_RESULT_RECEIVER':'owner@example.invalid'}.items():
             self.stack.enter_context(patch.object(bot,name,value))
         self.stack.enter_context(patch.object(bot,'preflight',return_value=True))
         self.stack.enter_context(patch.object(bridge,'import_bot',return_value=bot))
@@ -373,6 +374,53 @@ class DeliveryIntegrityRegression(unittest.TestCase):
         self.stack.enter_context(patch.object(bot.smtplib,'SMTP_SSL',return_value=self.server))
 
     def consume(self):return bridge.consume({'engine':'subscription'},self.queue,self.job['job_id'])
+
+    def test_report_keeps_groups_and_executive_without_implicit_sender_then_ack_no_resend(self):
+        from email import message_from_string
+        from email.utils import parseaddr
+        targets = ['general@example.invalid', 'pb@example.invalid', 'executive@example.invalid']
+        with patch.object(bot, 'RECIPIENTS_ALL', targets[:2]), \
+             patch.object(bot, 'RECIPIENTS_CC', [targets[2], targets[0]]):
+            self.consume()
+            calls = self.server.sendmail.call_args_list
+            self.assertEqual([c.args[1] for c in calls], [[a] for a in targets])
+            for call in calls:
+                msg = message_from_string(call.args[2])
+                self.assertEqual(parseaddr(msg['To'])[1], call.args[1][0])
+                self.assertIsNone(msg['Cc'])
+                self.assertIsNone(msg['Bcc'])
+            state = self.queue.get(self.path)[0]
+            self.assertEqual(len(state['receipts']), len(targets))
+            self.assertNotIn(hashlib.sha256(bot.GMAIL_USER.encode()).hexdigest(), state['receipts'])
+            self.queue.remote_history = Path('seen_articles.json').read_bytes()
+            bridge.acknowledge(self.queue, self.job['job_id'])
+            completed = self.queue.get(self.path)[0]
+            self.consume()
+            self.assertEqual(self.queue.get(self.path)[0], completed)
+            self.assertEqual(self.server.sendmail.call_count, len(targets))
+            self.assertEqual(completed['status'], 'completed')
+
+    def test_report_preserves_explicit_sender_and_rejects_empty_config(self):
+        with patch.object(bot, 'RECIPIENTS_ALL', ['general@example.invalid']), \
+             patch.object(bot, 'RECIPIENTS_CC', [bot.GMAIL_USER, bot.GMAIL_USER]):
+            bot.send_email('<p>report</p>', [], 0)
+        self.assertEqual([c.args[1] for c in self.server.sendmail.call_args_list],
+                         [['general@example.invalid'], [bot.GMAIL_USER]])
+        self.server.sendmail.reset_mock()
+        with patch.object(bot, 'RECIPIENTS_ALL', []), patch.object(bot, 'RECIPIENTS_CC', []):
+            with self.assertRaisesRegex(RuntimeError, '수신자 미설정'):
+                bot.send_email('<p>report</p>', [], 0)
+        self.server.sendmail.assert_not_called()
+
+    def test_report_group_rejection_has_no_sender_fallback_or_history_ack(self):
+        before = Path('seen_articles.json').read_bytes()
+        self.server.sendmail.return_value = {'group@example.invalid': (550, b'refused')}
+        with patch.object(bot, 'RECIPIENTS_CC', []), self.assertRaises(RuntimeError):
+            self.consume()
+        self.assertEqual([c.args[1] for c in self.server.sendmail.call_args_list], [['group@example.invalid']])
+        self.assertEqual(Path('seen_articles.json').read_bytes(), before)
+        self.assertNotEqual(self.queue.get(self.path)[0]['status'], 'completed')
+
 
     def test_stale_read_after_reservation_does_not_lose_accepted_write(self):
         real_get=self.queue.get;real_put=self.queue.put;stale={}
