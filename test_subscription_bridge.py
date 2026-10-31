@@ -375,6 +375,65 @@ class DeliveryIntegrityRegression(unittest.TestCase):
 
     def consume(self):return bridge.consume({'engine':'subscription'},self.queue,self.job['job_id'])
 
+    def test_all_withheld_finishes_without_report_or_history_change(self):
+        article = self.job['input']['items'][0]
+        analysis = self.result['analyses'][article['article_id']]
+        analysis.update(impact_score=4.5, impact_level='하',
+                        summary='[본문 미수집] 키움증권이 MTS 해외주식 주문 기능을 개선했다.')
+        self.queue.files['results/'+self.job['job_id']+'.json'] = copy.deepcopy(self.result)
+        before = Path('seen_articles.json').read_bytes()
+        with patch.object(bot, 'send_email_error', return_value=True) as notice, \
+             patch.object(bot, 'save_seen') as save:
+            self.consume()
+        state = self.queue.get(self.path)[0]
+        self.assertEqual(state['status'], 'delivery_complete')
+        self.assertTrue(state['no_delivery_required'])
+        self.assertTrue(state['review_required'])
+        self.assertIsNone(state['delivered_at'])
+        self.assertEqual(state['receipts'], {})
+        self.assertNotIn('expected_receipts', state)
+        self.assertNotIn('planned_seen_snapshot', state)
+        self.assertEqual(Path('seen_articles.json').read_bytes(), before)
+        self.assertEqual(state['seen_after_hash'], hashlib.sha256(before).hexdigest())
+        save.assert_not_called()
+        self.server.sendmail.assert_not_called()
+        notice.assert_called_once()
+        self.assertTrue(notice.call_args.kwargs['operational'])
+        log = self.queue.get('filter-logs/'+self.job['job_id']+'.json')[0]
+        self.assertEqual(log['sent'], 0)
+        self.assertEqual([e['decision'] for e in log['entries']], ['WITHHELD'])
+        self.queue.remote_history = b'{"newer": true}\n'
+        with self.assertRaisesRegex(RuntimeError, '원격 main'):
+            bridge.acknowledge(self.queue, self.job['job_id'])
+        self.assertEqual(self.queue.get(self.path)[0]['status'], 'delivery_complete')
+        self.queue.remote_history = before
+        bridge.acknowledge(self.queue, self.job['job_id'])
+        completed = self.queue.get(self.path)[0]
+        self.assertEqual(completed['status'], 'completed')
+        self.assertTrue(completed['review_required'])
+        self.consume()
+        self.assertEqual(self.queue.get(self.path)[0], completed)
+        self.server.sendmail.assert_not_called()
+
+    def test_review_only_cannot_hide_started_delivery_or_history_change(self):
+        for change in ({'receipts': {'recipient': 'accepted'}},
+                       {'receipts': {'recipient': 'sending'}},
+                       {'receipts': {'recipient': 'uncertain'}},
+                       {'receipts': {'recipient': 'rejected'}},
+                       {'expected_receipts': ['recipient']},
+                       {'planned_seen_hash': 'reserved'}):
+            with self.subTest(change=change):
+                self.queue.files[self.path] = {**copy.deepcopy(self.job), **change}
+                guard = bridge.DeliveryGuard(self.queue, self.job['job_id'])
+                with self.assertRaises(RuntimeError):
+                    guard.mark_review_only()
+                self.assertNotIn('no_delivery_required', self.queue.files[self.path])
+        self.queue.files[self.path] = copy.deepcopy(self.job)
+        guard = bridge.DeliveryGuard(self.queue, self.job['job_id'])
+        with patch.object(bridge, 'seen_hash', return_value='changed'), self.assertRaises(RuntimeError):
+            guard.mark_review_only()
+        self.server.sendmail.assert_not_called()
+
     def test_report_keeps_groups_and_executive_without_implicit_sender_then_ack_no_resend(self):
         from email import message_from_string
         from email.utils import parseaddr
