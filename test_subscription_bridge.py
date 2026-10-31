@@ -135,6 +135,72 @@ class SubscriptionRegression(unittest.TestCase):
             self.assertEqual(got['_company'], '키움증권')
             api.assert_not_called()
 
+    def test_body_extraction_keeps_nested_article_and_late_company(self):
+        lead = '국내 주요 증권사의 미국 주식 시세 제공이 중단됐다. ' * 30
+        tail = '토스증권과 메리츠증권은 복수 시세망을 통해 정상 조회를 유지했다.'
+        for opening, closing in [
+                ('<div id="view-text">', '</div>'),
+                ('<article itemprop="articleBody">', '</article>')]:
+            page = ('<nav><p>페이지 메뉴와 관련기사</p></nav>' + opening + '<p>' + lead
+                    + '</p><div><figure>사진 설명<img src="x"></figure></div>'
+                    + '<div class="googlead">광고 문구</div><p>' + tail + '</p>' + closing
+                    + '<article>무관한 다른 기사</article>')
+            response = MagicMock()
+            response.__enter__.return_value = response
+            response.headers = {}
+            response.read.return_value = page.encode()
+            with self.subTest(opening=opening), patch.object(bot.urllib.request, 'urlopen', return_value=response):
+                body = bot.fetch_article_body('https://example.invalid/story')
+                self.assertGreater(body.index(tail), 800)
+                self.assertIn(tail, body)
+                for noise in ('사진 설명', '광고 문구', '페이지 메뉴', '무관한 다른 기사'):
+                    self.assertNotIn(noise, body)
+
+    def test_body_extraction_fails_closed_for_unscoped_page(self):
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.headers = {}
+        response.read.return_value = ('<nav><p>' + '메뉴 및 무관한 추천 기사 ' * 30 + '</p></nav>').encode()
+        with patch.object(bot.urllib.request, 'urlopen', return_value=response):
+            self.assertEqual(bot.fetch_article_body('https://example.invalid/story'), '')
+
+    def test_absent_company_stays_withheld_with_precise_reason(self):
+        article = copy.deepcopy(self.job['input']['items'][0])
+        article.update(title='미국 ATS 장애로 시세 중단', _body='미국 ATS의 시세 제공이 중단됐다.')
+        analysis = copy.deepcopy(self.analysis())
+        analysis['company_name'] = '토스증권'
+        with patch.object(bot, '_ai_create', side_effect=AssertionError('paid API forbidden')):
+            got = bot.analyze_article(article, analysis)
+        self.assertIsNone(got['analysis'])
+        self.assertEqual(bot._withhold_reason(got), '회사 귀속 확인 실패: 본문 미등장(토스증권)')
+
+    def test_policy_excluded_industry_review_finishes_without_executive_receipt(self):
+        article = self.job['input']['items'][0]
+        article.update(title='국내 증권사 주간거래 시세 장애',
+                       _body='국내 주요 증권사의 미국 주식 실시간 시세 제공이 중단됐다.')
+        self.job['input']['raw_articles'] = [copy.deepcopy(article)]
+        self.job['input_hash'] = bridge.digest(self.job['input'])
+        self.job['mode'] = 'production'
+        self.result.update(input_hash=self.job['input_hash'], analyses={})
+        self.result['classifications'][0]['relevant'] = False
+        queue = MemoryQueue(self.job, self.result)
+        with patch.object(bridge, 'import_bot', return_value=bot), \
+             patch.object(bridge, 'seen_hash', return_value='seen'), \
+             patch.object(bot, 'preflight', return_value=True), \
+             patch.object(bot, 'load_seen', return_value={'ids': set(), 'title_norms': [], 'events': set()}), \
+             patch.object(bot, 'save_seen') as save, \
+             patch.object(bot, '_send_one', return_value={}) as send, \
+             patch.object(bot, '_ai_create', side_effect=AssertionError('paid API forbidden')):
+            bridge.consume(self.config, queue, self.job['job_id'])
+        state = queue.get('jobs/' + self.job['job_id'] + '.json')[0]
+        self.assertEqual(state['status'], 'delivery_complete')
+        self.assertEqual(state['receipts'], {})
+        self.assertTrue(state['no_delivery_required'])
+        self.assertTrue(state['review_required'])
+        self.assertEqual(send.call_args.args[2], bot.OPERATIONAL_OWNER)
+        self.assertEqual(send.call_count, 1)
+        save.assert_not_called()
+
     def test_real_main_with_provider_keeps_routing_and_records_receipts(self):
         self.queue.files['jobs/'+self.job['job_id']+'.json']['mode']='production'
         server=MagicMock(); server.__enter__.return_value=server
