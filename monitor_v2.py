@@ -895,6 +895,7 @@ def fetch_naver_news(query: str, display: int = 5) -> list[dict]:
 
 # 일 1회 크론잡 기준 — 25시간으로 약간 여유
 NEWS_CUTOFF_HOURS = 17  # 18시→익일10시 최대16시간 + 지연 여유1시간
+ARTICLE_BODY_LIMIT = 4000  # 실제 본문 후반의 회사·시행시점도 검증에 보존
 
 def _is_within_cutoff(pub_date_str: str) -> bool:
     """pubDate가 NEWS_CUTOFF_HOURS 이내인지 확인, 파싱 실패 시 통과"""
@@ -910,7 +911,7 @@ def _is_within_cutoff(pub_date_str: str) -> bool:
 
 def fetch_article_body(url: str) -> str:
     """기사 본문 크롤링 — WAF 대응 헤더, 2MB 초과 스킵, 표준라이브러리만 사용"""
-    from html import unescape
+    from html.parser import HTMLParser
     try:
         req = urllib.request.Request(url, headers={
             "User-Agent":      random.choice(USER_AGENTS),
@@ -925,31 +926,65 @@ def fetch_article_body(url: str) -> str:
             html_bytes = res.read()
 
         html_text = html_bytes.decode("utf-8", errors="replace")
-        # 스크립트 안의 HTML 템플릿·스타일을 실제 기사 본문으로 잡지 않는다.
-        html_text = re.sub(r"<(script|style)\b[^>]*>.*?</\1\s*>", " ",
-                           html_text, flags=re.DOTALL | re.IGNORECASE)
+        class BodyParser(HTMLParser):
+            # 중첩 div/사진의 첫 닫는 태그에서 기사를 끊지 않는다.
+            voids = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+                     "link", "meta", "param", "source", "track", "wbr"}
+            ignored = {"script", "style", "nav", "aside", "header", "footer", "figure"}
 
-        # 핵심 영역 ID/class 패턴으로 추출
-        for pattern in [
-            r'id=["\'](?:dic_area|articleBodyContents|articeBody|article-body)["\'][^>]*>(.*?)</(?:div|article)',
-            r'class=["\'][^"\']*(?:article-body|news-body|view-content|newsct_article)[^"\']*["\'][^>]*>(.*?)</(?:div|article)',
-        ]:
-            for m in re.finditer(pattern, html_text, re.DOTALL | re.IGNORECASE):
-                chunk = unescape(re.sub(r"<[^>]+>", " ", m.group(1)))
-                chunk = re.sub(r"\s+", " ", chunk).strip()
-                if len(chunk) > 50:
-                    return chunk[:600]
+            def __init__(self):
+                super().__init__(convert_charrefs=True)
+                self.stack, self.regions = [], []
 
-        # 전체 폴백: <p> 태그 텍스트 추출
-        chunks = re.findall(r"<p[^>]*>(.*?)</p>", html_text, re.DOTALL | re.IGNORECASE)
-        texts = []
-        for c in chunks:
-            t = unescape(re.sub(r"<[^>]+>", " ", c)).strip()
-            t = re.sub(r"\s+", " ", t)
-            if len(t) > 20:
-                texts.append(t)
-        result = " ".join(texts)
-        return result[:600] if result else ""
+            def handle_starttag(self, tag, attrs):
+                attrs = dict(attrs)
+                ident, classes = attrs.get("id", ""), attrs.get("class", "").split()
+                skip = (bool(self.stack and self.stack[-1][1]) or tag in self.ignored
+                        or bool(set(classes) & {"view-image", "view-tag", "googlead", "relation"})
+                        or ("box-cont" in classes and urllib.parse.urlparse(url).hostname
+                            in {"hankyung.com", "www.hankyung.com"}))
+                rank = None
+                if (attrs.get("itemprop") == "articleBody" or ident in
+                        {"dic_area", "articleBodyContents", "articeBody", "article-body",
+                         "article-view-content-div", "view-text"}):
+                    rank = 0
+                elif set(classes) & {"article-body", "news-body", "view-content",
+                                     "newsct_article", "article-view-content"}:
+                    rank = 1
+                elif tag == "article":
+                    rank = 2
+                region = None
+                if rank is not None and not skip:
+                    region = [rank, []]
+                    self.regions.append(region)
+                if tag not in self.voids:
+                    self.stack.append((tag, skip, region))
+
+            def handle_startendtag(self, tag, attrs):
+                self.handle_starttag(tag, attrs)
+                if tag not in self.voids:
+                    self.handle_endtag(tag)
+
+            def handle_endtag(self, tag):
+                for i in range(len(self.stack) - 1, -1, -1):
+                    if self.stack[i][0] == tag:
+                        del self.stack[i:]
+                        break
+
+            def handle_data(self, data):
+                if self.stack and not self.stack[-1][1]:
+                    for _, _, region in self.stack:
+                        if region is not None:
+                            region[1].append(data)
+
+        parser = BodyParser()
+        parser.feed(html_text)
+        candidates = [(rank, re.sub(r"\s+", " ", " ".join(parts)).strip())
+                      for rank, parts in parser.regions]
+        candidates = [(rank, text) for rank, text in candidates if len(text) > 50]
+        if not candidates:
+            return ""  # 페이지 전체 메뉴·관련기사를 원문으로 대체하지 않는다.
+        return min(candidates, key=lambda item: (item[0], -len(item[1])))[1][:ARTICLE_BODY_LIMIT]
     except Exception:
         return ""
 
@@ -1343,8 +1378,9 @@ JSON only, 다른 텍스트 없이:
                     analysis["event_key"] = key
                     extracted = _rescued
                 else:
-                    print(f"    [비증권 주체 드롭] {_why} | {_title[:45]}")
-                    return {**art, "analysis": None}
+                    print(f"    [귀속 확인 실패] {_why} | {_title[:45]}")
+                    return {**art, "analysis": None,
+                            "_analysis_failure_reason": "회사 귀속 확인 실패: " + _why}
 
         # ── event_key 정규화 — 날짜 부분을 코드에서 강제 현재 월로 교정
         # AI가 기사 내 날짜(출시 예정일 등)를 보고 과거/미래 날짜를 넣는 문제 방지
@@ -1428,7 +1464,7 @@ _OPERATIONAL_MARKERS = ("[본문 미수집]", "[유사기사 참고]", "[분석 
 def _withhold_reason(article):
     analysis = article.get("analysis")
     if not analysis:
-        return "분석 실패"
+        return article.get("_analysis_failure_reason") or "분석 실패"
     if article.get("_body_failed") or article.get("_body_from_similar"):
         return "원문 확인 미완료"
     def contains_marker(value):

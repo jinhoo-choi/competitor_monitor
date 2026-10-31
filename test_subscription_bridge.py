@@ -126,6 +126,87 @@ class SubscriptionRegression(unittest.TestCase):
             with self.subTest(page=page[:60]), patch.object(bot.urllib.request, 'urlopen', return_value=response):
                 self.assertEqual(bot.fetch_article_body('https://news.example.invalid/story'), text)
 
+    def test_body_extraction_prefers_nested_article_over_menu_and_subheading(self):
+        # 10/29 Asiae, EZ, MK/Naver, Hankyung structures, with synthetic text.
+        text = ('키움증권은 일반모드 메인화면을 지난 8월 개편했다. '
+                '간편모드는 지난해 10월 출시됐다. 고객은 자산 현황을 확인할 수 있다.')
+        pages = [
+            '<nav><p>' + '무관한 실시간 뉴스 ' * 80 + '</p></nav>'
+            '<div class="article-body"><div><div id="txt_area" itemprop="articleBody">'
+            '<figure>사진 설명</figure><p>' + text + '</p></div></div></div>',
+            '<div class="article-body"><h2>' + '증권업 인수 관련 부제 ' * 10 + '</h2>'
+            '<article id="article-view-content-div" itemprop="articleBody">'
+            '<div><figure>사진</figure></div><p>' + text + '</p></article></div>',
+            '<nav><p>' + '무관한 추천 기사 ' * 80 + '</p></nav>'
+            '<article id="dic_area"><div><figure>사진</figure></div>' + text + '</article>',
+            '<div class="article-body" id="articletxt" itemprop="articleBody">'
+            '<div class="box-cont">구독 안내</div><figure>사진</figure>' + text + '</div>',
+        ]
+        for page in pages:
+            response = MagicMock()
+            response.__enter__.return_value = response
+            response.headers = {}
+            response.read.return_value = page.encode()
+            with self.subTest(page=page[:70]), patch.object(bot.urllib.request, 'urlopen', return_value=response):
+                body = bot.fetch_article_body('https://www.hankyung.com/article/offline')
+                self.assertEqual(body, text)
+                self.assertNotIn('무관한', body)
+
+    def test_body_extraction_preserves_late_dates_and_company(self):
+        lead = '일반모드 화면의 주식 정보와 자산 조회를 설명한다. ' * 40
+        tail = '키움증권은 지난 8월 개편했다. 간편모드는 지난해 10월 출시됐다.'
+        page = '<div id="article-body"><p>' + lead + '</p><div>중간 문단</div><p>' + tail + '</p></div>'
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.headers = {}
+        response.read.return_value = page.encode()
+        with patch.object(bot.urllib.request, 'urlopen', return_value=response):
+            body = bot.fetch_article_body('https://news.example.invalid/story')
+        self.assertIn(tail, body)
+        self.assertGreater(body.index(tail), 800)
+
+    def test_menu_or_subscription_notice_is_not_a_collected_body(self):
+        for page in [
+            '<nav><p>' + '메뉴와 다른 기사 ' * 80 + '</p></nav>',
+            '<div class="article-body" id="articletxt" itemprop="articleBody"><div class="box-cont">' + '구독 안내 ' * 30 + '</div></div>',
+        ]:
+            response = MagicMock()
+            response.__enter__.return_value = response
+            response.headers = {}
+            response.read.return_value = page.encode()
+            with self.subTest(page=page[:70]), patch.object(bot.urllib.request, 'urlopen', return_value=response):
+                self.assertEqual(bot.fetch_article_body('https://www.hankyung.com/article/offline'), '')
+
+    def test_collection_keeps_late_evidence_and_marks_empty_body_failed(self):
+        article = copy.deepcopy(self.job['input']['items'][0])
+        body = '화면 구성과 주문 편의를 설명한다. ' * 65 + '키움증권은 지난 8월 개편했다.'
+        for fetched in (body, ''):
+            queue = MemoryQueue(self.job, self.result)
+            queue.files['jobs/'+self.job['job_id']+'.json']['status'] = 'completed'
+            with self.subTest(fetched=bool(fetched)), ExitStack() as stack:
+                stack.enter_context(patch.dict(os.environ, {'GITHUB_RUN_ID': 'offline-body-collection'}))
+                stack.enter_context(patch.object(bridge, 'import_bot', return_value=bot))
+                stack.enter_context(patch.object(bridge, 'seen_hash', return_value='seen'))
+                stack.enter_context(patch.object(bot, 'load_seen', return_value={}))
+                stack.enter_context(patch.object(bot, 'collect_articles', return_value=[copy.deepcopy(article)]))
+                stack.enter_context(patch.object(bot, 'hard_filter', side_effect=lambda raw: (raw, [])))
+                stack.enter_context(patch.object(bot, 'fetch_article_body', return_value=fetched))
+                api = stack.enter_context(patch.object(bot, '_ai_create', side_effect=AssertionError('paid API forbidden')))
+                smtp = stack.enter_context(patch.object(bot.smtplib, 'SMTP_SSL', side_effect=AssertionError('SMTP forbidden')))
+                bridge.collect({'engine': 'subscription', 'job_ttl_minutes': 120}, queue)
+                stored = queue.files['jobs/offline-body-collection.json']['input']['items'][0]
+                self.assertEqual(stored['_body'], fetched or article['description'])
+                self.assertEqual(stored['_body_failed'], not bool(fetched))
+                api.assert_not_called()
+                smtp.assert_not_called()
+
+    def test_attribution_failure_has_specific_reason_without_relaxing_gate(self):
+        article = copy.deepcopy(self.job['input']['items'][0])
+        article.update(title='초보용 화면 소개', _body='무관한 메뉴 텍스트', description='키움증권 서비스 소개')
+        got = bot.analyze_article(article, self.analysis())
+        self.assertIsNone(got['analysis'])
+        self.assertEqual(bot._withhold_reason(got), '회사 귀속 확인 실패: 본문 미등장(키움증권)')
+
     def test_valid_result_keeps_normal_news_without_paid_api(self):
         provider = bridge.Provider(self.job, self.result, bot, 'seen')
         with patch.object(bot, '_ai_create', side_effect=AssertionError('paid API forbidden')) as api:
