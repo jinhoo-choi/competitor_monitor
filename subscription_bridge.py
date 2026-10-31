@@ -308,6 +308,19 @@ class DeliveryGuard:
         self.change(planned)
         self.history_plan=snapshot
 
+    def mark_review_only(self):
+        # A native all-withheld run has no report recipients and must not mark
+        # its articles seen. Never use this path to clear an SMTP reservation.
+        def reviewed(job):
+            if (job.get('receipts') != {} or 'expected_receipts' in job
+                    or 'planned_seen_hash' in job or 'planned_seen_snapshot' in job
+                    or self.history_plan is not None
+                    or seen_hash() != job['input']['seen_hash']):
+                raise RuntimeError('검토 전용 종결 전 발송·이력 흔적 존재 — 보류')
+            job.update(no_delivery_required=True, review_required=True,
+                       delivery_skipped_reason='all_reportable_articles_withheld')
+        self.change(reviewed)
+
     def before(self, address):
         key = hashlib.sha256(address.encode()).hexdigest()
         skip = False
@@ -507,11 +520,14 @@ def consume(config, queue, job_id, dry_run=False, self_test=False):
         if guard.history_plan is not None and hashlib.sha256(snapshot.encode()).hexdigest()!=seen_hash():
             raise RuntimeError('고정 이력과 로컬 저장 불일치 — 재발송 금지')
         bot.DELIVERY_GUARD.change(lambda j: j.update(status="verified" if self_test else "delivery_complete",
-                                                    paid_ai_calls=0, delivered_at=now().isoformat(),
+                                                    paid_ai_calls=0, delivered_at=None if j.get('review_required') else now().isoformat(),
                                                     self_test=self_test, seen_after_hash=seen_hash(),
                                                     seen_after_snapshot=snapshot,history_write_complete=True,
                                                     diagnostic_errors=guard.diagnostics))
-        print("본인 발송 검수 완료; API0/처리 이력 변경0" if self_test else "구독 결과 발송 접수 완료; API0/처리 이력 커밋 대기")
+        if guard.current[0].get('review_required'):
+            print('검토 전용 처리 완료; 운영발송0/처리 이력 변경0/ACK 대기')
+        else:
+            print("본인 발송 검수 완료; API0/처리 이력 변경0" if self_test else "구독 결과 발송 접수 완료; API0/처리 이력 커밋 대기")
     except Exception:
         accepted_plan=False
         try:
