@@ -497,6 +497,10 @@ def consume(config, queue, job_id, dry_run=False, self_test=False):
         return
     if not self_test and job.get("mode") != "production":
         raise RuntimeError("검수 자료는 운영 발송에 사용할 수 없음")
+    # A failed review-only completion may return to pending. The validated
+    # result can change before retry; only this attempt may declare no delivery.
+    for key in ("no_delivery_required", "review_required", "delivery_skipped_reason"):
+        job.pop(key, None)
     job.update(status="sending", sending_at=now().isoformat())
     reserved=queue.put(path, job, sha)
     reserved_sha=(reserved or {}).get('content',{}).get('sha')

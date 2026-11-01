@@ -415,6 +415,41 @@ class DeliveryIntegrityRegression(unittest.TestCase):
         self.assertEqual(self.queue.get(self.path)[0], completed)
         self.server.sendmail.assert_not_called()
 
+    def test_failed_review_only_completion_retry_does_not_mask_real_delivery(self):
+        original_result = copy.deepcopy(self.result)
+        analysis = next(iter(self.result['analyses'].values()))
+        analysis.update(impact_score=4.5, impact_level='하',
+                        summary='[본문 미수집] 키움증권이 MTS 해외주식 주문 기능을 개선했다.')
+        result_path = 'results/' + self.job['job_id'] + '.json'
+        self.queue.files[result_path] = copy.deepcopy(self.result)
+        original_put = self.queue.put
+
+        def fail_completion(path, value, sha=None):
+            if path == self.path and value.get('status') == 'delivery_complete':
+                raise RuntimeError('completion state write failed')
+            return original_put(path, value, sha)
+
+        with patch.object(self.queue, 'put', side_effect=fail_completion), \
+             patch.object(bot, 'send_email_error', return_value=True), \
+             self.assertRaisesRegex(RuntimeError, 'completion state write failed'):
+            self.consume()
+        pending = self.queue.get(self.path)[0]
+        self.assertEqual(pending['status'], 'pending')
+        self.assertEqual(pending['receipts'], {})
+        self.server.sendmail.assert_not_called()
+
+        # Re-review may replace the result while its original input remains bound.
+        self.queue.files[result_path] = original_result
+        self.consume()
+        state = self.queue.get(self.path)[0]
+        self.assertEqual(state['status'], 'delivery_complete')
+        self.assertEqual(self.server.sendmail.call_count, 2)
+        self.assertEqual(list(state['receipts'].values()), ['accepted', 'accepted'])
+        self.assertIsNotNone(state['delivered_at'])
+        self.assertFalse(state.get('review_required'))
+        self.assertFalse(state.get('no_delivery_required'))
+        self.assertNotIn('delivery_skipped_reason', state)
+
     def test_review_only_cannot_hide_started_delivery_or_history_change(self):
         for change in ({'receipts': {'recipient': 'accepted'}},
                        {'receipts': {'recipient': 'sending'}},
