@@ -2562,6 +2562,8 @@ def _run_main(provider=None):
         print("  분석 보류 — 담당자 알림만 발송; 처리 이력 유지")
         save_filter_log(articles, hard_excluded, ai_filtered_list, [], withheld_reasons,
                         analysis_limited=analysis_limited)
+        if DELIVERY_GUARD is not None:
+            DELIVERY_GUARD.mark_review_only()
         return
 
     # ── 저장 — event_key + 폴백 키(회사명::위협유형::월) 함께 저장
