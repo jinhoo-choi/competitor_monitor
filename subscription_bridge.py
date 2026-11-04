@@ -411,9 +411,29 @@ def collect(config, queue, mode="production"):
         old, old_sha = queue.get("jobs/" + old_id + ".json")
         if (old and old.get("schema_version") == SCHEMA
                 and old.get("status") == "pending" and old.get("receipts") == {}
-                and not old.get("delivered_at") and not old.get("seen_after_hash")
+                and not any(old.get(key) for key in (
+                    'sending_at', 'delivered_at', 'seen_after_hash', 'delivery_evidence',
+                    'expected_receipts', 'planned_seen_hash', 'history_write_complete'))
                 and datetime.fromisoformat(old["expires_at"]) <= now()):
             # SMTP 예약 기록이 전혀 없는 회차만 CAS로 종결한다. 입력·결과·seen은 보존.
+            attempt, _ = queue.get('analysis-attempts/' + old_id + '.json')
+            result, _ = queue.get('results/' + old_id + '.json')
+            evidence_path = 'audit/' + old_id + '/unstarted-timeout.json'
+            if queue.get(evidence_path)[0] is None:
+                state = (attempt or {}).get('state')
+                code = ('delivery_not_started' if result is not None else
+                        'analysis_evidence_missing' if attempt is None else
+                        'analysis_' + state if state in {'blocked', 'failed'} else 'analysis_incomplete')
+                queue.put(evidence_path, {
+                    'schema_version': 1, 'job_id': old_id, 'observed_at': now().isoformat(),
+                    'code': code, 'cause_confirmed': False,
+                    'last_stage': (attempt or {}).get('stage', 'unknown'),
+                    'last_updated_at': (attempt or {}).get('updated_at'),
+                    'processed_count': (attempt or {}).get('processed_count'),
+                    'input_count': len(old['input']['items']),
+                    'result_present': result is not None, 'receipts_count': 0,
+                    'input_hash': old['input_hash'],
+                    'attempt_path': 'analysis-attempts/' + old_id + '.json'})
             old.update(status="expired", expired_at=now().isoformat())
             queue.put("jobs/" + old_id + ".json", old, old_sha)
             print("미발송 구독 회차 자동 만료:", old_id)
