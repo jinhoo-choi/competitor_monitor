@@ -68,6 +68,48 @@ class StallRegression(unittest.TestCase):
         self.assertEqual(self.queue.get(self.job_path)[0]['status'], 'pending')
         self.assertIsNone(self.queue.get('jobs/new-production.json')[0])
 
+    def test_expiry_preserves_absent_analysis_as_unknown_cause(self):
+        self.expire()
+        self.queue.files.pop('results/' + self.job['job_id'] + '.json')
+        before = copy.deepcopy(self.queue.files[self.job_path])
+        self.collect()
+        evidence = self.queue.files['audit/' + self.job['job_id'] + '/unstarted-timeout.json']
+        self.assertEqual(evidence['code'], 'analysis_evidence_missing')
+        self.assertFalse(evidence['cause_confirmed'])
+        self.assertIsNone(evidence['processed_count'])
+        self.assertEqual(evidence['input_hash'], before['input_hash'])
+        self.assertEqual(self.queue.files[self.job_path]['input'], before['input'])
+        self.assertEqual(self.queue.files[self.job_path]['receipts'], {})
+        self.smtp.assert_not_called()
+        self.api.assert_not_called()
+
+    def test_expiry_distinguishes_checkpoint_failure_from_saved_result(self):
+        for saved_result, code in ((False, 'analysis_blocked'), (True, 'delivery_not_started')):
+            with self.subTest(saved_result=saved_result):
+                self.queue = MemoryQueue(self.job, self.result)
+                self.expire()
+                if not saved_result:
+                    self.queue.files.pop('results/' + self.job['job_id'] + '.json')
+                self.queue.files['analysis-attempts/' + self.job['job_id'] + '.json'] = {
+                    'state': 'blocked', 'stage': 'analyzing', 'processed_count': 25}
+                self.collect()
+                evidence = self.queue.files['audit/' + self.job['job_id'] + '/unstarted-timeout.json']
+                self.assertEqual((evidence['code'], evidence['processed_count']), (code, 25))
+                self.assertEqual(evidence['last_stage'], 'analyzing')
+                self.assertEqual(evidence['result_present'], saved_result)
+
+    def test_evidence_storage_failure_does_not_silently_expire_or_recollect(self):
+        self.expire()
+        put = self.queue.put
+        def fail_evidence(path, value, sha=None):
+            if path.startswith('audit/'):
+                raise RuntimeError('private evidence unavailable')
+            return put(path, value, sha)
+        with patch.object(self.queue, 'put', side_effect=fail_evidence), self.assertRaisesRegex(RuntimeError, 'evidence'):
+            self.collect()
+        self.assertEqual(self.queue.files[self.job_path]['status'], 'pending')
+        self.assertIsNone(self.queue.get('jobs/new-production.json')[0])
+
     def test_expired_pending_with_any_receipt_remains_blocked(self):
         self.expire()
         for receipt in ('sending', 'accepted', 'rejected', 'uncertain'):
@@ -90,7 +132,9 @@ class StallRegression(unittest.TestCase):
     def test_missing_receipts_or_delivery_marker_never_auto_expire(self):
         self.expire()
         original = copy.deepcopy(self.queue.files[self.job_path])
-        for change in ({'receipts': None}, {'receipts': []}, {'delivered_at': 'recorded'}, {'seen_after_hash': 'after'}):
+        for change in ({'receipts': None}, {'receipts': []}, {'delivered_at': 'recorded'},
+                       {'seen_after_hash': 'after'}, {'sending_at': 'recorded'},
+                       {'expected_receipts': ['recipient']}, {'delivery_evidence': {'recipient': 'accepted'}}):
             with self.subTest(change=change):
                 self.queue.files[self.job_path] = {**original, **change}
                 with self.assertRaisesRegex(RuntimeError, '미종결'):
