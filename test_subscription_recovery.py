@@ -352,6 +352,7 @@ class RecoveryRequest(unittest.TestCase):
         with patch.dict(os.environ, {'GITHUB_REF': 'refs/heads/feature'}):
             with self.assertRaises(ValueError): request.arguments({'operation': 'recover-inputs'})
 
+    @patch.dict(os.environ, {'GITHUB_REF': 'refs/heads/main'})
     def test_recovery_request_passes_only_bounded_hash_ids(self):
         import subscription_request as request
         aid = 'a' * 24
