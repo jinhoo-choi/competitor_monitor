@@ -61,8 +61,25 @@ class MemoryQueue:
         self.rev[path] = str(int(self.rev.get(path, '0'))+1)
         return {'content': {'sha': self.rev[path]}}
 
+    def snapshot_jobs(self):
+        return {'head': bridge.digest(self.files), 'tree': 'offline',
+                'jobs': {p[5:-5]: copy.deepcopy(v) for p, v in self.files.items()
+                         if p.startswith('jobs/') and p.endswith('.json')},
+                'index': copy.deepcopy(self.files.get('index.json', {'jobs': []}))}
+
+    def publish_collection(self, snapshot, values):
+        if snapshot['head'] != bridge.digest(self.files):
+            raise RuntimeError('CAS mismatch')
+        before_files, before_rev = copy.deepcopy(self.files), copy.deepcopy(self.rev)
+        try:
+            for path, value in values.items():
+                self.put(path, value, self.rev.get(path))
+        except Exception:
+            self.files, self.rev = before_files, before_rev
+            raise
+
     def history_source(self):
-        raw=getattr(self,'remote_history',Path('seen_articles.json').read_bytes())
+        raw=self.remote_history if hasattr(self, 'remote_history') else Path('seen_articles.json').read_bytes()
         blob=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
         return raw,blob,'a'*40
 
@@ -782,3 +799,4 @@ class AnalysisLimitLoggingRegression(unittest.TestCase):
 
 
 if __name__ == '__main__': unittest.main()
+

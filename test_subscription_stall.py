@@ -34,6 +34,7 @@ class StallRegression(unittest.TestCase):
     def collect(self):
         collector = MagicMock()
         collector.collect_articles.return_value = []
+        collector.is_duplicate.return_value = False
         collector.hard_filter.return_value = ([], [])
         with patch.object(bridge, 'import_bot', return_value=collector), patch.object(bridge, 'seen_hash', return_value='seen'), patch.object(bridge, 'notify_error') as notify, patch.dict(os.environ, {'GITHUB_RUN_ID': 'new-production'}):
             bridge.collect({'engine': 'subscription', 'job_ttl_minutes': 120}, self.queue)
@@ -57,7 +58,7 @@ class StallRegression(unittest.TestCase):
         self.assertEqual(new['input']['seen_hash'], 'seen')
         collector.save_seen.assert_not_called()
         notify.assert_called_once()
-        self.assertIn('보장되지', notify.call_args.args[1])
+        self.assertIn('발송 복구 완료가 아닙니다', notify.call_args.args[1])
         self.assertEqual(notify.call_args.kwargs, {'operational': True})
         self.api.assert_not_called()
         self.smtp.assert_not_called()
@@ -115,6 +116,7 @@ class StallRegression(unittest.TestCase):
 
     def test_expired_terminal_job_is_ignored_on_next_collection(self):
         self.queue.files[self.job_path]['status'] = 'expired'
+        self.expire()
         _, notify = self.collect()
         self.assertEqual(self.queue.get('jobs/new-production.json')[0]['status'], 'pending')
         notify.assert_not_called()
@@ -288,4 +290,5 @@ sys.exit(0)
 
 if __name__ == '__main__':
     unittest.main()
+
 

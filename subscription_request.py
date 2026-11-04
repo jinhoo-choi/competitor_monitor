@@ -8,7 +8,7 @@ from pathlib import Path
 
 def arguments(signal):
     operation = signal.get("operation")
-    if operation not in {"connection", "initialize", "collect-test", "consume", "rollback-check", "cancel", "recover-state"}:
+    if operation not in {"connection", "initialize", "collect-test", "consume", "rollback-check", "cancel", "recover-state", "recover-inputs"}:
         raise ValueError("지원하지 않는 요청")
     args = [operation]
     if operation in {"consume", "cancel", "recover-state"}:
@@ -16,6 +16,14 @@ def arguments(signal):
         if not isinstance(job_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", job_id):
             raise ValueError("회차 ID 오류")
         args += ["--job-id", job_id]
+    if 'article_ids' in signal:
+        ids = signal['article_ids']
+        if (operation != 'recover-inputs' or not isinstance(ids, list) or not 1 <= len(ids) <= 15
+                or any(not isinstance(aid, str) or not re.fullmatch(r'[0-9a-f]{24}', aid) for aid in ids)
+                or len(ids) != len(set(ids))):
+            raise ValueError('복구 선택 ID 형식·중복·상한 오류')
+        for aid in ids:
+            args += ['--article-id', aid]
     dry, self_test = signal.get("dry_run", False), signal.get("self_test", False)
     if type(dry) is not bool or type(self_test) is not bool or (dry and self_test):
         raise ValueError("검수 플래그 오류")
@@ -25,7 +33,7 @@ def arguments(signal):
         args += ["--dry-run"]
     if self_test:
         args += ["--self-test"]
-    if os.environ.get("GITHUB_REF", "refs/heads/main") != "refs/heads/main" and ((operation == "consume" and not (dry or self_test)) or operation == "recover-state"):
+    if os.environ.get("GITHUB_REF", "refs/heads/main") != "refs/heads/main" and ((operation == "consume" and not (dry or self_test)) or operation in {"recover-state", "recover-inputs"}):
         raise ValueError("운영 발송은 main에서만 가능")
     return args
 
@@ -40,3 +48,4 @@ if __name__ == "__main__":
         output.write("production=" + str(production).lower() + "\n")
         output.write("job_id=" + signal.get("job_id", "") + "\n")
     subprocess.run(["python", "subscription_bridge.py", *args], check=True)
+
