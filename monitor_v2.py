@@ -42,7 +42,7 @@ GMAIL_APP_PASSWORD  = os.environ["GMAIL_APP_PASSWORD"]
 
 # 수신자 2그룹: TO는 항상 발송, CC는 항상 참조
 RECIPIENTS_ALL = []  # 실제 배포대상 단일화 — risk_aigent 그룹 하나만 사용
-RECIPIENTS_CC  = ["risk_aigent@googlegroups.com"]  # 실제 배포대상 — 유일한 숨은참조(개별발송) 수신자
+RECIPIENTS_CC  = ["risk_aigent@googlegroups.com", "kwakjin@koreainvestment.com"]  # 일반 그룹과 본부장 직접 수신(개별발송)
 
 # ═══ TEST_MODE — 나에게만 발송되는 검수용 실행 ═══
 # workflow_dispatch 수동 테스트가 실제 그룹(risk_aigent)으로 라이브 발송되는 사고를 막기 위한 격리 모드.
