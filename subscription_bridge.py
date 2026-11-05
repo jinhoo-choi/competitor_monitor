@@ -167,6 +167,230 @@ class Queue:
         return self.request("/contents/" + self.prefix + "/" + path, "PUT", payload)
 
 
+    def snapshot_jobs(self):
+        """Read every retained job at one commit, independent of the rolling index."""
+        ref = self.request('/git/ref/heads/' + urllib.parse.quote(self.branch, safe=''))
+        head = (ref or {}).get('object', {}).get('sha')
+        if not isinstance(head, str) or not re.fullmatch(r'[0-9a-f]{40}', head):
+            raise RuntimeError('복구 큐 HEAD 확인 실패')
+        commit = self.request('/git/commits/' + head)
+        tree_sha = (commit or {}).get('tree', {}).get('sha')
+        tree = self.request('/git/trees/' + str(tree_sha) + '?recursive=1')
+        if not tree or tree.get('truncated') is not False:
+            raise RuntimeError('복구 큐 전체 목록 확인 실패 — 잘린 목록 사용 금지')
+        jobs, index = {}, {'jobs': []}
+        for entry in tree['tree']:
+            path = entry['path']
+            if not (path == self.prefix + '/index.json' or path.startswith(self.prefix + '/jobs/')):
+                continue
+            if entry['type'] == 'tree':
+                continue
+            relative = path[len(self.prefix) + 1:]
+            if relative != 'index.json' and not re.fullmatch(r'jobs/[A-Za-z0-9_-]{1,80}\.json', relative):
+                raise RuntimeError('복구 큐 회차 경로 오류')
+            blob = self.request('/git/blobs/' + entry['sha'])
+            if not blob or blob.get('encoding') != 'base64':
+                raise RuntimeError('복구 큐 원본 blob 누락')
+            raw = base64.b64decode(blob['content'])
+            actual = hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+            if actual != entry['sha']:
+                raise RuntimeError('복구 큐 원본 blob 해시 불일치')
+            value = json.loads(raw)
+            if relative == 'index.json':
+                index = value
+            else:
+                jobs[relative[5:-5]] = value
+        if (not isinstance(index, dict) or not isinstance(index.get('jobs'), list)
+                or any(jid not in jobs for jid in index['jobs'])):
+            raise RuntimeError('복구 큐 색인 원본 누락')
+        return {'head': head, 'tree': tree_sha, 'jobs': jobs, 'index': index}
+
+    def publish_collection(self, snapshot, values):
+        """One non-force ref update: expiry, new input and index commit together.
+
+        A concurrent writer creates a sibling commit, so fast-forward fails.
+        Never retry a write with a lost response; the next full snapshot reconciles.
+        """
+        ref_path = '/git/refs/heads/' + urllib.parse.quote(self.branch, safe='')
+        ref = self.request('/git/ref/heads/' + urllib.parse.quote(self.branch, safe=''))
+        if (ref or {}).get('object', {}).get('sha') != snapshot['head']:
+            raise RuntimeError('복구 큐 CAS 충돌 — 재수집 필요')
+        entries = []
+        for path, value in values.items():
+            entries.append({'path': self.prefix + '/' + path, 'mode': '100644',
+                            'type': 'blob', 'content': json.dumps(value, ensure_ascii=False, indent=2)})
+        tree = self.request('/git/trees', 'POST', {'base_tree': snapshot['tree'], 'tree': entries})
+        if not tree or not tree.get('sha'):
+            raise RuntimeError('복구 큐 tree 쓰기 미확인')
+        commit = self.request('/git/commits', 'POST', {
+            'message': 'chore: atomic insight collection and carryover [skip ci]',
+            'tree': tree['sha'], 'parents': [snapshot['head']]})
+        if not commit or not commit.get('sha'):
+            raise RuntimeError('복구 큐 commit 쓰기 미확인')
+        updated = self.request(ref_path, 'PATCH', {'sha': commit['sha'], 'force': False})
+        if (updated or {}).get('object', {}).get('sha') != commit['sha']:
+            raise RuntimeError('복구 큐 발행 결과 미확인 — 자동 재시도 금지')
+
+
+def recovery_input(job, jid):
+    """Validate immutable source identity and body before considering any reuse."""
+    data = job.get('input')
+    if (job.get('schema_version') != SCHEMA or job.get('job_id') != jid
+            or not JOB_ID.fullmatch(jid) or not isinstance(data, dict)
+            or job.get('input_hash') != digest(data)
+            or data.get('policy_version') != POLICY_VERSION
+            or not re.fullmatch(r'[0-9a-f]{64}', str(data.get('policy_hash', '')))):
+        raise RuntimeError('복구 원본 회차·입력 해시 오류')
+    raw, items = data.get('raw_articles'), data.get('items')
+    if not isinstance(raw, list) or not isinstance(items, list):
+        raise RuntimeError('복구 원본 기사 목록 오류')
+    by_id = {}
+    for article in raw:
+        if not isinstance(article, dict) or article.get('article_id') != article_id(article):
+            raise RuntimeError('복구 원본 기사 ID 오류')
+        aid = article['article_id']
+        if aid in by_id:
+            raise RuntimeError('복구 원본 기사 ID 중복')
+        by_id[aid] = article
+    ids = []
+    for article in items:
+        if (not isinstance(article, dict) or by_id.get(article.get('article_id')) != article
+                or not isinstance(article.get('_body'), str)
+                or type(article.get('_body_failed')) is not bool):
+            raise RuntimeError('복구 원본 본문·선별 자료 불일치')
+        ids.append(article['article_id'])
+    if len(ids) != len(set(ids)):
+        raise RuntimeError('복구 선별 기사 ID 중복')
+    return items
+
+
+def unattempted(job):
+    # Preserve main's conservative lock: a reservation alone is not safe to replay.
+    return (job.get('receipts') == {} and not any(job.get(k) for k in
+            ('sending_at', 'delivered_at', 'seen_after_hash', 'attempted_count',
+             'delivery_evidence', 'history_write_complete'))
+            and not any(k in job for k in ('expected_receipts', 'planned_seen_hash', 'planned_seen_snapshot')))
+
+
+def prepare_carryover(snapshot, mode, source_job_ids=None):
+    values, sources, candidates, resolved = {}, [], {}, set()
+    jobs = snapshot['jobs']
+    if source_job_ids is not None:
+        if (not isinstance(source_job_ids, list) or not 1 <= len(source_job_ids) <= 20
+                or len(source_job_ids) != len(set(source_job_ids))
+                or any(not isinstance(jid, str) or not JOB_ID.fullmatch(jid)
+                       or jid not in jobs or jobs[jid].get('status') != 'expired'
+                       or jobs[jid].get('mode') != 'production' for jid in source_job_ids)):
+            raise ValueError('복구 원본 회차 선택 오류')
+    for jid, job in jobs.items():
+        if job.get('status') == 'completed' and job.get('recovery_decisions'):
+            recovery_input(job, jid)
+            if (not job.get('history_saved') or not job.get('history_commit_sha')
+                    or not job.get('history_blob_sha') or job.get('mode') != 'production'):
+                raise RuntimeError('복구 종결 ACK 증거 누락')
+            receipts = job.get('receipts', {})
+            if (not receipts and not job.get('no_delivery_required')) or any(v != 'accepted' for v in receipts.values()):
+                raise RuntimeError('복구 종결 접수 증거 누락')
+            if ('expected_receipts' in job and set(receipts) != set(job['expected_receipts'])):
+                raise RuntimeError('복구 종결 수신자 접수 불일치')
+            if job.get('recovery_decisions_hash') != digest(job['recovery_decisions']):
+                raise RuntimeError('복구 종결 처리 결정 해시 불일치')
+            item_ids = {a['article_id'] for a in job['input']['raw_articles']}
+            for aid, decision in job['recovery_decisions'].items():
+                if aid not in item_ids:
+                    raise RuntimeError('복구 종결 기사 ID 오류')
+                if decision in {'SENT', 'AI_EXCLUDED', 'HARD_EXCLUDED'}:
+                    resolved.add(aid)
+    for jid, job in sorted(jobs.items()):
+        status = job.get('status')
+        if status not in {'pending', 'expired', 'completed', 'verified', 'cancelled'}:
+            raise RuntimeError('미종결 구독 회차 존재 — 신규 회차·롤백 중복 방지')
+        if status not in {'pending', 'expired'}:
+            continue
+        if source_job_ids is not None:
+            if status == 'pending':
+                raise RuntimeError('미종결 구독 회차 존재 — 복구 원본 선택으로 우회 금지')
+            if jid not in source_job_ids:
+                continue  # Archived source remains untouched and is reviewed as history.
+        safe = unattempted(job)
+        if not safe or datetime.fromisoformat(job['expires_at']) > now():
+            raise RuntimeError('미종결 구독 회차 존재 — 신규 회차·롤백 중복 방지')
+        items = recovery_input(job, jid)
+        if status == 'pending':
+            expired = copy.deepcopy(job)
+            expired.update(status='expired', expired_at=now().isoformat())
+            values['jobs/' + jid + '.json'] = expired
+        if mode != 'production' or job.get('mode') != 'production':
+            continue
+        unresolved = [a for a in items if a['article_id'] not in resolved]
+        if unresolved:
+            sources.append({'job_id': jid, 'input_hash': job['input_hash'],
+                            'article_ids': [a['article_id'] for a in unresolved]})
+            for article in unresolved:
+                candidates.setdefault(article['article_id'], copy.deepcopy(article))
+    return values, sources, list(candidates.values())
+
+
+def validate_recovery_sources(queue, job, result):
+    snapshot = queue.snapshot_jobs()
+    refs = job['input']['recovery_sources']
+    if not isinstance(refs, list) or not refs:
+        raise RuntimeError('복구 원본 참조 누락')
+    if result.get('recovery_history_reviewed') != digest(job['input'].get('recovery_history')):
+        raise RuntimeError('복구 과거 완료회차 대조 증거 없음 — 재분석 필요')
+    source_scope = job['input'].get('recovery_source_job_ids')
+    if source_scope is not None and (not isinstance(source_scope, list)
+            or not 1 <= len(source_scope) <= 20 or len(set(source_scope)) != len(source_scope)
+            or {ref.get('job_id') for ref in refs} != set(source_scope)):
+        raise RuntimeError('복구 원본 회차 범위 불일치')
+    for ref in job['input'].get('recovery_history', []):
+        historic = snapshot['jobs'].get(ref.get('job_id'))
+        if (not historic or historic.get('input_hash') != ref.get('input_hash')
+                or historic.get('status') != ref.get('status', 'completed')):
+            raise RuntimeError('복구 과거회차 근거 변경 — 재검토 필요')
+    original = {}
+    for ref in refs:
+        jid = ref.get('job_id', '')
+        source = snapshot['jobs'].get(jid)
+        if not source or source.get('input_hash') != ref.get('input_hash'):
+            raise RuntimeError('복구 원본 참조 해시 불일치')
+        if source.get('status') != 'expired' or not unattempted(source):
+            raise RuntimeError('복구 원본 전송 상태 변경 — 발송 보류')
+        items = {a['article_id']: a for a in recovery_input(source, jid)}
+        ids = ref.get('article_ids')
+        if not isinstance(ids, list) or len(ids) != len(set(ids)) or not set(ids) <= set(items):
+            raise RuntimeError('복구 원본 참조 기사 ID 불일치')
+        for aid in ids:
+            original.setdefault(aid, items[aid])
+    included = {a['article_id'] for a in job['input']['raw_articles']}
+    omissions = job['input'].get('recovery_omissions')
+    if not isinstance(omissions, dict) or set(omissions) != set(original) - included:
+        raise RuntimeError('복구 원본 기사 누락 — 중복 제외 증거 불일치')
+    selection = job['input'].get('recovery_selection')
+    if selection is not None and (not isinstance(selection, list) or not 1 <= len(selection) <= 15
+            or len(selection) != len(set(selection)) or not set(selection) <= set(original)):
+        raise RuntimeError('복구 배치 선택 계약 오류')
+    if selection is not None and not included <= set(selection):
+        raise RuntimeError('복구 선택 이외 기사 포함')
+    bot = import_bot()
+    dedup_seen = copy.deepcopy(bot.load_seen())
+    for aid, article in original.items():
+        if selection is not None and aid not in selection:
+            if omissions.get(aid) != 'deferred_operator_selection':
+                raise RuntimeError('복구 선택 밖 미해결 기사 보존 증거 누락')
+            continue
+        duplicate = bot.is_duplicate(copy.deepcopy(article), dedup_seen)
+        if aid in omissions and (omissions[aid] != 'current_seen_or_batch_duplicate' or not duplicate):
+            raise RuntimeError('복구 기사 중복 제외 재검증 실패')
+    for article in job['input']['raw_articles']:
+        aid = article.get('article_id')
+        if aid in original and article != original[aid]:
+            raise RuntimeError('복구 원본 본문·동일성 변경')
+    for jid, other in snapshot['jobs'].items():
+        if jid != job['job_id'] and other.get('status') in {'pending', 'sending', 'uncertain', 'delivery_complete'}:
+            raise RuntimeError('미종결 다른 구독 회차 존재 — 복구 발송 보류')
+
+
 def validate(job, result, current_seen_hash, at=None):
     at = at or now()
     if job.get("schema_version") != SCHEMA or result.get("schema_version") != SCHEMA:
@@ -272,6 +496,16 @@ class DeliveryGuard:
         self.diagnostics.append({'stage':stage,'error_type':type(error).__name__})
 
     def save_log(self, value):
+        if self.current and self.current[0]['input'].get('recovery_sources'):
+            allowed = {a['article_id'] for a in self.current[0]['input']['raw_articles']}
+            decisions = {}
+            for entry in value.get('entries', []):
+                aid = entry.get('article_id')
+                if aid not in allowed or aid in decisions:
+                    raise RuntimeError('복구 처리 결정 기사 ID 누락·중복')
+                decisions[aid] = entry['decision']
+            self.change(lambda job: job.update(recovery_decisions=decisions,
+                                               recovery_decisions_hash=digest(decisions)))
         try:
             self.queue.put("filter-logs/" + self.job_id + ".json", value)
         except Exception as error:
@@ -396,7 +630,7 @@ def notify_error(error, context="", *, operational=False):
         print(f"담당자 {label} 알림 실패:", type(notification_error).__name__)
 
 
-def collect(config, queue, mode="production"):
+def collect(config, queue, mode="production", recovery_only=False, selected_ids=None, source_job_ids=None):
     bot = import_bot()
     state_hash = seen_hash()
     rules_hash = policy_hash()
@@ -405,51 +639,46 @@ def collect(config, queue, mode="production"):
     job_id = str(os.environ.get("GITHUB_RUN_ID") or now().strftime("%Y%m%dT%H%M%S"))
     if not JOB_ID.fullmatch(job_id):
         raise ValueError("회차 ID 오류")
-    index, index_sha = queue.get("index.json")
-    index = index or {"jobs": []}
-    for old_id in index["jobs"]:
-        old, old_sha = queue.get("jobs/" + old_id + ".json")
-        if (old and old.get("schema_version") == SCHEMA
-                and old.get("status") == "pending" and old.get("receipts") == {}
-                and not any(old.get(key) for key in (
-                    'sending_at', 'delivered_at', 'seen_after_hash', 'delivery_evidence',
-                    'expected_receipts', 'planned_seen_hash', 'history_write_complete'))
-                and datetime.fromisoformat(old["expires_at"]) <= now()):
-            # SMTP 예약 기록이 전혀 없는 회차만 CAS로 종결한다. 입력·결과·seen은 보존.
-            attempt, _ = queue.get('analysis-attempts/' + old_id + '.json')
-            result, _ = queue.get('results/' + old_id + '.json')
-            evidence_path = 'audit/' + old_id + '/unstarted-timeout.json'
-            if queue.get(evidence_path)[0] is None:
-                state = (attempt or {}).get('state')
-                code = ('delivery_not_started' if result is not None else
-                        'analysis_evidence_missing' if attempt is None else
-                        'analysis_' + state if state in {'blocked', 'failed'} else 'analysis_incomplete')
-                queue.put(evidence_path, {
-                    'schema_version': 1, 'job_id': old_id, 'observed_at': now().isoformat(),
-                    'code': code, 'cause_confirmed': False,
-                    'last_stage': (attempt or {}).get('stage', 'unknown'),
-                    'last_updated_at': (attempt or {}).get('updated_at'),
-                    'processed_count': (attempt or {}).get('processed_count'),
-                    'input_count': len(old['input']['items']),
-                    'result_present': result is not None, 'receipts_count': 0,
-                    'input_hash': old['input_hash'],
-                    'attempt_path': 'analysis-attempts/' + old_id + '.json'})
-            old.update(status="expired", expired_at=now().isoformat())
-            queue.put("jobs/" + old_id + ".json", old, old_sha)
-            print("미발송 구독 회차 자동 만료:", old_id)
-            notify_error(RuntimeError("미발송 구독 회차 만료: " + old_id),
-                         "입력과 처리 이력은 보존했습니다. 다음 회차는 17시간 범위만 수집하므로 "
-                         "만료 입력 전체의 재수집은 보장되지 않습니다. 비공개 회차 기록을 확인하세요.",
-                         operational=True)
-            continue
-        if old and old.get("status") in {"pending", "sending", "uncertain", "delivery_complete"}:
-            raise RuntimeError("미종결 구독 회차 존재 — 신규 회차·롤백 중복 방지")
-    if queue.get("jobs/" + job_id + ".json")[0] is not None:
+    snapshot = queue.snapshot_jobs()
+    if source_job_ids is not None and not recovery_only:
+        raise ValueError('복구 외 원본 회차 선택 금지')
+    if recovery_only:
+        values, sources, carried = prepare_carryover(snapshot, mode, source_job_ids)
+    else:
+        # Keep scheduled collection independent of archived expired inputs, as on main.
+        active_snapshot = dict(snapshot, jobs={jid: old for jid, old in snapshot['jobs'].items()
+                                             if old.get('status') != 'expired'})
+        values, sources, carried = prepare_carryover(active_snapshot, 'verification')
+    deferred = {}
+    if selected_ids is not None:
+        if (not recovery_only or mode != 'production' or not isinstance(selected_ids, list)
+                or not 1 <= len(selected_ids) <= 15 or len(selected_ids) != len(set(selected_ids))
+                or any(not isinstance(aid, str) or not re.fullmatch(r'[0-9a-f]{24}', aid) for aid in selected_ids)
+                or not set(selected_ids) <= {a['article_id'] for a in carried}):
+            raise ValueError('복구 선택 ID 중복·미존재·상한 오류')
+        deferred = {a['article_id']: 'deferred_operator_selection' for a in carried
+                    if a['article_id'] not in selected_ids}
+        carried = [a for a in carried if a['article_id'] in selected_ids]
+    if job_id in snapshot['jobs']:
         raise RuntimeError("동일 회차 재수집 금지")
-    raw = bot.collect_articles(bot.load_seen())
-    passed, _ = bot.hard_filter(raw)
+    current_seen = bot.load_seen()
+    fresh = [] if recovery_only else bot.collect_articles(copy.deepcopy(current_seen))
+    raw, merged_seen, omissions = [], copy.deepcopy(current_seen), deferred
+    carried_ids = {a['article_id'] for a in carried}
+    for article in carried + fresh:
+        if not bot.is_duplicate(article, merged_seen):
+            raw.append(copy.deepcopy(article))
+        elif article.get('article_id') in carried_ids:
+            omissions[article['article_id']] = 'current_seen_or_batch_duplicate'
+    # A duplicate fresh copy does not omit the preserved carried original.
+    for article in raw:
+        omissions.pop(article.get('article_id'), None)
+    passed, _ = bot.hard_filter(copy.deepcopy(raw))
+    carried_ids = {a['article_id'] for a in carried}
     def body(article):
         article["article_id"] = article_id(article)
+        if article["article_id"] in carried_ids:
+            return article
         url = article.get("originallink") or article.get("link")
         text = bot.fetch_article_body(url) if url else ""
         article["_body"] = (text or article.get("description", ""))[:800]
@@ -457,8 +686,11 @@ def collect(config, queue, mode="production"):
         return article
     with ThreadPoolExecutor(max_workers=4) as pool:
         list(pool.map(body, passed))
+    enriched = {a['article_id']: a for a in passed}
     for article in raw:
-        article["article_id"] = article_id(article)
+        article['article_id'] = article_id(article)
+        if article['article_id'] in enriched:
+            article.update(enriched[article['article_id']])
     require_live_policy(queue, rules_hash)
     created = now()
     job = {"schema_version": SCHEMA, "job_id": job_id, "status": "pending", "mode": mode,
@@ -466,10 +698,63 @@ def collect(config, queue, mode="production"):
            "expires_at": (created + timedelta(minutes=config["job_ttl_minutes"])).isoformat(),
            "input": {"policy_version": POLICY_VERSION, "policy_hash": rules_hash, "seen_hash": state_hash,
                      "raw_articles": raw, "items": passed}, "receipts": {}}
+    if sources:
+        job['input']['recovery_sources'] = sources
+        if source_job_ids is not None:
+            job['input']['recovery_source_job_ids'] = source_job_ids
+        job['input']['recovery_omissions'] = omissions
+        if selected_ids is not None:
+            job['input']['recovery_selection'] = selected_ids
+        # These references survive rolling seen retention. Analysts must compare
+        # historical completed reports before judging an old event to be unsent.
+        job['input']['recovery_history'] = [
+            {'job_id': jid, 'input_hash': old.get('input_hash'), 'status': old.get('status')}
+            for jid, old in sorted(snapshot['jobs'].items())
+            if old.get('mode') == 'production' and (old.get('status') == 'completed'
+                or (source_job_ids is not None and old.get('status') == 'expired'
+                    and jid not in source_job_ids))]
     job["input_hash"] = digest(job["input"])
-    queue.put("jobs/" + job_id + ".json", job)
-    index["jobs"] = (index["jobs"] + [job_id])[-60:]
-    queue.put("index.json", index, index_sha)
+    if state_hash != seen_hash():
+        raise RuntimeError('수집 중 처리 이력 변경 — 복구 회차 발행 보류')
+    index = copy.deepcopy(snapshot['index'])
+    index['jobs'] = (index['jobs'] + [job_id])[-60:]
+    values.update({'jobs/' + job_id + '.json': job, 'index.json': index})
+    # Preserve PR #23 diagnostics in the same atomic publication as expiry.
+    for path, old in list(values.items()):
+        if not path.startswith('jobs/') or old.get('status') != 'expired':
+            continue
+        old_id = old['job_id']
+        evidence_path = 'audit/' + old_id + '/unstarted-timeout.json'
+        if queue.get(evidence_path)[0] is not None:
+            continue
+        attempt, _ = queue.get('analysis-attempts/' + old_id + '.json')
+        result, _ = queue.get('results/' + old_id + '.json')
+        state = (attempt or {}).get('state')
+        code = ('delivery_not_started' if result is not None else
+                'analysis_evidence_missing' if attempt is None else
+                'analysis_' + state if state in {'blocked', 'failed'} else 'analysis_incomplete')
+        values[evidence_path] = {
+            'schema_version': 1, 'job_id': old_id, 'observed_at': now().isoformat(),
+            'code': code, 'cause_confirmed': False,
+            'last_stage': (attempt or {}).get('stage', 'unknown'),
+            'last_updated_at': (attempt or {}).get('updated_at'),
+            'processed_count': (attempt or {}).get('processed_count'),
+            'input_count': len(old['input']['items']),
+            'result_present': result is not None, 'receipts_count': 0,
+            'input_hash': old['input_hash'],
+            'attempt_path': 'analysis-attempts/' + old_id + '.json'}
+    queue.publish_collection(snapshot, values)
+    # Notify only after confirmed atomic publication. Notification failures
+    # neither undo preservation nor retry the batch or an executive delivery.
+    for path, value in values.items():
+        if path.startswith('jobs/') and value.get('status') == 'expired':
+            try:
+                notify_error(RuntimeError('미발송 구독 회차 만료: ' + value['job_id']),
+                    '원본 입력·결과·처리 이력을 보존하고 새 검토 회차를 생성했습니다. '
+                    '미선택·보류 기사는 미해결로 남습니다. 새 분석·SMTP 접수·원격 이력 ACK 전까지 '
+                    '발송 복구 완료가 아닙니다.', operational=True)
+            except Exception:
+                print('만료 검토 알림 실패 — 원본 보존·새 회차 상태 유지')
     print(json.dumps({"job_id": job_id, "status": "pending", "candidates": len(passed),
                       "paid_ai_calls": 0}))
 
@@ -500,6 +785,8 @@ def consume(config, queue, job_id, dry_run=False, self_test=False):
         raise RuntimeError("미종결 전송 상태 존재 — 재발송·롤백 보류")
     if (dry_run or self_test) and job.get("mode") != "verification":
         raise RuntimeError("운영 회차를 검수로 종결할 수 없음")
+    if job.get('input', {}).get('recovery_sources'):
+        validate_recovery_sources(queue, job, result)
     provider = Provider(job, result, bot, seen_hash())
     require_live_policy(queue, job["input"]["policy_hash"])
     # 규칙 정규화도 메일 직전에 몰아서 하지 않고 전부 먼저 확인한다.
@@ -641,11 +928,15 @@ def recover_state(config, queue, job_id):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("operation", choices=["scheduled", "collect-test", "consume", "ack", "connection", "initialize", "rollback-check", "cancel", "recover-state"])
+    parser.add_argument("operation", choices=["scheduled", "collect-test", "consume", "ack", "connection", "initialize", "rollback-check", "cancel", "recover-state", "recover-inputs"])
     parser.add_argument("--job-id")
+    parser.add_argument("--article-id", action="append", dest="article_ids")
+    parser.add_argument("--source-job-id", action="append", dest="source_job_ids")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
+    if (args.article_ids is not None or args.source_job_ids is not None) and args.operation != 'recover-inputs':
+        raise ValueError('복구 회차 생성 외 기사 선택 금지')
     config = json.loads(CONFIG.read_text())
     if config["engine"] not in {"api", "subscription", "paused"}:
         raise RuntimeError("알 수 없는 운영 모드")
@@ -670,6 +961,10 @@ def main():
         print("비공개 저장소 읽기·쓰기 검수 완료; API0/발송0")
     elif args.operation in {"scheduled", "collect-test"}:
         collect(config, queue, "verification" if args.operation == "collect-test" else "production")
+    elif args.operation == "recover-inputs":
+        if config['engine'] != 'subscription':
+            raise RuntimeError('구독 운영 모드에서만 새 복구 검토 회차 생성 가능')
+        collect(config, queue, recovery_only=True, selected_ids=args.article_ids, source_job_ids=args.source_job_ids)
     elif args.operation == "consume":
         consume(config, queue, args.job_id or "", args.dry_run, args.self_test)
     elif args.operation == "ack":

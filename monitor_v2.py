@@ -2077,6 +2077,12 @@ def send_email_error(error_msg: str, trace: str, *, operational=False):
 # ═══════════════════════════════════════════════
 # 필터링 로그 저장
 # ═══════════════════════════════════════════════
+def article_decision_key(article):
+    # Subscription inputs always carry an ID; legacy API logs retain their
+    # existing title-key contract until all callers provide stable identities.
+    return article.get('article_id') or article.get('title', '')
+
+
 def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: list, final: list,
                     withheld_reasons=None, *, analysis_limited=None):
     """어떤 기사가 어디서 걸렸는지 JSON 로그 저장 (최근 7개 보존)
@@ -2096,9 +2102,9 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
     except Exception:
         pass
 
-    sent_titles      = {a.get("title","") for a in final}
-    hard_excl_map    = {a.get("title",""): a.get("_excl_reason","") for a in hard_excluded}
-    ai_filtered_set  = {a.get("title","") for a in ai_filtered}
+    sent_titles      = {article_decision_key(a) for a in final}
+    hard_excl_map    = {article_decision_key(a): a.get("_excl_reason","") for a in hard_excluded}
+    ai_filtered_set  = {article_decision_key(a) for a in ai_filtered}
     # 상한 제외는 제목이 같은 별도 기사와 섞이지 않도록 입력 ID/URL로 식별한다.
     def article_key(a):
         return (a.get("article_id") or a.get("originallink") or a.get("link")
@@ -2111,19 +2117,21 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
     entries = []
     for a in all_arts:
         t = a.get("title","")
-        if t in hard_excl_map:
-            decision, reason = "HARD_EXCLUDED", hard_excl_map[t]
+        key = article_decision_key(a)
+        if key in hard_excl_map:
+            decision, reason = "HARD_EXCLUDED", hard_excl_map[key]
         elif article_key(a) in limited_keys:
             decision, reason = "ANALYSIS_LIMIT_EXCLUDED", "심층 분석 상한 제외"
-        elif t in (withheld_reasons or {}):
-            decision, reason = "WITHHELD", withheld_reasons[t]
-        elif t not in ai_filtered_set:
+        elif key in (withheld_reasons or {}):
+            decision, reason = "WITHHELD", withheld_reasons[key]
+        elif key not in ai_filtered_set:
             decision, reason = "AI_EXCLUDED", "AI 필터링 제외"
-        elif t not in sent_titles:
+        elif key not in sent_titles:
             decision, reason = "DEDUP_EXCLUDED", "중복 제거"
         else:
             decision, reason = "SENT", a.get("analysis",{}).get("impact_level","") if a.get("analysis") else ""
         entries.append({
+            "article_id": a.get("article_id"),
             "hash":     _h.sha256(t.encode()).hexdigest()[:8],
             "title":    t[:60],
             "company":  a.get("_company",""),
@@ -2256,6 +2264,7 @@ def _run_main(provider=None):
         if DELIVERY_GUARD is not None:
             DELIVERY_GUARD.change(lambda job: job.update(no_delivery_required=True))
         save_seen(seen)
+        save_filter_log([], hard_excluded, [], [], analysis_limited=[])
         return
 
     if DRY_RUN:
@@ -2353,7 +2362,7 @@ def _run_main(provider=None):
         reason = _withhold_reason(result)
         if reason:
             _OPERATIONAL_NOTES.append(reason + ": " + result.get("title", "")[:160])
-            withheld_reasons[art.get("title", "")] = reason
+            withheld_reasons[article_decision_key(art)] = reason
             continue
         an = result.get("analysis")
         if an:
@@ -2648,6 +2657,3 @@ if __name__ == "__main__":
         except Exception as _me:
             print(f"오류 메일 발송 실패: {_me}")
         raise
-
-
-

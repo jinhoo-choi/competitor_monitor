@@ -231,6 +231,22 @@ class OwnerAlertRegression(unittest.TestCase):
         self.assertEqual(entries["보류 기사"]["reason"], "원문 확인 미완료")
         self.assertEqual(entries["중복 기사"]["decision"], "DEDUP_EXCLUDED")
 
+    def test_same_title_distinct_ids_do_not_share_recovery_decision(self):
+        valid = {'title': 'Same synthetic title', 'article_id': 'sent-id',
+                 'analysis': {'impact_level': '중'}}
+        withheld = {'title': valid['title'], 'article_id': 'withheld-id'}
+        limited = {'title': valid['title'], 'article_id': 'limited-id'}
+        excluded = {'title': valid['title'], 'article_id': 'excluded-id'}
+        from unittest.mock import MagicMock
+        guard = MagicMock()
+        with patch.object(bot, 'DELIVERY_GUARD', guard):
+            bot.save_filter_log([valid, withheld, limited, excluded], [],
+                [valid, withheld], [valid], {'withheld-id': 'Synthetic incomplete body'},
+                analysis_limited=[limited])
+        entries = {e['article_id']: e['decision'] for e in guard.save_log.call_args.args[0]['entries']}
+        self.assertEqual(entries, {'sent-id': 'SENT', 'withheld-id': 'WITHHELD',
+                                  'limited-id': 'ANALYSIS_LIMIT_EXCLUDED', 'excluded-id': 'AI_EXCLUDED'})
+
     def test_run_alerts_are_separate_and_dry_run_silent(self):
         def run(provider): bot._OPERATIONAL_NOTES.append("원문 확인 미완료")
         with patch.object(bot, "_run_main", side_effect=run), \
