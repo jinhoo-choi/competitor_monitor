@@ -1,1 +1,1 @@
-{"operation":"consume","job_id":"41998855616","dry_run":false,"self_test":false,"request_id":"insight-41998855616-0690183c-cec1-4b61-a2e6-133340b6c669"}
+{"operation":"recover-inputs","source_job_ids":["41607539495","41803911997"],"article_ids":["73e37d0be3c4dba4b237d85a"],"request_id":"owner-approved-20261106-expired-1104-1105"}
