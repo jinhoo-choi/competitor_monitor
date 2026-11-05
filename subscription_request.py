@@ -24,6 +24,14 @@ def arguments(signal):
             raise ValueError('복구 선택 ID 형식·중복·상한 오류')
         for aid in ids:
             args += ['--article-id', aid]
+    if 'source_job_ids' in signal:
+        ids = signal['source_job_ids']
+        if (operation != 'recover-inputs' or not isinstance(ids, list) or not 1 <= len(ids) <= 20
+                or any(not isinstance(jid, str) or not re.fullmatch(r'[A-Za-z0-9_-]{1,80}', jid) for jid in ids)
+                or len(ids) != len(set(ids))):
+            raise ValueError('복구 원본 회차 선택 오류')
+        for jid in ids:
+            args += ['--source-job-id', jid]
     dry, self_test = signal.get("dry_run", False), signal.get("self_test", False)
     if type(dry) is not bool or type(self_test) is not bool or (dry and self_test):
         raise ValueError("검수 플래그 오류")
@@ -48,4 +56,3 @@ if __name__ == "__main__":
         output.write("production=" + str(production).lower() + "\n")
         output.write("job_id=" + signal.get("job_id", "") + "\n")
     subprocess.run(["python", "subscription_bridge.py", *args], check=True)
-

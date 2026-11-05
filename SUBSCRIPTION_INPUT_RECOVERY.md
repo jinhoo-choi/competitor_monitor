@@ -6,8 +6,9 @@ Risk's preserve-before-expire continuity design is applied to Insight's existing
 immutable job inputs. The old input/result and TTL are never rewritten. The old
 job status alone changes to `expired`, atomically with a fresh pending job and
 rolling index. Only production pending/expired inputs with an empty receipt map
-and no delivery/history/recipient-plan evidence qualify. `sending_at` alone is a
-consume reservation; pre-DATA failures may leave it without any SMTP attempt.
+and no delivery/history/recipient-plan evidence qualify. `sending_at` alone retains the conservative main lock; it blocks automatic
+carryover even when receipts are empty. Expiry diagnostics publish atomically
+with the new review job.
 
 Collection reads every retained `jobs/*.json` from one pinned Git commit rather
 than trusting the 60-job display index. Truncated trees, missing indexed jobs,
@@ -20,8 +21,9 @@ newly expired job after confirmed atomic publication. It does not claim delivery
 Do not prune old job inputs or completed recovery evidence without a replacement
 verified archival ledger; they are the durable recovery store.
 
-Fresh production collection merges aged unprocessed candidates, even beyond the
-17-hour collection window. Frozen source articles retain all fields and body.
+Scheduled production collection retains main behavior: it expires only safe pending
+jobs and collects fresh news. Archived expired inputs are recovered only by an
+explicit recover-inputs request; they do not block ordinary scheduled collection. Frozen source articles retain all fields and body.
 Current policy/seen are rechecked. Current/batch duplicate omissions remain
 explicitly recorded and unresolved, and are revalidated before consumption.
 Verification jobs do not carry production articles.
@@ -38,7 +40,15 @@ calls. The existing owner-only expiry review notice may still be attempted for
 newly expired jobs after publication.
 It requires engine=subscription and main. `production=false` prevents history
 commit/ACK steps. It does not consume old results, extend old TTL, or send mail.
-The normal `scheduled` collection also includes safe expired inputs.
+The normal `scheduled` collection does not include archived expired inputs.
+
+To recover only reviewed expired rounds, add `source_job_ids` (1–20 distinct
+job IDs). Every selected round must be expired production with no reservation or
+delivery evidence. Other archived inputs and reservations remain unchanged; their
+status and input hashes are included in recovery_history for explicit review. Any
+active pending/sending/uncertain/delivery_complete job still blocks collection and
+consumption. Selecting a source never authorizes changing or replaying another
+source. Historical hashes and statuses are rechecked at consumption.
 
 To avoid repeatedly withheld top-ranked articles delaying an urgent reviewed
 candidate, select 1–15 known article IDs explicitly (24-character lowercase

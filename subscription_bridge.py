@@ -265,16 +265,23 @@ def recovery_input(job, jid):
 
 
 def unattempted(job):
-    # sending_at is only a consume reservation, not SMTP submission evidence.
-    # A pre-DATA failure may safely return to pending with that timestamp intact.
+    # Preserve main's conservative lock: a reservation alone is not safe to replay.
     return (job.get('receipts') == {} and not any(job.get(k) for k in
-            ('delivered_at', 'seen_after_hash', 'attempted_count', 'delivery_evidence'))
+            ('sending_at', 'delivered_at', 'seen_after_hash', 'attempted_count',
+             'delivery_evidence', 'history_write_complete'))
             and not any(k in job for k in ('expected_receipts', 'planned_seen_hash', 'planned_seen_snapshot')))
 
 
-def prepare_carryover(snapshot, mode):
+def prepare_carryover(snapshot, mode, source_job_ids=None):
     values, sources, candidates, resolved = {}, [], {}, set()
     jobs = snapshot['jobs']
+    if source_job_ids is not None:
+        if (not isinstance(source_job_ids, list) or not 1 <= len(source_job_ids) <= 20
+                or len(source_job_ids) != len(set(source_job_ids))
+                or any(not isinstance(jid, str) or not JOB_ID.fullmatch(jid)
+                       or jid not in jobs or jobs[jid].get('status') != 'expired'
+                       or jobs[jid].get('mode') != 'production' for jid in source_job_ids)):
+            raise ValueError('복구 원본 회차 선택 오류')
     for jid, job in jobs.items():
         if job.get('status') == 'completed' and job.get('recovery_decisions'):
             recovery_input(job, jid)
@@ -300,6 +307,11 @@ def prepare_carryover(snapshot, mode):
             raise RuntimeError('미종결 구독 회차 존재 — 신규 회차·롤백 중복 방지')
         if status not in {'pending', 'expired'}:
             continue
+        if source_job_ids is not None:
+            if status == 'pending':
+                raise RuntimeError('미종결 구독 회차 존재 — 복구 원본 선택으로 우회 금지')
+            if jid not in source_job_ids:
+                continue  # Archived source remains untouched and is reviewed as history.
         safe = unattempted(job)
         if not safe or datetime.fromisoformat(job['expires_at']) > now():
             raise RuntimeError('미종결 구독 회차 존재 — 신규 회차·롤백 중복 방지')
@@ -326,6 +338,16 @@ def validate_recovery_sources(queue, job, result):
         raise RuntimeError('복구 원본 참조 누락')
     if result.get('recovery_history_reviewed') != digest(job['input'].get('recovery_history')):
         raise RuntimeError('복구 과거 완료회차 대조 증거 없음 — 재분석 필요')
+    source_scope = job['input'].get('recovery_source_job_ids')
+    if source_scope is not None and (not isinstance(source_scope, list)
+            or not 1 <= len(source_scope) <= 20 or len(set(source_scope)) != len(source_scope)
+            or {ref.get('job_id') for ref in refs} != set(source_scope)):
+        raise RuntimeError('복구 원본 회차 범위 불일치')
+    for ref in job['input'].get('recovery_history', []):
+        historic = snapshot['jobs'].get(ref.get('job_id'))
+        if (not historic or historic.get('input_hash') != ref.get('input_hash')
+                or historic.get('status') != ref.get('status', 'completed')):
+            raise RuntimeError('복구 과거회차 근거 변경 — 재검토 필요')
     original = {}
     for ref in refs:
         jid = ref.get('job_id', '')
@@ -608,7 +630,7 @@ def notify_error(error, context="", *, operational=False):
         print(f"담당자 {label} 알림 실패:", type(notification_error).__name__)
 
 
-def collect(config, queue, mode="production", recovery_only=False, selected_ids=None):
+def collect(config, queue, mode="production", recovery_only=False, selected_ids=None, source_job_ids=None):
     bot = import_bot()
     state_hash = seen_hash()
     rules_hash = policy_hash()
@@ -618,7 +640,15 @@ def collect(config, queue, mode="production", recovery_only=False, selected_ids=
     if not JOB_ID.fullmatch(job_id):
         raise ValueError("회차 ID 오류")
     snapshot = queue.snapshot_jobs()
-    values, sources, carried = prepare_carryover(snapshot, mode)
+    if source_job_ids is not None and not recovery_only:
+        raise ValueError('복구 외 원본 회차 선택 금지')
+    if recovery_only:
+        values, sources, carried = prepare_carryover(snapshot, mode, source_job_ids)
+    else:
+        # Keep scheduled collection independent of archived expired inputs, as on main.
+        active_snapshot = dict(snapshot, jobs={jid: old for jid, old in snapshot['jobs'].items()
+                                             if old.get('status') != 'expired'})
+        values, sources, carried = prepare_carryover(active_snapshot, 'verification')
     deferred = {}
     if selected_ids is not None:
         if (not recovery_only or mode != 'production' or not isinstance(selected_ids, list)
@@ -670,21 +700,49 @@ def collect(config, queue, mode="production", recovery_only=False, selected_ids=
                      "raw_articles": raw, "items": passed}, "receipts": {}}
     if sources:
         job['input']['recovery_sources'] = sources
+        if source_job_ids is not None:
+            job['input']['recovery_source_job_ids'] = source_job_ids
         job['input']['recovery_omissions'] = omissions
         if selected_ids is not None:
             job['input']['recovery_selection'] = selected_ids
         # These references survive rolling seen retention. Analysts must compare
         # historical completed reports before judging an old event to be unsent.
         job['input']['recovery_history'] = [
-            {'job_id': jid, 'input_hash': old.get('input_hash')}
+            {'job_id': jid, 'input_hash': old.get('input_hash'), 'status': old.get('status')}
             for jid, old in sorted(snapshot['jobs'].items())
-            if old.get('mode') == 'production' and old.get('status') == 'completed']
+            if old.get('mode') == 'production' and (old.get('status') == 'completed'
+                or (source_job_ids is not None and old.get('status') == 'expired'
+                    and jid not in source_job_ids))]
     job["input_hash"] = digest(job["input"])
     if state_hash != seen_hash():
         raise RuntimeError('수집 중 처리 이력 변경 — 복구 회차 발행 보류')
     index = copy.deepcopy(snapshot['index'])
     index['jobs'] = (index['jobs'] + [job_id])[-60:]
     values.update({'jobs/' + job_id + '.json': job, 'index.json': index})
+    # Preserve PR #23 diagnostics in the same atomic publication as expiry.
+    for path, old in list(values.items()):
+        if not path.startswith('jobs/') or old.get('status') != 'expired':
+            continue
+        old_id = old['job_id']
+        evidence_path = 'audit/' + old_id + '/unstarted-timeout.json'
+        if queue.get(evidence_path)[0] is not None:
+            continue
+        attempt, _ = queue.get('analysis-attempts/' + old_id + '.json')
+        result, _ = queue.get('results/' + old_id + '.json')
+        state = (attempt or {}).get('state')
+        code = ('delivery_not_started' if result is not None else
+                'analysis_evidence_missing' if attempt is None else
+                'analysis_' + state if state in {'blocked', 'failed'} else 'analysis_incomplete')
+        values[evidence_path] = {
+            'schema_version': 1, 'job_id': old_id, 'observed_at': now().isoformat(),
+            'code': code, 'cause_confirmed': False,
+            'last_stage': (attempt or {}).get('stage', 'unknown'),
+            'last_updated_at': (attempt or {}).get('updated_at'),
+            'processed_count': (attempt or {}).get('processed_count'),
+            'input_count': len(old['input']['items']),
+            'result_present': result is not None, 'receipts_count': 0,
+            'input_hash': old['input_hash'],
+            'attempt_path': 'analysis-attempts/' + old_id + '.json'}
     queue.publish_collection(snapshot, values)
     # Notify only after confirmed atomic publication. Notification failures
     # neither undo preservation nor retry the batch or an executive delivery.
@@ -873,10 +931,11 @@ def main():
     parser.add_argument("operation", choices=["scheduled", "collect-test", "consume", "ack", "connection", "initialize", "rollback-check", "cancel", "recover-state", "recover-inputs"])
     parser.add_argument("--job-id")
     parser.add_argument("--article-id", action="append", dest="article_ids")
+    parser.add_argument("--source-job-id", action="append", dest="source_job_ids")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
-    if args.article_ids is not None and args.operation != 'recover-inputs':
+    if (args.article_ids is not None or args.source_job_ids is not None) and args.operation != 'recover-inputs':
         raise ValueError('복구 회차 생성 외 기사 선택 금지')
     config = json.loads(CONFIG.read_text())
     if config["engine"] not in {"api", "subscription", "paused"}:
@@ -905,7 +964,7 @@ def main():
     elif args.operation == "recover-inputs":
         if config['engine'] != 'subscription':
             raise RuntimeError('구독 운영 모드에서만 새 복구 검토 회차 생성 가능')
-        collect(config, queue, recovery_only=True, selected_ids=args.article_ids)
+        collect(config, queue, recovery_only=True, selected_ids=args.article_ids, source_job_ids=args.source_job_ids)
     elif args.operation == "consume":
         consume(config, queue, args.job_id or "", args.dry_run, args.self_test)
     elif args.operation == "ack":
@@ -942,4 +1001,3 @@ def cli():
 
 if __name__ == "__main__":
     sys.exit(cli())
-

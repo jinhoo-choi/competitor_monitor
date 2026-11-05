@@ -170,7 +170,9 @@ class Recovery(unittest.TestCase):
 
     def test_seen_and_fresh_duplicates_not_repeated(self):
         self.bot.collect_articles.return_value = [article(0), article(0)]
-        self.assertEqual(len(self.collect(recovery_only=False)['input']['items']), 1)
+        with patch.object(self.bot, 'fetch_article_body', return_value=article(0)['_body']) as fetch:
+            self.assertEqual(len(self.collect(recovery_only=False)['input']['items']), 1)
+        fetch.assert_called_once()
 
     def test_current_seen_exclusion_keeps_source_unresolved(self):
         self.bot.load_seen.side_effect = lambda: {'ids': {article(0)['article_id']}}
@@ -246,9 +248,66 @@ class Recovery(unittest.TestCase):
         self.assertEqual(len(items), 25)
         self.assertEqual({a['article_id'] for a in items}, set(ids[15:]))
 
-    def test_predat_failure_timestamp_alone_does_not_block_recovery(self):
+    def test_reservation_timestamp_alone_keeps_main_recovery_lock(self):
         self.queue.files['jobs/old.json']['sending_at'] = '2024-01-01T00:00:00+00:00'
-        self.assertEqual(len(self.collect()['input']['items']), 1)
+        with self.assertRaisesRegex(RuntimeError, '미종결'):
+            self.collect()
+        self.assertNotIn('jobs/fresh.json', self.queue.files)
+
+    def test_scoped_recovery_preserves_unrelated_archived_reservation(self):
+        target = self.queue.files['jobs/old.json']
+        target['status'] = 'expired'
+        locked = source('locked')
+        locked.update(status='expired', sending_at='2024-01-01T00:00:00+00:00')
+        self.queue.files['jobs/locked.json'] = copy.deepcopy(locked)
+        bridge.collect(self.config, self.queue, recovery_only=True, source_job_ids=['old'])
+        job = self.queue.files['jobs/fresh.json']
+        self.assertEqual([r['job_id'] for r in job['input']['recovery_sources']], ['old'])
+        self.assertEqual(job['input']['recovery_history'], [
+            {'job_id':'locked', 'input_hash':locked['input_hash'], 'status':'expired'}])
+        self.assertEqual(self.queue.files['jobs/locked.json'], locked)
+        bridge.validate_recovery_sources(self.queue, job, self.result(job))
+        self.queue.files['jobs/locked.json']['input_hash'] = 'changed'
+        with self.assertRaisesRegex(RuntimeError, '과거회차'):
+            bridge.validate_recovery_sources(self.queue, job, self.result(job))
+
+    def test_scoped_recovery_cannot_use_locked_selected_source(self):
+        self.queue.files['jobs/old.json'].update(status='expired', sending_at='recorded')
+        with self.assertRaisesRegex(RuntimeError, '미종결'):
+            bridge.collect(self.config, self.queue, recovery_only=True, source_job_ids=['old'])
+
+    def test_scoped_recovery_cannot_skip_active_other_job(self):
+        self.queue.files['jobs/old.json']['status'] = 'expired'
+        self.queue.files['jobs/active.json'] = source('active')
+        with self.assertRaisesRegex(RuntimeError, '미종결'):
+            bridge.collect(self.config, self.queue, recovery_only=True, source_job_ids=['old'])
+
+    def test_scheduled_does_not_replay_or_unlock_archived_inputs(self):
+        old = self.queue.files['jobs/old.json']
+        old.update(status='expired', sending_at='recorded')
+        before = copy.deepcopy(old)
+        self.bot.collect_articles.return_value = [article(4)]
+        with patch.object(self.bot, 'fetch_article_body', return_value=article(4)['_body']) as fetch:
+            bridge.collect(self.config, self.queue)
+        fetch.assert_called_once()
+        self.assertEqual(self.queue.files['jobs/old.json'], before)
+        self.assertEqual(self.queue.files['jobs/fresh.json']['input']['items'], [article(4)])
+        self.assertNotIn('recovery_sources', self.queue.files['jobs/fresh.json']['input'])
+
+    def test_source_scope_rejects_invalid_or_nonexpired_source(self):
+        for ids in ([], ['missing'], ['old','old'], ['old']):
+            with self.subTest(ids=ids), self.assertRaises(ValueError):
+                bridge.collect(self.config, self.queue, recovery_only=True, source_job_ids=ids)
+
+    def test_source_scope_parser_is_main_only_and_validated(self):
+        import subscription_request as request
+        with patch.dict(os.environ, {'GITHUB_REF':'refs/heads/main'}):
+            self.assertEqual(request.arguments({'operation':'recover-inputs','source_job_ids':['old']}),
+                             ['recover-inputs','--source-job-id','old'])
+            for signal in ({'operation':'consume','job_id':'old','source_job_ids':['old']},
+                           {'operation':'recover-inputs','source_job_ids':[]},
+                           {'operation':'recover-inputs','source_job_ids':['old','old']}):
+                with self.assertRaises(ValueError): request.arguments(signal)
 
     def test_source_safety_rechecked_at_consume(self):
         job = self.collect()
