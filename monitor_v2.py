@@ -29,7 +29,7 @@ except ImportError:
     HAS_RAPIDFUZZ = False
 
 import anthropic
-from event_dedup import normalize_url, load_event_records, merge_event_records, assess_event
+from event_dedup import normalize_url, load_event_records, merge_event_records, assess_event, select_event_cards
 
 # ═══════════════════════════════════════════════
 # 설정
@@ -2371,7 +2371,7 @@ def _run_main(provider=None):
     ai_filtered_list = list(relevant)
     analyzed, new_title_norms, new_desc_norms = [], [], []
     withheld_reasons = {}
-    runtime_records = list(seen.get("event_records", []))
+    sent_records = list(seen.get("event_records", []))
     decision_now = datetime.now(KST)
 
     for i, art in enumerate(relevant):
@@ -2382,31 +2382,19 @@ def _run_main(provider=None):
             _OPERATIONAL_NOTES.append(reason + ": " + result.get("title", "")[:160])
             withheld_reasons[article_decision_key(art)] = reason
             continue
-        an = result.get("analysis")
-        if an:
-            decision = assess_event(result, an, runtime_records,
-                                    seen.get("events", set()), decision_now)
-            explanation = {
-                "matched_event_id": decision.get("event_id", ""),
-                "prior_sent_at": decision.get("prior_sent_at"),
-                "dedup_reason": decision.get("reason", ""),
-                "novelty": decision.get("novelty", "new"),
-            }
-            art["_event_decision"] = explanation
-            result["_event_decision"] = explanation
-            if decision["duplicate"]:
-                print(f"  [사건중복] {result.get('_company','')} | {result.get('title','')[:45]} ({decision.get('reason', '')})")
-                continue
-            result["_event_record"] = decision.get("record")
-            if decision.get("record"):
-                runtime_records = merge_event_records(runtime_records, [decision["record"]], decision_now)
         analyzed.append(result)
-        if an:
-            new_title_norms.append(_normalize_title(art.get("title","")))
-            new_desc_norms.append(_normalize_title(art.get("description","")))
 
-    # Sole semantic gate above: no company/domain/partner/threat-only blocking.
-    analyzed = [a for a in analyzed if a.get("analysis")]
+    # Compare against sent history once, then consolidate the unsent batch.
+    # Pending cards must never masquerade as earlier deliveries.
+    staged = list(analyzed)
+    analyzed = select_event_cards(staged, sent_records,
+                                  seen.get("events", set()), decision_now)
+    decisions = {article_decision_key(a): a.get("_event_decision") for a in staged}
+    # analyze_article can return a new dict; retain decisions for filter logging.
+    for source in relevant:
+        key = article_decision_key(source)
+        if decisions.get(key):
+            source["_event_decision"] = decisions[key]
 
     # 구독 결과는 검증된 점수·등급을 보존한다. 건수로 강등하면
     # 5점 이상이 '하'로 표시되어 입력 검증 및 발송 범위와 충돌한다.

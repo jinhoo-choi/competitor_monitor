@@ -812,7 +812,12 @@ def consume(config, queue, job_id, dry_run=False, self_test=False):
         if article["article_id"] in provider.analyses:
             normalized.append(bot.analyze_article(copy.deepcopy(article), provider.analysis_for(article)))
     if dry_run:
-        html = bot.build_email_html([a for a in normalized if a.get("analysis")],
+        from event_dedup import select_event_cards
+        history = bot.load_seen()
+        cards = select_event_cards(
+            [a for a in normalized if a.get("analysis") and not bot._withhold_reason(a)],
+            history.get("event_records", []), history.get("events", set()), now())
+        html = bot.build_email_html(cards,
                                     len(job["input"]["raw_articles"]), len(normalized))
         queue.put("previews/" + job_id + ".json", {"html": html, "paid_ai_calls": 0})
         job.update(status="verified", verified_at=now().isoformat(), paid_ai_calls=0)

@@ -47,3 +47,10 @@ Captured incident jobs are replayed offline with their original inputs/results
 and matching history hashes, with network/SMTP/persistence mocked. Private inputs
 and outputs are not published in this repository. No production workflow or paid
 model call is required for these regressions.
+
+
+## Same-batch incident correction
+
+Sent records stay immutable while a batch is evaluated. Source-witnessed alternate names require matching company, action, precise legacy key, compatible dates, and at least two corroborating fact axes. Numeric matches alone never establish an alias, and comparison language is excluded. Scoped alias evidence is rechecked on later uses. A transitive group with conflicting dates or numeric facts fails closed before SMTP; publication times are not event chronology.
+
+The planner selects one existing representative card per event. Only that card's facts and URL enter the delivery history, while other articles are logged as same_batch_event_consolidated. Discarded details are not silently marked sent. A real later round can still send an evidence-backed update. Production and dry-run preview share select_event_cards. All fixtures in test_event_batch.py are synthetic; the private operational incident is not published here.
