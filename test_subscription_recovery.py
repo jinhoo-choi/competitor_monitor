@@ -104,6 +104,7 @@ class Recovery(unittest.TestCase):
         return {'schema_version': 1, 'job_id': job['job_id'], 'input_hash': job['input_hash'],
                 'policy_hash': POLICY, 'analysis_engine': 'chatgpt_subscription',
                 'recovery_history_reviewed': bridge.digest(job['input']['recovery_history']),
+                'recent_events_reviewed': bridge.digest(job['input']['recent_events']),
                 'classifications': [{'article_id': a['article_id'], 'relevant': False,
                                      'reason': 'Synthetic exclusion reviewed'} for a in job['input']['items']],
                 'analyses': {}}
@@ -477,3 +478,4 @@ class GitSnapshot(unittest.TestCase):
 
 
 if __name__ == '__main__': unittest.main()
+

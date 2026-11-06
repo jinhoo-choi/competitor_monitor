@@ -1,0 +1,49 @@
+# Sent-event duplicate protection
+
+New subscription jobs include `event_contract_version=1` and a `recent_events`
+snapshot in their hashed input. Every selected analysis acknowledges the snapshot
+hash and supplies source-backed event metadata. Same stories reuse the previous
+`event_id`; changed headlines, outlets and processing months are not new facts.
+Actual event dates must appear in the article or remain empty.
+
+Comparison uses specific company/service/action/date identity and prior sent
+facts. Genuine updates require a changed fact, new numeric condition, concrete
+changed decision or verified stage transition. Decimal punctuation, numeric signs
+and units remain meaningful. `5%` and `5.0%` are equivalent, and `5%` cannot cite
+`15%` or `-5%`. Per-fact sent values prevent A→B→old A replay; a return to an old
+value requires an explicit, non-negated reversal. Planned/negated launches and
+cancellations are not completed transitions.
+
+Company/domain, threat type, partner-only and licence-theme keys no longer
+suppress unrelated events. Matching is a conservative combination of structured
+analysis and source checks, not a general semantic proof. Analysts must reuse
+prior subject/action/fact keys and must not invent uncertain dates or stages.
+Legacy pending jobs remain compatible; keyword-only new-stage bypasses are gone.
+
+## History and delivery safety
+
+`seen_articles.json` keeps its legacy URL/title and `events` formats and adds
+`event_records`. Records retain seven days of exact timestamps without an
+arbitrary count cap. Legacy undated hour/day buckets conservatively retain the
+boundary bucket (up to 25 hours / eight calendar dates). Exact audited phone-check
+aliases migrate together; this does not block other security services.
+
+URL storage and lookup use one normalization, preserve identifying query values
+and accept old raw URLs/MD5 formats. Similar titles reach analysis so new numeric
+conditions and other services are not lost to fuzzy matching.
+
+Only final selected cards enter the immutable pre-DATA history plan. Migration
+reads prior history before adding fresh keys, preventing duplicate legacy shadow
+records. SMTP receipts, remote history ACK, partial/uncertain-send protections,
+verification-only behavior and TEST_MODE remain intact. Logs explain matched ID,
+prior send time, novelty and reason.
+
+## Verification
+
+CI runs existing suites and four additional event suites. Coverage includes
+three incident wording variants, real updates, other services/contracts, dates,
+negation, numbers, legacy migration, URL compatibility and sent-only persistence.
+Captured incident jobs are replayed offline with their original inputs/results
+and matching history hashes, with network/SMTP/persistence mocked. Private inputs
+and outputs are not published in this repository. No production workflow or paid
+model call is required for these regressions.

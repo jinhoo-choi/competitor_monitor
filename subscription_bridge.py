@@ -19,6 +19,8 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from event_dedup import validate_event
+
 UTC = timezone.utc
 SCHEMA = 1
 POLICY_VERSION = "insight-subscription-v1"
@@ -407,6 +409,15 @@ def validate(job, result, current_seen_hash, at=None):
         raise ValueError("구독 분석 엔진 증거 없음")
     if job['input'].get('policy_hash') != policy_hash() or result.get('policy_hash') != job['input']['policy_hash']:
         raise ValueError('분석 정책 원문 해시 불일치')
+    event_contract = job['input'].get('event_contract_version')
+    if 'event_contract_version' in job['input']:
+        if type(event_contract) is not int or event_contract != 1:
+            raise ValueError('사건 계약 버전 오류')
+        recent_events = job['input'].get('recent_events')
+        if not isinstance(recent_events, list):
+            raise ValueError('최근 발송 사건 목록 오류')
+        if result.get('recent_events_reviewed') != digest(recent_events):
+            raise ValueError('최근 발송 사건 대조 미완료')
     items = job["input"]["items"]
     by_id = {a["article_id"]: a for a in items}
     if len(by_id) != len(items):
@@ -434,6 +445,8 @@ def validate(job, result, current_seen_hash, at=None):
         a = analyses[article["article_id"]]
         if not isinstance(a, dict):
             raise ValueError("심층 분석 미완성")
+        if event_contract == 1:
+            a['event'] = validate_event(article, a, recent_events)
         score, level = a.get("impact_score"), a.get("impact_level")
         if type(score) not in {int, float} or not math.isfinite(score) or not 1 <= score <= 10:
             raise ValueError("영향도 점수 범위 오류")
@@ -662,6 +675,9 @@ def collect(config, queue, mode="production", recovery_only=False, selected_ids=
     if job_id in snapshot['jobs']:
         raise RuntimeError("동일 회차 재수집 금지")
     current_seen = bot.load_seen()
+    recent_events = copy.deepcopy(current_seen.get('event_records', []))
+    if not isinstance(recent_events, list):
+        raise ValueError('최근 발송 사건 목록 오류')
     fresh = [] if recovery_only else bot.collect_articles(copy.deepcopy(current_seen))
     raw, merged_seen, omissions = [], copy.deepcopy(current_seen), deferred
     carried_ids = {a['article_id'] for a in carried}
@@ -697,7 +713,8 @@ def collect(config, queue, mode="production", recovery_only=False, selected_ids=
            "created_at": created.isoformat(),
            "expires_at": (created + timedelta(minutes=config["job_ttl_minutes"])).isoformat(),
            "input": {"policy_version": POLICY_VERSION, "policy_hash": rules_hash, "seen_hash": state_hash,
-                     "raw_articles": raw, "items": passed}, "receipts": {}}
+                     "raw_articles": raw, "items": passed,
+                     "event_contract_version": 1, "recent_events": recent_events}, "receipts": {}}
     if sources:
         job['input']['recovery_sources'] = sources
         if source_job_ids is not None:
@@ -1001,3 +1018,4 @@ def cli():
 
 if __name__ == "__main__":
     sys.exit(cli())
+

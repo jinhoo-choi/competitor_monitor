@@ -33,6 +33,7 @@ class StallRegression(unittest.TestCase):
 
     def collect(self):
         collector = MagicMock()
+        collector.load_seen.return_value = {"event_records": []}
         collector.collect_articles.return_value = []
         collector.is_duplicate.return_value = False
         collector.hard_filter.return_value = ([], [])
@@ -334,3 +335,4 @@ sys.exit(0)
 
 if __name__ == '__main__':
     unittest.main()
+
