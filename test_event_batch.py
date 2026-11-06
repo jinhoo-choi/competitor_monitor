@@ -133,6 +133,14 @@ class BatchEventTests(unittest.TestCase):
         self.assertEqual(len(selected[0]["_event_record"]["facts"]), 1)
         self.assertNotIn("500명", selected[0]["_event_record"]["reported_values"])
 
+    def test_old_rereport_does_not_block_genuine_batch_update(self):
+        old = article("안심계좌", "old")
+        prior = assess_event(old, old["analysis"], [], set(), NOW - timedelta(hours=1))["record"]
+        old["analysis"]["event"].update(novelty="same", matched_event_id=prior["event_id"])
+        new = article("안심계좌", "new", "200만원", novelty="update", matched=prior["event_id"])
+        selected = self.select([old, new], [prior])
+        self.assertEqual([a["article_id"] for a in selected], ["new"])
+
     def test_true_later_update_still_delivers_once(self):
         old = article("안심계좌", "old")
         prior = assess_event(old, old["analysis"], [], set(), NOW - timedelta(hours=1))["record"]

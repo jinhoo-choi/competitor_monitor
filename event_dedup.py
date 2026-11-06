@@ -216,6 +216,15 @@ def _equivalent_value(left, right):
     return bool(numbers) and numbers == _numbers(right)
 
 
+
+def _fact_numbers(key, value):
+    # Count nouns for a count axis are not a change from "4 firms" to "4 places".
+    # Currency, percentages, dates, signs and other units remain distinct.
+    if re.search(r"참여기업|지원팀|통과|결선", normalize_text(key)):
+        value = re.sub(r"(개사|곳|팀)", "개", value)
+    return _numbers(value)
+
+
 def _fact_changes(event, prior):
     old = {normalize_text(f["key"]): f["value"] for f in prior.get("facts", [])}
     all_old = {_literal(v) for v in old.values()}
@@ -233,9 +242,9 @@ def _fact_changes(event, prior):
                     and not re.search(r"예정|계획|검토|않|못|아니", fact["evidence_quote"]))
         if previous_value_reported and not reversal:
             continue
-        numbers = _numbers(value)
+        numbers = _fact_numbers(key, value)
         if numbers:
-            previous_numbers = _numbers(old.get(key, ""))
+            previous_numbers = _fact_numbers(key, old.get(key, ""))
             if previous_numbers and numbers != previous_numbers:
                 changes.append(key)
             elif not old.get(key) and not numbers <= reported:
@@ -531,13 +540,10 @@ def select_event_cards(articles, records, legacy_events, now):
             continue
         # A key may be differently worded; only comparable numeric axes conflict.
         values = {}
-        for i in group:
+        for i in eligible:
             for fact in entries[i][2].get("facts", []):
                 key = normalize_text(fact["key"])
-                value = fact["value"]
-                if re.search(r"기업|지원팀|통과|결선", key):
-                    value = re.sub(r"(개사|곳|팀)", "개", value)
-                nums = _numbers(value)
+                nums = _fact_numbers(key, fact["value"])
                 if nums:
                     if key in values and values[key] != nums:
                         raise ValueError("동일 회차 사건 수치 충돌 — 발송 보류: " + key)
