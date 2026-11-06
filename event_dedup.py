@@ -238,7 +238,11 @@ def _fact_changes(event, prior):
             continue
         if re.search(r"(?:변경|인상|인하|확대|축소|전환|조정|도입).{0,12}(?:않|못|아니|없)", fact["evidence_quote"]):
             continue
-        previous_value_reported = any(_equivalent_value(value, previous) for previous in history.get(key, []))
+        previous_value_reported = any(
+            _equivalent_value(value, previous) or (
+                bool(_fact_numbers(key, value))
+                and _fact_numbers(key, value) == _fact_numbers(key, previous))
+            for previous in history.get(key, []))
         reversal = (re.search(r"다시|재차|원복|되돌|재인하|재인상", fact["evidence_quote"])
                     and re.search(r"변경|낮췄|높였|인하|인상|되돌|원복", fact["evidence_quote"])
                     and not re.search(r"예정|계획|검토|않|못|아니", fact["evidence_quote"]))
@@ -461,14 +465,19 @@ def _source_has_subject(source, subject):
     return subject in normalize_text(source)
 
 
+
+def _identity_anchor_equal(key, left, right):
+    return (_identity_fact_equal(left, right)
+            or (re.search(r"개최일|행사일|결선일|계약일|발생일", normalize_text(key))
+                and _same_partial_date(left, right) is True))
+
+
 def _shared_identity_facts(left, right):
     old = {normalize_text(f["key"]): f["value"] for f in left.get("facts", [])}
     return [{"key": normalize_text(f["key"]), "value": f["value"]}
             for f in right.get("facts", [])
             if normalize_text(f["key"]) in old
-            and (_identity_fact_equal(old[normalize_text(f["key"])], f["value"])
-                 or (re.search(r"개최일|행사일|결선일|계약일|발생일", normalize_text(f["key"]))
-                     and _same_partial_date(old[normalize_text(f["key"])], f["value"]) is True))]
+            and _identity_anchor_equal(f["key"], old[normalize_text(f["key"])], f["value"])]
 
 
 def _precise_shared_key(left, right):
@@ -508,7 +517,7 @@ def same_event_identity(left, right):
             if len(subjects) != 2:
                 continue
             matched = {anchor["key"] for anchor in anchors if any(
-                anchor["key"] == fact["key"] and _identity_fact_equal(anchor["value"], fact["value"])
+                anchor["key"] == fact["key"] and _identity_anchor_equal(anchor["key"], anchor["value"], fact["value"])
                 for fact in shared)}
             if len(matched) >= 2:
                 graph.setdefault(subjects[0], set()).add(subjects[1])

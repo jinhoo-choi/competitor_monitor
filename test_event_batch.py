@@ -111,6 +111,26 @@ class BatchEventTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "사건 날짜 충돌"):
             self.select(items)
 
+    def test_old_count_unit_variant_is_not_a_new_update(self):
+        source = "키움증권 한빛행사 참여기업이 5개사로 확대됐다."
+        current = card("current", "한빛행사", source, [("참여기업", "5개사")], "행사")
+        prior = assess_event(current, current["analysis"], [], set(), NOW - timedelta(hours=1))["record"]
+        prior["fact_history"] = {"참여기업": ["4개사", "5개사"]}
+        old = card("old", "한빛행사", "키움증권 한빛행사 참여기업은 4곳이다.", [("참여기업", "4곳")], "행사")
+        self.assertEqual(self.select([old], [prior]), [])
+        reversal = card("reversal", "한빛행사", "키움증권 한빛행사 참여기업을 다시 4곳으로 변경했다.", [("참여기업", "4곳")], "행사")
+        self.assertEqual(len(self.select([reversal], [prior])), 1)
+
+    def test_saved_alias_proof_accepts_full_date_precision(self):
+        sent = self.select(fixture())
+        prior = next(a["_event_record"] for a in sent if a["article_id"].startswith("bio"))
+        item = card("full-date", "DBD", "키움증권 DBD는 2026년 11월 27일 한빛 스퀘어에 바이오벤처 4개사가 참여한다.",
+                    [("개최일", "2026년 11월 27일"), ("장소", "한빛 스퀘어"),
+                     ("참여기업", "바이오벤처 4개사")], "한빛DBD")
+        self.assertEqual(self.select([item], [prior]), [])
+        item["analysis"]["event"].update(novelty="same", matched_event_id=prior["event_id"])
+        self.assertEqual(self.select([item], [prior]), [])
+
     def test_partial_and_full_same_date_are_compatible(self):
         one = card("one", "한빛행사", "키움증권 한빛행사는 11월 27일에 개최한다.", [("개최일", "11월 27일")], "행사")
         two = card("two", "한빛행사", "키움증권 한빛행사는 2026년 11월 27일에 개최한다.", [("개최일", "2026년 11월 27일")], "행사")
