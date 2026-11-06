@@ -2,7 +2,7 @@
 KIS 경쟁사 영향 탐지봇 v2
 리스크봇 패턴 전면 반영:
 - 하드필터 → AI 1차(배치 relevant) → AI 2차(심층분석) 3단 구조
-- rapidfuzz 제목 유사도 dedup
+- 정규화 URL·정확 제목 선별 + 사건·발송 사실 기반 dedup
 - circuit breaker (AI 연속 실패 3회 차단)
 - 영향도 상/중/하 기준 명시 + 사업영역 가중치
 - 대응방안 4요소 강제 (확인대상·점검항목·트리거·우선순위)
@@ -29,6 +29,7 @@ except ImportError:
     HAS_RAPIDFUZZ = False
 
 import anthropic
+from event_dedup import normalize_url, load_event_records, merge_event_records, assess_event
 
 # ═══════════════════════════════════════════════
 # 설정
@@ -578,13 +579,14 @@ KIS_EXCLUDE_RE = re.compile(
 import unicodedata
 
 def _valid_hour_keys() -> set:
+    # Legacy hour buckets lack exact timestamps; retain the boundary bucket.
     now = datetime.now(KST)
-    return {(now - timedelta(hours=i)).strftime("%Y-%m-%d %H") for i in range(24)}
+    return {(now - timedelta(hours=i)).strftime("%Y-%m-%d %H") for i in range(25)}
 
 def _valid_event_days() -> set:
-    """event_key 7일 유효 (기존 3일에서 확장 — 재보도 사이클 대응)"""
+    """Conservatively retain the boundary date of legacy seven-day keys."""
     now = datetime.now(KST)
-    return {(now - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)}
+    return {(now - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(8)}
 
 def _domain_key(domain: str) -> str:
     """폴백 키용 도메인 앞부분 — 연금 계열 전체 '연금'으로 통일"""
@@ -730,7 +732,7 @@ def load_seen() -> dict:
 
         # 구버전 호환
         if isinstance(raw, list):
-            return {"ids": set(raw), "title_norms": [], "desc_norms": [], "events": set()}
+            return {"ids": set(raw), "title_norms": [], "desc_norms": [], "events": set(), "event_records": []}
 
         ids, title_norms, desc_norms = set(), [], []
         for k, v in raw.items():
@@ -756,13 +758,14 @@ def load_seen() -> dict:
             "title_norms": title_norms[-100:],
             "desc_norms":  desc_norms[-100:],
             "events":      events,
+            "event_records": load_event_records(raw, datetime.now(KST)),
         }
     except Exception:
-        return {"ids": set(), "title_norms": [], "desc_norms": [], "events": set()}
+        return {"ids": set(), "title_norms": [], "desc_norms": [], "events": set(), "event_records": []}
 
 def build_seen_snapshot(seen: dict = None, sent_urls: set = None,
               new_title_norms: list = None, new_desc_norms: list = None,
-              new_events: set = None):
+              new_events: set = None, new_event_records: list = None):
     """Build the existing history format without writing or sending."""
     now      = datetime.now(KST)
     cur_key  = now.strftime("%Y-%m-%d %H")
@@ -777,34 +780,44 @@ def build_seen_snapshot(seen: dict = None, sent_urls: set = None,
             raw = json.load(f)
         if isinstance(raw, dict):
             existing = {k: v for k, v in raw.items()
-                        if k == "events" or k in valid}
+                        if k in {"events", "event_records"} or k in valid}
+        elif isinstance(raw, list):
+            # Migrate undated legacy URL/hash history once, rather than drop it.
+            existing[cur_key] = {"ids": raw, "title_norms": [], "desc_norms": []}
     except Exception:
         pass
+
+    # Migrate only previously persisted keys, never new structured records.
+    prior_records = load_event_records(existing, now)
 
     # URL/제목 갱신
     cur = existing.get(cur_key, {"ids": [], "title_norms": [], "desc_norms": []})
     existing[cur_key] = {
-        "ids":         list(set(cur.get("ids", [])) | (sent_urls or set()))[-500:],
+        "ids":         sorted({normalize_url(u) for u in cur.get("ids", [])} |
+                              {normalize_url(u) for u in (sent_urls or set())})[-500:],
         "title_norms": (cur.get("title_norms", []) + (new_title_norms or []))[-100:],
         "desc_norms":  (cur.get("desc_norms",  []) + (new_desc_norms  or []))[-100:],
     }
 
     # event_key 갱신 — 7일치만 보존
     raw_ev = existing.get("events", {})
-    event_store = raw_ev if isinstance(raw_ev, dict) else {}
+    event_store = (raw_ev if isinstance(raw_ev, dict) else
+                   {cur_day: raw_ev} if isinstance(raw_ev, list) else {})
     event_store = {k: v for k, v in event_store.items() if k in valid_days}
     if new_events:
         day_set = set(event_store.get(cur_day, []))
         day_set |= new_events
         event_store[cur_day] = list(day_set)
     existing["events"] = event_store
+    existing["event_records"] = merge_event_records(
+        prior_records, new_event_records or [], now)
 
     return json.dumps(existing, ensure_ascii=False)
 
 
 def save_seen(seen: dict, sent_urls: set = None,
               new_title_norms: list = None, new_desc_norms: list = None,
-              new_events: set = None):
+              new_events: set = None, new_event_records: list = None):
     """Atomic write of the exact pre-DATA plan after all receipts are accepted."""
     if DELIVERY_GUARD is not None:
         DELIVERY_GUARD.require_complete()
@@ -819,7 +832,7 @@ def save_seen(seen: dict, sent_urls: set = None,
         if current_hash not in {DELIVERY_GUARD.current[0]['input']['seen_hash'],expected}:
             raise RuntimeError('이력 계획 이후 로컬 이력 변경 — 덮어쓰기 금지')
     else:
-        snapshot=build_seen_snapshot(seen,sent_urls,new_title_norms,new_desc_norms,new_events)
+        snapshot=build_seen_snapshot(seen,sent_urls,new_title_norms,new_desc_norms,new_events,new_event_records)
 
     import tempfile as _tmp
     fd, tmp_path = _tmp.mkstemp(prefix="seen_", suffix=".tmp",
@@ -835,7 +848,7 @@ def save_seen(seen: dict, sent_urls: set = None,
 
 def _normalize_title(text: str) -> str:
     t = unicodedata.normalize("NFKC", text or "")
-    t = re.sub(r"\[.*?\]|\(.*?\)", "", t)
+    # Preserve bracketed service names and facts: they can distinguish events.
     # 증권사 한자 약자 → 한글 정규화 (키움證 → 키움증권 등)
     t = t.replace("키움證", "키움증권")
     t = t.replace("삼성證", "삼성증권")
@@ -845,23 +858,29 @@ def _normalize_title(text: str) -> str:
     t = t.replace("토스證", "토스증권")
     t = t.replace("메리츠證", "메리츠증권")
     t = t.replace("신한投", "신한투자증권")
-    t = re.sub(r"[^가-힣a-zA-Z0-9]", "", t)
+    # Preserve punctuation: 2.3 and 23 are different facts.
+    t = re.sub(r"\s+", "", t)
     return t.strip()
 
 def is_duplicate(art: dict, seen: dict) -> bool:
-    """3단 중복 제거: URL 해시 → 제목 유사도(15자 초과만) → desc 유사도"""
-    aid = hashlib.md5((art.get("link","") + art.get("title","")).encode()).hexdigest()
-    if aid in seen["ids"]:
+    """Exact URL/title only; semantic event decisions happen after analysis."""
+    link = art.get("link", "") or art.get("originallink", "")
+    title = art.get("title", "")
+    normalized = normalize_url(link)
+    ids = seen.setdefault("ids", set())
+    candidates = {hashlib.md5((link + title).encode()).hexdigest(),
+                  hashlib.md5(link.encode()).hexdigest()}
+    if normalized:
+        candidates.update({normalized, link,
+                           hashlib.md5(normalized.encode()).hexdigest(),
+                           hashlib.md5((normalized + title).encode()).hexdigest()})
+    if candidates & ids or (normalized and any(normalize_url(u) == normalized for u in ids)):
         return True
-
-    title_norm = _normalize_title(art.get("title",""))
-    # 짧은 제목은 오탐 위험 — 15자 초과일 때만 유사도 비교
-    if HAS_RAPIDFUZZ and len(title_norm) > 15:
-        for prev in seen.get("title_norms", []):
-            if len(prev) > 15 and fuzz.ratio(title_norm, prev) >= TITLE_SIM_THRESHOLD:
-                return True
-
-    seen["ids"].add(aid)
+    title_norm = _normalize_title(title)
+    if len(title_norm) > 15 and title_norm in seen.get("title_norms", []):
+        return True
+    if normalized:
+        ids.add(normalized)
     seen.setdefault("title_norms", []).append(title_norm)
     return False
 
@@ -1346,21 +1365,16 @@ JSON only, 다른 텍스트 없이:
                     print(f"    [비증권 주체 드롭] {_why} | {_title[:45]}")
                     return {**art, "analysis": None}
 
-        # ── event_key 정규화 — 날짜 부분을 코드에서 강제 현재 월로 교정
-        # AI가 기사 내 날짜(출시 예정일 등)를 보고 과거/미래 날짜를 넣는 문제 방지
-        ym_now = datetime.now(KST).strftime("%Y%m")
-        event_key = analysis.get("event_key","").strip()
-        # 레이어5 — event_key 선두의 회사명 별칭을 대표명으로 통일 (dedup 키 생성용)
+        # Keep the article's event date, never replace it with processing month.
+        event_key = analysis.get("event_key", "").strip()
         extracted_canon = canonicalize_company(extracted)
         if extracted and extracted_canon != extracted and event_key.startswith(extracted):
             event_key = extracted_canon + event_key[len(extracted):]
-        if not event_key or len(event_key) < 5:
-            co = extracted_canon if (extracted and extracted != "-") else canonicalize_company(art.get("_company","미확인"))
-            th = analysis.get("threat_type","기능강화")[:6]
-            event_key = f"{co}_{th}_{ym_now}"
-        else:
-            # 날짜 6자리 부분을 현재 월로 강제 교체 (패턴: _YYYYMM 말미)
-            event_key = re.sub(r'_\d{6}$', f'_{ym_now}', event_key)
+        if not event_key:
+            # Missing identity is article-specific, not company/threat/month.
+            co = extracted_canon or canonicalize_company(art.get("_company", "미확인"))
+            token = hashlib.sha256(_normalize_title(art.get("title", "")).encode()).hexdigest()[:12]
+            event_key = f"{co}::article::{token}"
         analysis["event_key"] = event_key[:40]
 
         if not analysis.get("impact_domain","").strip():
@@ -2105,6 +2119,8 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
     sent_titles      = {article_decision_key(a) for a in final}
     hard_excl_map    = {article_decision_key(a): a.get("_excl_reason","") for a in hard_excluded}
     ai_filtered_set  = {article_decision_key(a) for a in ai_filtered}
+    event_decisions = {article_decision_key(a): a["_event_decision"]
+                       for a in ai_filtered + final if a.get("_event_decision")}
     # 상한 제외는 제목이 같은 별도 기사와 섞이지 않도록 입력 ID/URL로 식별한다.
     def article_key(a):
         return (a.get("article_id") or a.get("originallink") or a.get("link")
@@ -2137,6 +2153,7 @@ def save_filter_log(articles_passed: list, hard_excluded: list, ai_filtered: lis
             "company":  a.get("_company",""),
             "decision": decision,
             "reason":   reason,
+            **event_decisions.get(key, a.get("_event_decision", {})),
         })
 
     excl_stats = Counter(e["reason"] for e in entries if e["decision"]=="HARD_EXCLUDED")
@@ -2354,7 +2371,8 @@ def _run_main(provider=None):
     ai_filtered_list = list(relevant)
     analyzed, new_title_norms, new_desc_norms = [], [], []
     withheld_reasons = {}
-    runtime_events: set = set()  # 런타임 event_key 세트 — 파일 없어도 당일 중복 차단
+    runtime_records = list(seen.get("event_records", []))
+    decision_now = datetime.now(KST)
 
     for i, art in enumerate(relevant):
         print(f"  [{i+1}/{len(relevant)}] {art['_company']} | {art['title'][:38]}...")
@@ -2366,134 +2384,29 @@ def _run_main(provider=None):
             continue
         an = result.get("analysis")
         if an:
-            title_txt = result.get("title","")
-            desc_txt  = result.get("description","")
-            # 레이어4 — 새 국면 판정: True면 아래 3단 억제를 모두 우회(예외 통과)
-            new_stage = is_new_stage(title_txt, desc_txt)
-
-            ekey = an.get("event_key","").strip()
-            if not ekey:
-                co = an.get("company_name","") or result.get("_company","")
-                ekey = f"{canonicalize_company(co)}::{an.get('threat_type','')}"
-            # ① seen events 체크 — event_key 기준 7일 차단
-            if ekey in seen.get("events", set()) and not new_stage:
-                print(f"  [사건중복-7일] {result.get('_company','')} | {result.get('title','')[:45]} (키: {ekey})")
+            decision = assess_event(result, an, runtime_records,
+                                    seen.get("events", set()), decision_now)
+            explanation = {
+                "matched_event_id": decision.get("event_id", ""),
+                "prior_sent_at": decision.get("prior_sent_at"),
+                "dedup_reason": decision.get("reason", ""),
+                "novelty": decision.get("novelty", "new"),
+            }
+            art["_event_decision"] = explanation
+            result["_event_decision"] = explanation
+            if decision["duplicate"]:
+                print(f"  [사건중복] {result.get('_company','')} | {result.get('title','')[:45]} ({decision.get('reason', '')})")
                 continue
-            # ② 폴백1: 회사명+도메인앞부분+월 조합 (위협유형은 AI 표현 변동 큼)
-            # 레이어5 — 회사명 별칭을 대표명으로 통일해 키 불일치 방지
-            co_for_key   = canonicalize_company((an.get("company_name","") or result.get("_company","")).strip())
-            domain_short = _domain_key(an.get("impact_domain",""))
-            ym           = datetime.now(KST).strftime("%Y%m")
-            fallback_key = f"{co_for_key}::{domain_short}::{ym}"
-            if fallback_key in seen.get("events", set()) and not new_stage:
-                print(f"  [사건중복-폴백1] {result.get('_company','')} | {result.get('title','')[:45]} (키: {fallback_key})")
-                continue
-            # ③ 폴백2: 회사명+파트너사/서비스명 고유명사 — event_key 핵심행위가 달라도 잡아냄
-            # 예) '키움증권::트레이딩뷰' → 제목이 달라도 동일 파트너사면 차단
-            entity_key = _extract_entity_key(title_txt, co_for_key)
-            subj_key = ""   # (구)주체키 — 비증권 주체는 레이어6에서 드롭되므로 미사용
-            if entity_key and entity_key in seen.get("events", set()) and not new_stage:
-                print(f"  [사건중복-폴백2(엔티티)] {result.get('_company','')} | {result.get('title','')[:45]} (키: {entity_key})")
-                continue
-            theme_keys = _extract_theme_keys(title_txt + " " + an.get("summary",""), co_for_key)
-            _hit = next((k for k, persist in theme_keys if persist and k in seen.get("events", set())), "")
-            if _hit and not new_stage:
-                print(f"  [사건중복-테마] {result.get('_company','')} | {result.get('title','')[:45]} (키: {_hit})")
-                continue
-            if new_stage and (ekey in seen.get("events", set()) or fallback_key in seen.get("events", set())
-                               or (entity_key and entity_key in seen.get("events", set()))):
-                print(f"  [새국면-예외통과] {result.get('_company','')} | {result.get('title','')[:45]}")
-            # ④ 런타임 중복 체크 — 이번 실행에서 이미 분석한 사건 (새 국면이어도 같은 실행 내 재중복은 차단)
-            if ekey in runtime_events or fallback_key in runtime_events:
-                print(f"  [런타임중복] {result.get('_company','')} | {result.get('title','')[:45]}")
-                continue
-            if entity_key and entity_key in runtime_events:
-                print(f"  [런타임중복-엔티티] {result.get('_company','')} | {result.get('title','')[:45]}")
-                continue
-            if any(k in runtime_events for k, _ in theme_keys):
-                print(f"  [런타임중복-테마] {result.get('_company','')} | {result.get('title','')[:45]}")
-                continue
-            runtime_events.update(k for k, _ in theme_keys)
-            runtime_events.add(ekey)
-            runtime_events.add(fallback_key)
-            if entity_key:
-                runtime_events.add(entity_key)
-            if subj_key:
-                runtime_events.add(subj_key)
+            result["_event_record"] = decision.get("record")
+            if decision.get("record"):
+                runtime_records = merge_event_records(runtime_records, [decision["record"]], decision_now)
         analyzed.append(result)
         if an:
             new_title_norms.append(_normalize_title(art.get("title","")))
             new_desc_norms.append(_normalize_title(art.get("description","")))
 
-    # ── 동일 사건 중복 제거
-    def _dedup_same_event(arts: list) -> list:
-        """event_key 기반 그룹핑 → 대표기사 선정
-        seen events 체크는 AI 2차 분석 직후에 이미 처리됨.
-        여기서는 같은 실행 내 동일 event_key 기사들을 묶어 대표 1건만 유지."""
-        from collections import defaultdict
-
-        def sc(a):
-            try: return float(a.get("analysis",{}).get("impact_score", 0))
-            except: return 0.0
-
-        def press_rank(a):
-            return 0 if a.get("_tier","") == "1군" else 1
-
-        groups = defaultdict(list)
-        no_analysis = []
-        for a in arts:
-            an = a.get("analysis")
-            if not an:
-                no_analysis.append(a); continue
-            ekey = an.get("event_key","").strip()
-            if ekey:
-                groups[ekey].append(a)
-            else:
-                co = an.get("company_name","") or a.get("_company","")
-                groups[f"{co}::{an.get('threat_type','')}"].append(a)
-
-        kept = []
-        for ekey, group in groups.items():
-            if len(group) == 1:
-                kept.append(group[0]); continue
-            # 대표기사 선정: ① impact_score ② 언론사 등급(1군 우선) ③ 최신
-            group.sort(key=lambda a: (sc(a), -press_rank(a)), reverse=True)
-            rep = group[0]
-            rep["_related_count"]  = len(group) - 1
-            rep["_related_titles"] = [a.get("title","")[:40] for a in group[1:]]
-            kept.append(rep)
-            for dup in group[1:]:
-                print(f"  [event중복] {dup.get('_company','')} | {dup.get('title','')[:45]}")
-            print(f"  → '{ekey}' {len(group)}건 → 대표기사 1건 (score={sc(rep):.1f})")
-
-        # 폴백: event_key 달라도 동일 회사+threat 2건 이상이면 점수 낮은 것 드롭
-        # 추가: entity_key(파트너사명) 기반으로도 동일 그룹핑
-        from collections import defaultdict as _dd2
-        co_threat_map = _dd2(list)
-        for a in kept:
-            an2 = a.get("analysis") or {}
-            co2 = a.get("_company","")
-            # entity_key가 있으면 파트너사 기반으로 그룹핑 (threat_type 표현 변동 무관)
-            ek2 = _extract_entity_key(a.get("title",""), co2)
-            k2  = (co2, ek2 if ek2 else an2.get("threat_type",""))
-            co_threat_map[k2].append(a)
-        kept2 = []
-        for k2, grp in co_threat_map.items():
-            if len(grp) == 1:
-                kept2.append(grp[0]); continue
-            grp.sort(key=lambda a: (sc(a),-press_rank(a)), reverse=True)
-            kept2.append(grp[0])
-            for dup in grp[1:]:
-                print(f"  [폴백중복] {dup.get('_company','')} | {dup.get('title','')[:45]}")
-
-        # 분析 실패 기사 — 이메일 미포함, 건수만 로그
-        if no_analysis:
-            print(f"  [분析실패 제외] {len(no_analysis)}건 이메일 미포함:")
-            for a in no_analysis:
-                print(f"    · {a.get('_company','')} | {a.get('title','')[:50]}")
-        return kept2
-
-    analyzed = _dedup_same_event(analyzed)
+    # Sole semantic gate above: no company/domain/partner/threat-only blocking.
+    analyzed = [a for a in analyzed if a.get("analysis")]
 
     # 구독 결과는 검증된 점수·등급을 보존한다. 건수로 강등하면
     # 5점 이상이 '하'로 표시되어 입력 검증 및 발송 범위와 충돌한다.
@@ -2544,23 +2457,22 @@ def _run_main(provider=None):
         for msg in regrade_log: print(msg)
 
     # ── 등급 확정 후 최종 중복 제거
-    # 상/중 카드와 하 리스트 간 동일 기사(URL 동일 or 제목 유사도 80점↑) 제거
+    # 상/중 카드와 하 리스트 간 동일 URL 또는 정규화 제목 완전 일치만 제거
     all_arts = bucket["상"] + bucket["중"] + bucket["하"] + bucket.get(None, [])
     seen_final_links = set()
     seen_final_titles = []
     analyzed = []
     for a in all_arts:
-        link  = a.get("link","") or a.get("originallink","")
+        link  = normalize_url(a.get("link","") or a.get("originallink",""))
         title = _normalize_title(a.get("title",""))
         # URL 중복
         if link and link in seen_final_links:
             print(f"  [최종중복-URL] {a.get('_company','')} | {a.get('title','')[:45]}")
             continue
-        # 제목 유사도 중복 (15자 초과 + 80점 이상)
-        if HAS_RAPIDFUZZ and len(title) > 15:
-            if any(fuzz.ratio(title, prev) >= 70 for prev in seen_final_titles):
-                print(f"  [최종중복-제목] {a.get('_company','')} | {a.get('title','')[:45]}")
-                continue
+        # Preserve distinct services/facts even if headlines look similar.
+        if len(title) > 15 and title in seen_final_titles:
+            print(f"  [최종중복-제목] {a.get('_company','')} | {a.get('title','')[:45]}")
+            continue
         if link: seen_final_links.add(link)
         if len(title) > 15: seen_final_titles.append(title)
         analyzed.append(a)
@@ -2575,31 +2487,18 @@ def _run_main(provider=None):
             DELIVERY_GUARD.mark_review_only()
         return
 
-    # ── 저장 — event_key + 폴백 키(회사명::위협유형::월) 함께 저장
-    sent_urls  = {a.get("link","") for a in analyzed if a.get("link","")}
-    new_events = set()
-    ym = datetime.now(KST).strftime("%Y%m")
-    for a in analyzed:
-        if not a.get("analysis"): continue
-        an = a["analysis"]
-        ekey = an.get("event_key","").strip()
-        if not ekey:
-            co = an.get("company_name","") or a.get("_company","")
-            ekey = f"{co}::{an.get('threat_type','')}"
-        new_events.add(ekey)
-        # ⚠️ 조회부(dedup)는 canonicalize_company()를 거친 키로 비교하므로
-        #    저장부도 반드시 동일하게 정규화해야 키가 매칭됨 (기존 미정규화 = 폴백1 무효화 버그)
-        co_fb        = canonicalize_company((an.get("company_name","") or a.get("_company","")).strip())
-        domain_fb    = _domain_key(an.get("impact_domain",""))
-        new_events.add(f"{co_fb}::{domain_fb}::{ym}")
-        # 엔티티 폴백 키 저장 — 파트너사/서비스명 기반
-        entity_fb = _extract_entity_key(a.get("title",""), co_fb)
-        if entity_fb:
-            new_events.add(entity_fb)
-        new_events.update(k for k, persist in _extract_theme_keys(a.get("title","") + " " + an.get("summary",""), co_fb) if persist)
+    # Freeze only final cards actually included in the mail before SMTP DATA.
+    sent_urls = {normalize_url(a.get("link", "") or a.get("originallink", ""))
+                 for a in analyzed if a.get("link") or a.get("originallink")}
+    new_events = {a["analysis"]["event_key"] for a in analyzed
+                  if a.get("analysis", {}).get("event_key")}
+    new_event_records = [a["_event_record"] for a in analyzed if a.get("_event_record")]
+    new_title_norms = [_normalize_title(a.get("title", "")) for a in analyzed]
+    new_desc_norms = [_normalize_title(a.get("description", "")) for a in analyzed]
     if DELIVERY_GUARD is not None and not TEST_MODE:
         DELIVERY_GUARD.history_plan = build_seen_snapshot(seen, sent_urls=sent_urls,
-            new_title_norms=new_title_norms, new_desc_norms=new_desc_norms, new_events=new_events)
+            new_title_norms=new_title_norms, new_desc_norms=new_desc_norms, new_events=new_events,
+            new_event_records=new_event_records)
 
     # ── 6) 저장 및 발송
     print(f"\n[6/6] 메일 발송 중...")
@@ -2621,7 +2520,7 @@ def _run_main(provider=None):
 
     save_seen(seen, sent_urls=sent_urls,
               new_title_norms=new_title_norms, new_desc_norms=new_desc_norms,
-              new_events=new_events)
+              new_events=new_events, new_event_records=new_event_records)
 
     # ── seen_articles.json 상태 출력 (캐시 저장 확인용)
     try:
@@ -2657,3 +2556,4 @@ if __name__ == "__main__":
         except Exception as _me:
             print(f"오류 메일 발송 실패: {_me}")
         raise
+
