@@ -145,7 +145,7 @@ class EventDeliveryIntegration(unittest.TestCase):
         self.assertEqual(entries['update-repeat']['novelty'], 'same')
         self.assertEqual(entries['update-repeat']['matched_event_id'], prior['event_id'])
         self.assertTrue(entries['update-repeat']['prior_sent_at'])
-        self.assertEqual(entries['update-repeat']['dedup_reason'], 'same_event_no_new_facts')
+        self.assertEqual(entries['update-repeat']['dedup_reason'], 'same_batch_event_consolidated')
 
     def test_historical_rereport_explanation_keeps_original_sent_time(self):
         prior = self.prior()
@@ -160,19 +160,12 @@ class EventDeliveryIntegration(unittest.TestCase):
         self.assertEqual(entry['novelty'], 'same')
         self.assertEqual(entry['dedup_reason'], 'same_event_no_new_facts')
 
-    def test_same_run_further_changed_fact_is_allowed_and_persisted(self):
+    def test_same_run_conflicting_values_are_withheld_before_smtp(self):
         prior = self.prior()
         items = [article('안심계좌', suffix, value, novelty='update', matched=prior['event_id'])
                  for suffix, value in [('first-change', '200만원'), ('second-change', '300만원')]]
-        rendered, snapshot, _, logs = self.run_main(items, [prior])
-        self.assertEqual(len(rendered), 2)
-        self.assertEqual(len(snapshot['event_records']), 1)
-        self.assertEqual(snapshot['event_records'][0]['facts'][0]['value'], '300만원')
-        self.assertEqual({e['novelty'] for e in logs[0]['entries']}, {'update'})
-        for entry in logs[0]['entries']:
-            self.assertEqual(entry['matched_event_id'], prior['event_id'])
-            self.assertTrue(entry['dedup_reason'].startswith('source_backed_fact_change:'))
-            self.assertEqual(entry['decision'], 'SENT')
+        with self.assertRaisesRegex(ValueError, '동일 회차 사건 수치 충돌'):
+            self.run_main(items, [prior])
 
     def test_low_cap_persists_only_final_sent_records_urls_and_titles(self):
         cap = bot.GRADE_LIMITS['하']

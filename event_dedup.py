@@ -144,6 +144,9 @@ def merge_event_records(existing, new, now):
             record["fact_history"] = history
             for field in ("legacy_keys", "urls", "reported_values"):
                 record[field] = sorted(set(old.get(field, []) + record.get(field, [])))
+            record["identity_evidence"] = old.get("identity_evidence", []) + [
+                proof for proof in record.get("identity_evidence", [])
+                if proof not in old.get("identity_evidence", [])]
             record["first_sent_at"] = min(old["first_sent_at"], record["first_sent_at"])
             if _at(old["last_sent_at"]) > stamp:
                 record["last_sent_at"] = old["last_sent_at"]
@@ -213,6 +216,15 @@ def _equivalent_value(left, right):
     return bool(numbers) and numbers == _numbers(right)
 
 
+
+def _fact_numbers(key, value):
+    # Count nouns for a count axis are not a change from "4 firms" to "4 places".
+    # Currency, percentages, dates, signs and other units remain distinct.
+    if re.search(r"참여기업|지원팀|통과|결선", normalize_text(key)):
+        value = re.sub(r"(개사|곳|팀)", "개", value)
+    return _numbers(value)
+
+
 def _fact_changes(event, prior):
     old = {normalize_text(f["key"]): f["value"] for f in prior.get("facts", [])}
     all_old = {_literal(v) for v in old.values()}
@@ -220,19 +232,25 @@ def _fact_changes(event, prior):
     changes, history = [], _fact_history(prior)
     for fact in event["facts"]:
         key, value = normalize_text(fact["key"]), fact["value"]
-        if _literal(old.get(key, "")) == _literal(value) or _literal(value) in all_old:
+        if (_literal(old.get(key, "")) == _literal(value) or _literal(value) in all_old
+                or (re.search(r"개최일|행사일|결선일|계약일|발생일", key)
+                    and _same_partial_date(old.get(key, ""), value) is True)):
             continue
         if re.search(r"(?:변경|인상|인하|확대|축소|전환|조정|도입).{0,12}(?:않|못|아니|없)", fact["evidence_quote"]):
             continue
-        previous_value_reported = any(_equivalent_value(value, previous) for previous in history.get(key, []))
+        previous_value_reported = any(
+            _equivalent_value(value, previous) or (
+                bool(_fact_numbers(key, value))
+                and _fact_numbers(key, value) == _fact_numbers(key, previous))
+            for previous in history.get(key, []))
         reversal = (re.search(r"다시|재차|원복|되돌|재인하|재인상", fact["evidence_quote"])
                     and re.search(r"변경|낮췄|높였|인하|인상|되돌|원복", fact["evidence_quote"])
                     and not re.search(r"예정|계획|검토|않|못|아니", fact["evidence_quote"]))
         if previous_value_reported and not reversal:
             continue
-        numbers = _numbers(value)
+        numbers = _fact_numbers(key, value)
         if numbers:
-            previous_numbers = _numbers(old.get(key, ""))
+            previous_numbers = _fact_numbers(key, old.get(key, ""))
             if previous_numbers and numbers != previous_numbers:
                 changes.append(key)
             elif not old.get(key) and not numbers <= reported:
@@ -303,7 +321,9 @@ def validate_event(article, analysis, recent_events):
             raise ValueError("신규 사건에 기존 사건 ID 지정")
     elif not prior or company_name(prior.get("company")) != company_name(analysis.get("company_name")):
         raise ValueError("기존 사건 ID·회사 불일치")
-    if prior and not prior.get("legacy") and _subject(prior.get("subject")) != _subject(event["subject"]):
+    if prior and not prior.get("legacy") and (_date_conflict(prior, event) or (
+            _subject(prior.get("subject")) != _subject(event["subject"])
+            and not same_event_identity(prior, _identity_record(article, analysis, event)))):
         raise ValueError("기존 사건과 다른 서비스·계약 주제")
     if prior and prior.get("legacy") and prior.get("subject") == PHONE_SUBJECT and _subject(event["subject"]) != PHONE_SUBJECT:
         raise ValueError("기존 서비스와 다른 사건 주제")
@@ -357,11 +377,11 @@ def assess_event(article, analysis, records, legacy_events, now):
                 continue
             same_subject = _subject(candidate.get("subject")) == subject
             same_action = normalize_text(candidate.get("action", "")) == action
-            date_conflict = (candidate.get("event_date") and event.get("event_date")
-                             and candidate["event_date"] != event["event_date"])
+            date_conflict = _date_conflict(candidate, event)
             same_legacy = (any(_legacy_identity(k) == legacy_identity for k in candidate.get("legacy_keys", []))
                            if legacy_identity[1] else False)
             if ((same_subject and (same_action or candidate.get("legacy")) and not date_conflict)
+                    or (structured and same_event_identity(candidate, _identity_record(article, analysis, event)))
                     or (same_legacy and not structured)):
                 prior = candidate
                 break
@@ -392,3 +412,243 @@ def assess_event(article, analysis, records, legacy_events, now):
         "fact_history": _fact_history({"facts": event["facts"]})}
     return {"duplicate": novelty == "same", "event_id": event_id, "novelty": novelty,
             "reason": reason, "prior_sent_at": prior["last_sent_at"] if prior else "", "record": record}
+
+
+
+def _same_partial_date(left, right):
+    def parts(value):
+        value = _literal(value)
+        match = re.search(r"(?:(\d{4})년)?(\d{1,2})월(\d{1,2})일", value)
+        if match:
+            return tuple(int(x) if x else None for x in match.groups())
+        match = re.search(r"(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})", value)
+        if match:
+            return tuple(map(int, match.groups()))
+        return None
+    a, b = parts(left), parts(right)
+    if a is None or b is None:
+        return None
+    return all(x is None or y is None or x == y for x, y in zip(a, b))
+
+
+def _date_conflict(left, right):
+    if left.get("event_date") and right.get("event_date") and left["event_date"] != right["event_date"]:
+        return True
+    # Partial dates still distinguish separate editions when the year is absent.
+    right_facts = {normalize_text(f["key"]): f["value"] for f in right.get("facts", [])}
+    for fact in left.get("facts", []):
+        key = normalize_text(fact["key"])
+        other = right_facts.get(key)
+        if (other and re.search(r"개최일|행사일|결선일|계약일|발생일", key)
+                and _same_partial_date(fact["value"], other) is False):
+            return True
+    return False
+
+
+
+def _identity_fact_equal(left, right):
+    if _literal(left) == _literal(right):
+        return True
+    if not _equivalent_value(left, right):
+        return False
+    # Numeric equality alone cannot erase geography/product names.
+    def context(value):
+        value = re.sub(r"[+\-−]?\d[\d,.]*", "", _literal(value))
+        return value.replace("지원팀", "팀").replace("참가팀", "팀")
+    return context(left) == context(right)
+
+
+def _source_has_subject(source, subject):
+    if re.fullmatch(r"[a-z]{2,6}", subject):
+        return re.search(r"(?<![a-z0-9])" + re.escape(subject) + r"(?![a-z0-9])",
+                         unicodedata.normalize("NFKC", source).lower()) is not None
+    return subject in normalize_text(source)
+
+
+
+def _identity_anchor_equal(key, left, right):
+    return (_identity_fact_equal(left, right)
+            or (re.search(r"개최일|행사일|결선일|계약일|발생일", normalize_text(key))
+                and _same_partial_date(left, right) is True))
+
+
+def _shared_identity_facts(left, right):
+    old = {normalize_text(f["key"]): f["value"] for f in left.get("facts", [])}
+    return [{"key": normalize_text(f["key"]), "value": f["value"]}
+            for f in right.get("facts", [])
+            if normalize_text(f["key"]) in old
+            and _identity_anchor_equal(f["key"], old[normalize_text(f["key"])], f["value"])]
+
+
+def _precise_shared_key(left, right):
+    left_keys = {_legacy_identity(k) for k in left.get("legacy_keys", [])}
+    return any(identity[1] and identity in left_keys
+               for identity in (_legacy_identity(k) for k in right.get("legacy_keys", [])))
+
+
+def same_event_identity(left, right):
+    """Source-witnessed aliases, scoped by company/action/key and corroborating facts.
+
+    A common company, partner, theme, count, or model key never suffices alone.
+    Persisted alias evidence is rechecked, never promoted to a global synonym.
+    """
+    if company_name(left.get("company")) != company_name(right.get("company")):
+        return False
+    if _date_conflict(left, right):
+        return False
+    if normalize_text(left.get("action", "")) != normalize_text(right.get("action", "")):
+        return False
+    a, b = _subject(left.get("subject")), _subject(right.get("subject"))
+    if a == b:
+        return True
+    if not a or not b or not _precise_shared_key(left, right):
+        return False
+    shared = _shared_identity_facts(left, right)
+    if len(shared) < 2:
+        return False
+    graph = {}
+    for record in (left, right):
+        source = record.get("_identity_source", "")
+        if (not re.search(r"달리|비교|별개|다른|각각|별도", source)
+                and _source_has_subject(source, a) and _source_has_subject(source, b)):
+            return True
+        for proof in record.get("identity_evidence", []):
+            subjects, anchors = proof.get("subjects", []), proof.get("anchors", [])
+            if len(subjects) != 2:
+                continue
+            matched = {anchor["key"] for anchor in anchors if any(
+                anchor["key"] == fact["key"] and _identity_anchor_equal(anchor["key"], anchor["value"], fact["value"])
+                for fact in shared)}
+            if len(matched) >= 2:
+                graph.setdefault(subjects[0], set()).add(subjects[1])
+                graph.setdefault(subjects[1], set()).add(subjects[0])
+    pending, visited = [a], set()
+    while pending:
+        subject = pending.pop()
+        if subject == b:
+            return True
+        if subject not in visited:
+            visited.add(subject)
+            pending.extend(graph.get(subject, set()) - visited)
+    return False
+
+
+def _identity_record(article, analysis, event):
+    return {"company": company_name(analysis.get("company_name") or article.get("_company")),
+            "subject": event["subject"], "action": event["action"],
+            "event_date": event.get("event_date", ""), "facts": event.get("facts", []),
+            "legacy_keys": [analysis.get("event_key", "")],
+            "_identity_source": article_source(article)}
+
+
+def select_event_cards(articles, records, legacy_events, now):
+    """One card per proven event, assessed only against immutable sent history.
+
+    Mutates only candidate article decision metadata. Never sends or saves.
+    Contradictory same-batch numeric facts are withheld: publication time alone
+    cannot prove the chronology of an underlying event.
+    """
+    entries = []
+    for article in articles:
+        analysis = article.get("analysis")
+        if not analysis:
+            continue
+        decision = assess_event(article, analysis, records, legacy_events, now)
+        article["_event_decision"] = {key: decision.get(key, "") for key in
+                                     ("prior_sent_at", "novelty")}
+        article["_event_decision"].update(matched_event_id=decision["event_id"],
+                                         dedup_reason=decision["reason"])
+        record = copy.deepcopy(decision["record"])
+        record["_identity_source"] = article_source(article)
+        entries.append((article, decision, record))
+    groups = [{i} for i in range(len(entries))]
+    # Build witnessed links first; then reject contradictory transitive bridges.
+    links = [(i, j) for i in range(len(entries)) for j in range(i)
+             if same_event_identity(entries[i][2], entries[j][2])]
+    for i, j in sorted(links):
+        left = next(g for g in groups if i in g)
+        right = next(g for g in groups if j in g)
+        if left is right:
+            continue
+        if any(_date_conflict(entries[a][2], entries[b][2]) for a in left for b in right):
+            raise ValueError("동일 회차 사건 날짜 충돌 — 발송 보류")
+        left.update(right)
+        groups.remove(right)
+    selected = []
+    for group in groups:
+        historical_ids = {entries[i][1]["event_id"] for i in group if entries[i][1].get("prior_sent_at")}
+        if len(historical_ids) > 1:
+            raise ValueError("동일 회차 사건 이력 ID 충돌 — 발송 보류")
+        if len({_subject(entries[i][2]["subject"]) for i in group}) > 1:
+            if any(not _precise_shared_key(entries[i][2], entries[j][2])
+                   for i in group for j in group):
+                raise ValueError("동일 회차 사건 키 충돌 — 발송 보류")
+        # An alias witness in another current article can resolve a history match.
+        # Reassess novelty against that SENT baseline, never merely copy its ID.
+        if historical_ids:
+            historical_id = next(iter(historical_ids))
+            prior = next(r for r in records if r["event_id"] == historical_id)
+            for i in group:
+                current, decision, record = entries[i]
+                changes = _fact_changes(record, prior)
+                claimed_same = current["analysis"].get("event", {}).get("novelty") == "same"
+                novelty = "update" if changes and not claimed_same else "same"
+                reason = ("source_backed_fact_change:" + ",".join(changes)
+                          if novelty == "update" else "same_event_no_new_facts")
+                decision.update(event_id=historical_id, duplicate=novelty == "same",
+                                novelty=novelty, reason=reason, prior_sent_at=prior["last_sent_at"])
+                record.update(event_id=historical_id, first_sent_at=prior["first_sent_at"])
+                current["_event_decision"].update(matched_event_id=historical_id,
+                    prior_sent_at=prior["last_sent_at"], novelty=novelty, dedup_reason=reason)
+        eligible = [i for i in group if not entries[i][1]["duplicate"]]
+        if not eligible:
+            continue
+        # A key may be differently worded; only comparable numeric axes conflict.
+        values, date_values = {}, {}
+        for i in eligible:
+            for fact in entries[i][2].get("facts", []):
+                key = normalize_text(fact["key"])
+                nums = _fact_numbers(key, fact["value"])
+                if re.search(r"개최일|행사일|결선일|계약일|발생일", key):
+                    if key in date_values and _same_partial_date(date_values[key], fact["value"]) is True:
+                        continue
+                    date_values[key] = fact["value"]
+                if nums:
+                    if key in values and values[key] != nums:
+                        raise ValueError("동일 회차 사건 수치 충돌 — 발송 보류: " + key)
+                    values[key] = nums
+        # Pick the most informative already-written card, stably across input order.
+        winner = min(eligible, key=lambda i: (
+            -float(entries[i][0]["analysis"].get("impact_score", 0)),
+            -len(entries[i][2].get("facts", [])),
+            entries[i][0].get("article_id") or normalize_url(entries[i][0].get("link", ""))))
+        article, decision, record = entries[winner]
+        event_id = next(iter(historical_ids)) if historical_ids else min(entries[i][1]["event_id"] for i in group)
+        record["event_id"] = event_id
+        # Preserve only the representative's facts/URL. Alias provenance is identity
+        # metadata, never evidence that discarded article details were delivered.
+        proofs = list(record.get("identity_evidence", []))
+        for i, j in links:
+            if i not in group or j not in group:
+                continue
+            a, b = entries[i][2], entries[j][2]
+            if _subject(a["subject"]) != _subject(b["subject"]):
+                proof = {"subjects": sorted({_subject(a["subject"]), _subject(b["subject"])}),
+                         "anchors": _shared_identity_facts(a, b)}
+                if proof not in proofs:
+                    proofs.append(proof)
+        if proofs:
+            record["identity_evidence"] = proofs
+        record.pop("_identity_source", None)
+        article["_event_record"] = record
+        article["_event_decision"]["matched_event_id"] = event_id
+        selected.append(article)
+        for i in group:
+            if i == winner:
+                continue
+            other, prior_decision, _ = entries[i]
+            other["_event_decision"].update(
+                matched_event_id=event_id, novelty="same",
+                prior_sent_at=prior_decision.get("prior_sent_at", ""),
+                dedup_reason="same_batch_event_consolidated")
+    return [a for a in articles if any(a is picked for picked in selected)]
