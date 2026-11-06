@@ -697,7 +697,7 @@ def collect(config, queue, mode="production", recovery_only=False, selected_ids=
             return article
         url = article.get("originallink") or article.get("link")
         text = bot.fetch_article_body(url) if url else ""
-        article["_body"] = (text or article.get("description", ""))[:800]
+        article["_body"] = (text or article.get("description", ""))[:bot.ARTICLE_BODY_LIMIT]
         article["_body_failed"] = not bool(text)
         return article
     with ThreadPoolExecutor(max_workers=4) as pool:
