@@ -5,7 +5,8 @@ import unittest
 from datetime import datetime, timezone, timedelta
 
 from event_dedup import assess_event, select_event_cards, same_event_identity
-from test_event_delivery import EventDeliveryIntegration, article
+import test_event_delivery as delivery
+from test_event_delivery import article
 
 NOW = datetime(2026, 11, 6, 9, tzinfo=timezone.utc)
 
@@ -110,6 +111,13 @@ class BatchEventTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "사건 날짜 충돌"):
             self.select(items)
 
+    def test_partial_and_full_same_date_are_compatible(self):
+        one = card("one", "한빛행사", "키움증권 한빛행사는 11월 27일에 개최한다.", [("개최일", "11월 27일")], "행사")
+        two = card("two", "한빛행사", "키움증권 한빛행사는 2026년 11월 27일에 개최한다.", [("개최일", "2026년 11월 27일")], "행사")
+        self.assertEqual(len(self.select([one, two])), 1)
+        prior = assess_event(one, one["analysis"], [], set(), NOW - timedelta(hours=1))["record"]
+        self.assertEqual(self.select([two], [prior]), [])
+
     def test_explicit_id_with_different_event_date_rejected(self):
         old = article("안심계좌", "old")
         old["analysis"]["event"]["event_date"] = "2026-11-05"
@@ -133,6 +141,30 @@ class BatchEventTests(unittest.TestCase):
         self.assertEqual(len(selected[0]["_event_record"]["facts"]), 1)
         self.assertNotIn("500명", selected[0]["_event_record"]["reported_values"])
 
+    def test_three_name_chain_and_real_update_preserve_identity(self):
+        facts = [("개최일", "11월 27일"), ("장소", "한빛 스퀘어"), ("참여기업", "4개사")]
+        ab = card("a", "Alpha Forum", "키움증권 Alpha Forum은 베타포럼이며 11월 27일 한빛 스퀘어에 4개사가 온다.", facts, "한빛포럼")
+        bc = card("b", "베타포럼", "키움증권 베타포럼은 Gamma Forum이며 11월 27일 한빛 스퀘어에 4개사가 온다.", facts, "한빛포럼")
+        cc = card("c", "Gamma Forum", "키움증권 Gamma Forum은 11월 27일 한빛 스퀘어에 4개사가 온다.", facts, "한빛포럼")
+        sent = self.select([ab, bc, cc])
+        self.assertEqual(len(sent), 1)
+        prior = sent[0]["_event_record"]
+        self.assertEqual(self.select([copy.deepcopy(cc)], [prior]), [])
+        update = card("later", "Gamma Forum", "키움증권 Gamma Forum은 11월 27일 한빛 스퀘어에 5개사로 확대한다.",
+                      facts[:2] + [("참여기업", "5개사")], "한빛포럼")
+        update["analysis"]["event"].update(novelty="update", matched_event_id=prior["event_id"])
+        chosen = self.select([update], [prior])
+        self.assertEqual(len(chosen), 1)
+        self.assertEqual(chosen[0]["_event_record"]["event_id"], prior["event_id"])
+
+    def test_batch_witness_reassesses_initially_new_alias_against_sent_history(self):
+        items = fixture()
+        prior = assess_event(items[0], items[0]["analysis"], [], set(), NOW - timedelta(hours=1))["record"]
+        self.assertNotIn("identity_evidence", prior)
+        batch = [items[0], items[3]]
+        self.assertEqual(self.select(batch, [prior]), [])
+        self.assertTrue(all(a["_event_decision"]["prior_sent_at"] == prior["last_sent_at"] for a in batch))
+
     def test_old_rereport_does_not_block_genuine_batch_update(self):
         old = article("안심계좌", "old")
         prior = assess_event(old, old["analysis"], [], set(), NOW - timedelta(hours=1))["record"]
@@ -150,8 +182,16 @@ class BatchEventTests(unittest.TestCase):
         self.assertEqual(selected[0]["_event_decision"]["prior_sent_at"], prior["last_sent_at"])
 
 
-class BatchMainIntegration(EventDeliveryIntegration):
+class BatchMainIntegration(delivery.EventDeliveryIntegration):
     # Inherit the complete main/history/SMTP-guard contract too.
+    def test_preview_and_production_final_selection_match_low_cap(self):
+        items = [article("서로다른서비스" + str(i), "low" + str(i), score=4.8-i/10) for i in range(7)]
+        preview = select_event_cards(copy.deepcopy(items), [], set(), NOW)
+        preview = delivery.bot.finalize_event_cards(preview, preserve_grades=True)
+        rendered, _, _, _ = self.run_main(items)
+        self.assertEqual([a["article_id"] for a in preview], [a["article_id"] for a in rendered])
+        self.assertEqual(len(preview), delivery.bot.GRADE_LIMITS["하"])
+
     def test_seven_article_main_produces_two_cards(self):
         items = fixture()
         items[0]["_company"] = "삼성증권"

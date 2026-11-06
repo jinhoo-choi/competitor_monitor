@@ -817,6 +817,7 @@ def consume(config, queue, job_id, dry_run=False, self_test=False):
         cards = select_event_cards(
             [a for a in normalized if a.get("analysis") and not bot._withhold_reason(a)],
             history.get("event_records", []), history.get("events", set()), now())
+        cards = bot.finalize_event_cards(cards, preserve_grades=True)
         html = bot.build_email_html(cards,
                                     len(job["input"]["raw_articles"]), len(normalized))
         queue.put("previews/" + job_id + ".json", {"html": html, "paid_ai_calls": 0})

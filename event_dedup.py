@@ -232,7 +232,9 @@ def _fact_changes(event, prior):
     changes, history = [], _fact_history(prior)
     for fact in event["facts"]:
         key, value = normalize_text(fact["key"]), fact["value"]
-        if _literal(old.get(key, "")) == _literal(value) or _literal(value) in all_old:
+        if (_literal(old.get(key, "")) == _literal(value) or _literal(value) in all_old
+                or (re.search(r"개최일|행사일|결선일|계약일|발생일", key)
+                    and _same_partial_date(old.get(key, ""), value) is True)):
             continue
         if re.search(r"(?:변경|인상|인하|확대|축소|전환|조정|도입).{0,12}(?:않|못|아니|없)", fact["evidence_quote"]):
             continue
@@ -408,6 +410,23 @@ def assess_event(article, analysis, records, legacy_events, now):
             "reason": reason, "prior_sent_at": prior["last_sent_at"] if prior else "", "record": record}
 
 
+
+def _same_partial_date(left, right):
+    def parts(value):
+        value = _literal(value)
+        match = re.search(r"(?:(\d{4})년)?(\d{1,2})월(\d{1,2})일", value)
+        if match:
+            return tuple(int(x) if x else None for x in match.groups())
+        match = re.search(r"(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})", value)
+        if match:
+            return tuple(map(int, match.groups()))
+        return None
+    a, b = parts(left), parts(right)
+    if a is None or b is None:
+        return None
+    return all(x is None or y is None or x == y for x, y in zip(a, b))
+
+
 def _date_conflict(left, right):
     if left.get("event_date") and right.get("event_date") and left["event_date"] != right["event_date"]:
         return True
@@ -417,7 +436,7 @@ def _date_conflict(left, right):
         key = normalize_text(fact["key"])
         other = right_facts.get(key)
         if (other and re.search(r"개최일|행사일|결선일|계약일|발생일", key)
-                and not _equivalent_value(fact["value"], other)):
+                and _same_partial_date(fact["value"], other) is False):
             return True
     return False
 
@@ -437,7 +456,7 @@ def _identity_fact_equal(left, right):
 
 def _source_has_subject(source, subject):
     if re.fullmatch(r"[a-z]{2,6}", subject):
-        return re.search(r"(?<![a-z])" + re.escape(subject) + r"(?![a-z])",
+        return re.search(r"(?<![a-z0-9])" + re.escape(subject) + r"(?![a-z0-9])",
                          unicodedata.normalize("NFKC", source).lower()) is not None
     return subject in normalize_text(source)
 
@@ -447,7 +466,9 @@ def _shared_identity_facts(left, right):
     return [{"key": normalize_text(f["key"]), "value": f["value"]}
             for f in right.get("facts", [])
             if normalize_text(f["key"]) in old
-            and _identity_fact_equal(old[normalize_text(f["key"])], f["value"])]
+            and (_identity_fact_equal(old[normalize_text(f["key"])], f["value"])
+                 or (re.search(r"개최일|행사일|결선일|계약일|발생일", normalize_text(f["key"]))
+                     and _same_partial_date(old[normalize_text(f["key"])], f["value"]) is True))]
 
 
 def _precise_shared_key(left, right):
@@ -476,19 +497,30 @@ def same_event_identity(left, right):
     shared = _shared_identity_facts(left, right)
     if len(shared) < 2:
         return False
+    graph = {}
     for record in (left, right):
         source = record.get("_identity_source", "")
         if (not re.search(r"달리|비교|별개|다른|각각|별도", source)
                 and _source_has_subject(source, a) and _source_has_subject(source, b)):
             return True
         for proof in record.get("identity_evidence", []):
-            if set(proof.get("subjects", [])) != {a, b}:
+            subjects, anchors = proof.get("subjects", []), proof.get("anchors", [])
+            if len(subjects) != 2:
                 continue
-            anchors = proof.get("anchors", [])
-            if len(anchors) >= 2 and all(any(
-                    anchor["key"] == fact["key"] and _identity_fact_equal(anchor["value"], fact["value"])
-                    for fact in shared) for anchor in anchors):
-                return True
+            matched = {anchor["key"] for anchor in anchors if any(
+                anchor["key"] == fact["key"] and _identity_fact_equal(anchor["value"], fact["value"])
+                for fact in shared)}
+            if len(matched) >= 2:
+                graph.setdefault(subjects[0], set()).add(subjects[1])
+                graph.setdefault(subjects[1], set()).add(subjects[0])
+    pending, visited = [a], set()
+    while pending:
+        subject = pending.pop()
+        if subject == b:
+            return True
+        if subject not in visited:
+            visited.add(subject)
+            pending.extend(graph.get(subject, set()) - visited)
     return False
 
 
@@ -535,15 +567,43 @@ def select_event_cards(articles, records, legacy_events, now):
         groups.remove(right)
     selected = []
     for group in groups:
+        historical_ids = {entries[i][1]["event_id"] for i in group if entries[i][1].get("prior_sent_at")}
+        if len(historical_ids) > 1:
+            raise ValueError("동일 회차 사건 이력 ID 충돌 — 발송 보류")
+        if len({_subject(entries[i][2]["subject"]) for i in group}) > 1:
+            if any(not _precise_shared_key(entries[i][2], entries[j][2])
+                   for i in group for j in group):
+                raise ValueError("동일 회차 사건 키 충돌 — 발송 보류")
+        # An alias witness in another current article can resolve a history match.
+        # Reassess novelty against that SENT baseline, never merely copy its ID.
+        if historical_ids:
+            historical_id = next(iter(historical_ids))
+            prior = next(r for r in records if r["event_id"] == historical_id)
+            for i in group:
+                current, decision, record = entries[i]
+                changes = _fact_changes(record, prior)
+                claimed_same = current["analysis"].get("event", {}).get("novelty") == "same"
+                novelty = "update" if changes and not claimed_same else "same"
+                reason = ("source_backed_fact_change:" + ",".join(changes)
+                          if novelty == "update" else "same_event_no_new_facts")
+                decision.update(event_id=historical_id, duplicate=novelty == "same",
+                                novelty=novelty, reason=reason, prior_sent_at=prior["last_sent_at"])
+                record.update(event_id=historical_id, first_sent_at=prior["first_sent_at"])
+                current["_event_decision"].update(matched_event_id=historical_id,
+                    prior_sent_at=prior["last_sent_at"], novelty=novelty, dedup_reason=reason)
         eligible = [i for i in group if not entries[i][1]["duplicate"]]
         if not eligible:
             continue
         # A key may be differently worded; only comparable numeric axes conflict.
-        values = {}
+        values, date_values = {}, {}
         for i in eligible:
             for fact in entries[i][2].get("facts", []):
                 key = normalize_text(fact["key"])
                 nums = _fact_numbers(key, fact["value"])
+                if re.search(r"개최일|행사일|결선일|계약일|발생일", key):
+                    if key in date_values and _same_partial_date(date_values[key], fact["value"]) is True:
+                        continue
+                    date_values[key] = fact["value"]
                 if nums:
                     if key in values and values[key] != nums:
                         raise ValueError("동일 회차 사건 수치 충돌 — 발송 보류: " + key)
@@ -554,9 +614,6 @@ def select_event_cards(articles, records, legacy_events, now):
             -len(entries[i][2].get("facts", [])),
             entries[i][0].get("article_id") or normalize_url(entries[i][0].get("link", ""))))
         article, decision, record = entries[winner]
-        historical_ids = {entries[i][1]["event_id"] for i in group if entries[i][1].get("prior_sent_at")}
-        if len(historical_ids) > 1:
-            raise ValueError("동일 회차 사건 이력 ID 충돌 — 발송 보류")
         event_id = next(iter(historical_ids)) if historical_ids else min(entries[i][1]["event_id"] for i in group)
         record["event_id"] = event_id
         # Preserve only the representative's facts/URL. Alias provenance is identity

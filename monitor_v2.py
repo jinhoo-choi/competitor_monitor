@@ -2235,6 +2235,79 @@ def preflight() -> bool:
 # ═══════════════════════════════════════════════
 # 메인
 # ═══════════════════════════════════════════════
+def finalize_event_cards(analyzed, preserve_grades=False):
+    # 구독 결과는 검증된 점수·등급을 보존한다. 건수로 강등하면
+    # 5점 이상이 '하'로 표시되어 입력 검증 및 발송 범위와 충돌한다.
+    # API 경로의 기존 상 2건·중 3건 강등과 하 5건 제한은 유지한다.
+
+    def _impact_score(a: dict) -> float:
+        try: return float(a.get("analysis",{}).get("impact_score", 0))
+        except: return 0.0
+
+    # 영향도별 분리 후 점수 내림차순 정렬
+    bucket = {"상": [], "중": [], "하": [], None: []}
+    for a in analyzed:
+        lvl = a.get("analysis",{}).get("impact_level") if a.get("analysis") else None
+        bucket.setdefault(lvl, []).append(a)
+
+    for lvl in ("상", "중"):
+        bucket[lvl].sort(key=_impact_score, reverse=True)
+
+    regrade_log = []
+    # 상 → 초과분 중으로 강등
+    over_high = bucket["상"][GRADE_LIMITS["상"]:] if not preserve_grades else []
+    if not preserve_grades:
+        bucket["상"] = bucket["상"][:GRADE_LIMITS["상"]]
+    for a in over_high:
+        a["analysis"]["impact_level"] = "중"
+        regrade_log.append(f"  [강등] 상→중: {a['_company']} | {a['title'][:35]}")
+        bucket["중"].append(a)
+
+    # 중 → 초과분 하로 강등 (강등된 것 포함, 재정렬)
+    bucket["중"].sort(key=_impact_score, reverse=True)
+    over_mid = bucket["중"][GRADE_LIMITS["중"]:] if not preserve_grades else []
+    if not preserve_grades:
+        bucket["중"] = bucket["중"][:GRADE_LIMITS["중"]]
+    for a in over_mid:
+        a["analysis"]["impact_level"] = "하"
+        regrade_log.append(f"  [강등] 중→하: {a['_company']} | {a['title'][:35]}")
+        bucket["하"].append(a)
+
+    # 하 → 초과분 제거 (점수 낮은 순, 5건 초과 시 드롭)
+    bucket["하"].sort(key=_impact_score, reverse=True)
+    over_low = bucket["하"][GRADE_LIMITS["하"]:]
+    bucket["하"] = bucket["하"][:GRADE_LIMITS["하"]]
+    for a in over_low:
+        regrade_log.append(f"  [제거] 하 초과: {a['_company']} | {a['title'][:35]}")
+
+    if regrade_log:
+        print("  등급 재조정:")
+        for msg in regrade_log: print(msg)
+
+    # ── 등급 확정 후 최종 중복 제거
+    # 상/중 카드와 하 리스트 간 동일 URL 또는 정규화 제목 완전 일치만 제거
+    all_arts = bucket["상"] + bucket["중"] + bucket["하"] + bucket.get(None, [])
+    seen_final_links = set()
+    seen_final_titles = []
+    analyzed = []
+    for a in all_arts:
+        link  = normalize_url(a.get("link","") or a.get("originallink",""))
+        title = _normalize_title(a.get("title",""))
+        # URL 중복
+        if link and link in seen_final_links:
+            print(f"  [최종중복-URL] {a.get('_company','')} | {a.get('title','')[:45]}")
+            continue
+        # Preserve distinct services/facts even if headlines look similar.
+        if len(title) > 15 and title in seen_final_titles:
+            print(f"  [최종중복-제목] {a.get('_company','')} | {a.get('title','')[:45]}")
+            continue
+        if link: seen_final_links.add(link)
+        if len(title) > 15: seen_final_titles.append(title)
+        analyzed.append(a)
+
+    return analyzed
+
+
 def main(provider=None):
     _OPERATIONAL_NOTES.clear()
     try:
@@ -2396,74 +2469,7 @@ def _run_main(provider=None):
         if decisions.get(key):
             source["_event_decision"] = decisions[key]
 
-    # 구독 결과는 검증된 점수·등급을 보존한다. 건수로 강등하면
-    # 5점 이상이 '하'로 표시되어 입력 검증 및 발송 범위와 충돌한다.
-    # API 경로의 기존 상 2건·중 3건 강등과 하 5건 제한은 유지한다.
-
-    def _impact_score(a: dict) -> float:
-        try: return float(a.get("analysis",{}).get("impact_score", 0))
-        except: return 0.0
-
-    # 영향도별 분리 후 점수 내림차순 정렬
-    bucket = {"상": [], "중": [], "하": [], None: []}
-    for a in analyzed:
-        lvl = a.get("analysis",{}).get("impact_level") if a.get("analysis") else None
-        bucket.setdefault(lvl, []).append(a)
-
-    for lvl in ("상", "중"):
-        bucket[lvl].sort(key=_impact_score, reverse=True)
-
-    regrade_log = []
-    # 상 → 초과분 중으로 강등
-    over_high = bucket["상"][GRADE_LIMITS["상"]:] if provider is None else []
-    if provider is None:
-        bucket["상"] = bucket["상"][:GRADE_LIMITS["상"]]
-    for a in over_high:
-        a["analysis"]["impact_level"] = "중"
-        regrade_log.append(f"  [강등] 상→중: {a['_company']} | {a['title'][:35]}")
-        bucket["중"].append(a)
-
-    # 중 → 초과분 하로 강등 (강등된 것 포함, 재정렬)
-    bucket["중"].sort(key=_impact_score, reverse=True)
-    over_mid = bucket["중"][GRADE_LIMITS["중"]:] if provider is None else []
-    if provider is None:
-        bucket["중"] = bucket["중"][:GRADE_LIMITS["중"]]
-    for a in over_mid:
-        a["analysis"]["impact_level"] = "하"
-        regrade_log.append(f"  [강등] 중→하: {a['_company']} | {a['title'][:35]}")
-        bucket["하"].append(a)
-
-    # 하 → 초과분 제거 (점수 낮은 순, 5건 초과 시 드롭)
-    bucket["하"].sort(key=_impact_score, reverse=True)
-    over_low = bucket["하"][GRADE_LIMITS["하"]:]
-    bucket["하"] = bucket["하"][:GRADE_LIMITS["하"]]
-    for a in over_low:
-        regrade_log.append(f"  [제거] 하 초과: {a['_company']} | {a['title'][:35]}")
-
-    if regrade_log:
-        print("  등급 재조정:")
-        for msg in regrade_log: print(msg)
-
-    # ── 등급 확정 후 최종 중복 제거
-    # 상/중 카드와 하 리스트 간 동일 URL 또는 정규화 제목 완전 일치만 제거
-    all_arts = bucket["상"] + bucket["중"] + bucket["하"] + bucket.get(None, [])
-    seen_final_links = set()
-    seen_final_titles = []
-    analyzed = []
-    for a in all_arts:
-        link  = normalize_url(a.get("link","") or a.get("originallink",""))
-        title = _normalize_title(a.get("title",""))
-        # URL 중복
-        if link and link in seen_final_links:
-            print(f"  [최종중복-URL] {a.get('_company','')} | {a.get('title','')[:45]}")
-            continue
-        # Preserve distinct services/facts even if headlines look similar.
-        if len(title) > 15 and title in seen_final_titles:
-            print(f"  [최종중복-제목] {a.get('_company','')} | {a.get('title','')[:45]}")
-            continue
-        if link: seen_final_links.add(link)
-        if len(title) > 15: seen_final_titles.append(title)
-        analyzed.append(a)
+    analyzed = finalize_event_cards(analyzed, preserve_grades=provider is not None)
 
     # Incomplete coverage is not a clean no-result report. Keep the run owner-only
     # and leave dedup state untouched so withheld articles can be reconsidered.
