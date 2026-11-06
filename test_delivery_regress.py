@@ -29,11 +29,33 @@ class DeliveryRegression(unittest.TestCase):
             self.stack.enter_context(patch.object(bot, name, value))
 
     def sender(self, refused=None, error=None):
-        def send(subject, html, addr):
+        def send(subject, html, addr, **headers):
             if error:
                 raise error
             return {addr: (550, "rejected")} if addr in (refused or set()) else {}
         return self.stack.enter_context(patch.object(bot, "_send_one", side_effect=send))
+
+    def test_report_headers_and_envelopes_keep_roles_without_extra_delivery(self):
+        from email import message_from_string
+        from email.utils import getaddresses
+        with patch.object(bot.smtplib, 'SMTP_SSL') as smtp:
+            bot.send_email('html', [], 0)
+            calls = smtp.return_value.__enter__.return_value.sendmail.call_args_list
+            self.assertEqual([c.args[1] for c in calls],
+                             [['kwakjin@koreainvestment.com'], ['risk_aigent@googlegroups.com']])
+            for call in calls:
+                mail = message_from_string(call.args[2])
+                self.assertEqual([a for _, a in getaddresses(mail.get_all('To'))], bot.RECIPIENTS_ALL)
+                self.assertEqual(mail['Cc'], 'risk_aigent@googlegroups.com')
+                self.assertIsNone(mail['Bcc'])
+            smtp.reset_mock()
+            with patch.object(bot, 'TEST_MODE', True):
+                bot.send_email('html', [], 0)
+            call = smtp.return_value.__enter__.return_value.sendmail.call_args
+            self.assertEqual(call.args[1], [bot.GMAIL_USER])
+            mail = message_from_string(call.args[2])
+            self.assertIsNone(mail['Cc'])
+            self.assertNotIn('kwakjin', mail['To'])
 
     def main_fixture(self, kind="low"):
         article = {

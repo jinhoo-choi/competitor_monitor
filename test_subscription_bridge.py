@@ -488,7 +488,7 @@ class DeliveryIntegrityRegression(unittest.TestCase):
 
     def test_report_keeps_groups_and_executive_without_implicit_sender_then_ack_no_resend(self):
         from email import message_from_string
-        from email.utils import parseaddr
+        from email.utils import getaddresses
         targets = ['general@example.invalid', 'pb@example.invalid', 'executive@example.invalid']
         with patch.object(bot, 'RECIPIENTS_ALL', targets[:2]), \
              patch.object(bot, 'RECIPIENTS_CC', [targets[2], targets[0]]):
@@ -497,8 +497,8 @@ class DeliveryIntegrityRegression(unittest.TestCase):
             self.assertEqual([c.args[1] for c in calls], [[a] for a in targets])
             for call in calls:
                 msg = message_from_string(call.args[2])
-                self.assertEqual(parseaddr(msg['To'])[1], call.args[1][0])
-                self.assertIsNone(msg['Cc'])
+                self.assertEqual([a for _, a in getaddresses(msg.get_all('To'))], targets[:2])
+                self.assertEqual(msg['Cc'], targets[2])
                 self.assertIsNone(msg['Bcc'])
             state = self.queue.get(self.path)[0]
             self.assertEqual(len(state['receipts']), len(targets))

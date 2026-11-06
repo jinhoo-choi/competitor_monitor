@@ -42,8 +42,8 @@ GMAIL_USER          = os.environ["GMAIL_USER"]
 GMAIL_APP_PASSWORD  = os.environ["GMAIL_APP_PASSWORD"]
 
 # 수신자 2그룹: TO는 항상 발송, CC는 항상 참조
-RECIPIENTS_ALL = []  # 실제 배포대상 단일화 — risk_aigent 그룹 하나만 사용
-RECIPIENTS_CC  = ["risk_aigent@googlegroups.com", "kwakjin@koreainvestment.com"]  # 일반 그룹과 본부장 직접 수신(개별발송)
+RECIPIENTS_ALL = ["kwakjin@koreainvestment.com"]  # 정상 보고 받는사람
+RECIPIENTS_CC  = ["risk_aigent@googlegroups.com"]  # 정상 보고 참조
 
 # ═══ TEST_MODE — 나에게만 발송되는 검수용 실행 ═══
 # workflow_dispatch 수동 테스트가 실제 그룹(risk_aigent)으로 라이브 발송되는 사고를 막기 위한 격리 모드.
@@ -1933,13 +1933,15 @@ def _addr_header(addr: str) -> str:
     """임의 주소에 봇 표시명을 씌운 헤더 — To 전용(본인 고정 주소에만 사용)."""
     return formataddr((str(Header(_sanitize_header_text(SENDER_NAME), "utf-8")), addr))
 
-def _send_one(subject: str, html: str, addr: str) -> dict:
+def _send_one(subject: str, html: str, addr: str, *, to=None, cc=None) -> dict:
     """수신자 1명에게 개별 발송. 실패 시 재시도(최대3), 최종 실패 시 {addr:(code,msg)} 반환."""
     import time as _time
     msg = MIMEMultipart("alternative")
     msg["Subject"]    = _sanitize_header_text(subject)
     msg["From"]       = _from_header()
-    msg["To"]         = _addr_header(addr)   # 헤더 To == 실제 envelope 수신자 (스팸필터 회피 핵심)
+    msg["To"]         = ", ".join(formataddr(("곽진 본부장" if a == "kwakjin@koreainvestment.com" else "", a)) for a in to) if to else _addr_header(addr)
+    if cc:
+        msg["Cc"] = ", ".join(cc)
     msg["Date"]       = formatdate(localtime=True)
     msg["Message-ID"] = make_msgid(domain="gmail.com")
     msg.attach(MIMEText(html, "html", "utf-8"))
@@ -1986,14 +1988,10 @@ def _send_one(subject: str, html: str, addr: str) -> dict:
                 return {addr: (0, str(e))}
 
 def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None, *, copy_sender=True) -> dict:
-    """수신자별 개별 발송(1인 1통).
-    ⚠️ 설계 변경 이력: 기존엔 단일 메일에 To=본인고정 + 실수신자는 envelope으로만
-    숨겨 보냈으나(순수 BCC), (a) 본인이 envelope에 빠져 있어 본인도 미착신,
-    (b) 헤더에 실수신자와 일치하는 To/Cc가 전혀 없는 메일은 기업 스팸 게이트웨이가
-    무음으로 차단하는 경우가 많아 실수신자도 전원 미착신 — 7/18 10시 발송 사고 원인.
-    → 수신자 한 명당 메일을 개별 발송해 헤더 To를 항상 실제 수신자와 일치시키고
-      (스팸필터 회피), 서로에게는 여전히 노출되지 않으며(원래 목적 유지),
-      상태 알림은 기존 본인 사본을 유지하며 정기 보고는 명시 수신자만 사용한다."""
+    """정상 보고의 To/Cc를 표시하고 수신자별 SMTP·영수증은 분리한다.
+
+    본인 검수와 상태·오류 알림은 기존 개별 To 헤더를 유지한다.
+    """
     real_recipients = list(to) + list(cc or [])
     targets = list(dict.fromkeys(real_recipients + ([GMAIL_USER] if copy_sender else [])))
     if TEST_MODE:
@@ -2017,7 +2015,9 @@ def _smtp_send(subject: str, html: str, to: list[str], cc: list[str] = None, *, 
 
     all_refused = {}
     for addr in targets:
-        refused = _send_one(subject, html, addr)
+        headers = {"to": list(dict.fromkeys(to)),
+                   "cc": [a for a in dict.fromkeys(cc or []) if a not in to]} if not copy_sender and not TEST_MODE else {}
+        refused = _send_one(subject, html, addr, **headers)
         all_refused.update(refused)
 
     if all_refused:
