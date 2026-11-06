@@ -776,6 +776,18 @@ def collect(config, queue, mode="production", recovery_only=False, selected_ids=
                       "paid_ai_calls": 0}))
 
 
+def render_event_preview(bot, normalized, job):
+    """Use the production selectors without exposing article details in logs."""
+    from event_dedup import select_event_cards
+    with redirect_stdout(StringIO()):
+        history = bot.load_seen()
+        cards = select_event_cards(
+            [a for a in normalized if a.get("analysis") and not bot._withhold_reason(a)],
+            history.get("event_records", []), history.get("events", set()), now())
+        cards = bot.finalize_event_cards(cards, preserve_grades=True)
+        return bot.build_email_html(cards, len(job["input"]["raw_articles"]), len(normalized))
+
+
 def consume(config, queue, job_id, dry_run=False, self_test=False):
     if not JOB_ID.fullmatch(job_id):
         raise ValueError("회차 ID 오류")
@@ -808,18 +820,12 @@ def consume(config, queue, job_id, dry_run=False, self_test=False):
     require_live_policy(queue, job["input"]["policy_hash"])
     # 규칙 정규화도 메일 직전에 몰아서 하지 않고 전부 먼저 확인한다.
     normalized = []
-    for article in job["input"]["items"]:
-        if article["article_id"] in provider.analyses:
-            normalized.append(bot.analyze_article(copy.deepcopy(article), provider.analysis_for(article)))
+    with redirect_stdout(StringIO()):
+        for article in job["input"]["items"]:
+            if article["article_id"] in provider.analyses:
+                normalized.append(bot.analyze_article(copy.deepcopy(article), provider.analysis_for(article)))
     if dry_run:
-        from event_dedup import select_event_cards
-        history = bot.load_seen()
-        cards = select_event_cards(
-            [a for a in normalized if a.get("analysis") and not bot._withhold_reason(a)],
-            history.get("event_records", []), history.get("events", set()), now())
-        cards = bot.finalize_event_cards(cards, preserve_grades=True)
-        html = bot.build_email_html(cards,
-                                    len(job["input"]["raw_articles"]), len(normalized))
+        html = render_event_preview(bot, normalized, job)
         queue.put("previews/" + job_id + ".json", {"html": html, "paid_ai_calls": 0})
         job.update(status="verified", verified_at=now().isoformat(), paid_ai_calls=0)
         queue.put(path, job, sha)

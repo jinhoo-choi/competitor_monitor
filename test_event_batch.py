@@ -204,6 +204,20 @@ class BatchEventTests(unittest.TestCase):
 
 class BatchMainIntegration(delivery.EventDeliveryIntegration):
     # Inherit the complete main/history/SMTP-guard contract too.
+    def test_preview_does_not_log_private_headlines(self):
+        from contextlib import redirect_stdout
+        from io import StringIO
+        from unittest.mock import patch
+        from subscription_bridge import render_event_preview
+        items = [article("비공개서비스" + str(i), "private-" + str(i), score=4.8-i/10) for i in range(7)]
+        output = StringIO()
+        with patch.object(delivery.bot, "load_seen", return_value={"event_records": [], "events": set()}), \
+                patch.object(delivery.bot, "build_email_html", side_effect=lambda cards, *args: str(len(cards))), \
+                redirect_stdout(output):
+            html = render_event_preview(delivery.bot, items, {"input": {"raw_articles": items}})
+        self.assertEqual(html, str(delivery.bot.GRADE_LIMITS["하"]))
+        self.assertEqual(output.getvalue(), "")
+
     def test_preview_and_production_final_selection_match_low_cap(self):
         items = [article("서로다른서비스" + str(i), "low" + str(i), score=4.8-i/10) for i in range(7)]
         preview = select_event_cards(copy.deepcopy(items), [], set(), NOW)
