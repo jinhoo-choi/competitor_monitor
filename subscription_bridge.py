@@ -393,7 +393,7 @@ def validate_recovery_sources(queue, job, result):
             raise RuntimeError('미종결 다른 구독 회차 존재 — 복구 발송 보류')
 
 
-def validate(job, result, current_seen_hash, at=None):
+def validate(job, result, current_seen_hash, at=None, *, withheld_reasons=None):
     at = at or now()
     if job.get("schema_version") != SCHEMA or result.get("schema_version") != SCHEMA:
         raise ValueError("스키마 버전 불일치")
@@ -439,51 +439,79 @@ def validate(job, result, current_seen_hash, at=None):
     selected.sort(key=lambda a: (a.get("_tier", "") != "1군", a.get("_source_type", "") != "targeted"))
     selected = selected[:15]
     analyses = result.get("analyses")
-    if not isinstance(analyses, dict) or set(analyses) != {a["article_id"] for a in selected}:
+    explicit_holds = result.get("withheld", {})
+    if (not isinstance(analyses, dict) or not isinstance(explicit_holds, dict)
+            or set(analyses) & set(explicit_holds)
+            or set(analyses) | set(explicit_holds) != {a["article_id"] for a in selected}):
         raise ValueError("심층 분석 상한·선정 ID 불일치")
+    if any(not isinstance(reason, str) or not reason.strip() or len(reason) > 120
+           for reason in explicit_holds.values()):
+        raise ValueError("기사별 보류 사유 형식 오류")
+
+    holds = dict(explicit_holds)
+    validated = {}
     for article in selected:
-        a = analyses[article["article_id"]]
-        if not isinstance(a, dict):
-            raise ValueError("심층 분석 미완성")
-        if event_contract == 1:
-            a['event'] = validate_event(article, a, recent_events)
-        score, level = a.get("impact_score"), a.get("impact_level")
-        if type(score) not in {int, float} or not math.isfinite(score) or not 1 <= score <= 10:
-            raise ValueError("영향도 점수 범위 오류")
-        if level != ("상" if score >= 7 else "중" if score >= 5 else "하"):
-            raise ValueError("등급·점수 불일치")
-        for field, bound in {"company_name": 40, "event_key": 40, "impact_domain": 20,
-                             "summary": 90, "action_point": 80}.items():
-            if not isinstance(a.get(field), str) or not a[field].strip() or len(a[field]) > bound:
-                raise ValueError("분석 필수 필드·길이 오류: " + field)
-        if a.get("threat_type") not in THREATS or not isinstance(a.get("impact_tags"), dict):
-            raise ValueError("위협 유형·태그 오류")
-        for key, bound in {"위협유형": 6, "고객영향": 8}.items():
-            tag = a["impact_tags"].get(key)
-            if not isinstance(tag, str) or not tag.strip() or len(tag) > bound:
-                raise ValueError("영향 태그 미완성")
-        if article.get("_body_failed"):
-            if score > 4.9 or level != "하" or "[본문 미수집]" not in a["summary"]:
-                raise ValueError("본문 미수집 점수·등급·표시 오류")
-            # 실패한 페이지에 남은 메뉴·스크립트나 유사 기사 본문은 근거로 쓰지 않는다.
-            source = article.get("description", "") or ""
-        else:
-            source = " ".join([article.get("title", ""), article.get("description", ""), article.get("_body", "")])
-        quote = a.get("evidence_quote", "")
-        if not isinstance(quote, str) or len(quote) < 8 or quote not in source:
-            raise ValueError("원문 근거 인용 없음")
-        if score >= 5 and a.get("reviewed") is not True:
-            raise ValueError("중·상 등급 근거 재검토 미완료")
-        source_numbers = set(re.findall(r"\d+(?:\.\d+)?", source.replace(",", "")))
-        summary_numbers = set(re.findall(r"\d+(?:\.\d+)?", a["summary"].replace(",", "")))
-        if not summary_numbers <= source_numbers:
-            raise ValueError("요약에 원문 미확인 수치")
-    return {r["article_id"]: r for r in rows}, analyses
+        aid = article["article_id"]
+        if aid in holds:
+            continue
+        try:
+            validated[aid] = validate_article(
+                article, analyses[aid], recent_events if event_contract == 1 else None)
+        except ValueError as error:
+            # Older result producers retain their original validation contract.
+            if "withheld" not in result:
+                raise
+            holds[aid] = str(error)
+    if withheld_reasons is not None:
+        withheld_reasons.update(holds)
+    return {r["article_id"]: r for r in rows}, validated
+
+
+def validate_article(article, a, recent_events):
+    if not isinstance(a, dict):
+        raise ValueError("심층 분석 미완성")
+    if recent_events is not None:
+        a['event'] = validate_event(article, a, recent_events)
+    score, level = a.get("impact_score"), a.get("impact_level")
+    if type(score) not in {int, float} or not math.isfinite(score) or not 1 <= score <= 10:
+        raise ValueError("영향도 점수 범위 오류")
+    if level != ("상" if score >= 7 else "중" if score >= 5 else "하"):
+        raise ValueError("등급·점수 불일치")
+    for field, bound in {"company_name": 40, "event_key": 40, "impact_domain": 20,
+                         "summary": 90, "action_point": 80}.items():
+        if not isinstance(a.get(field), str) or not a[field].strip() or len(a[field]) > bound:
+            raise ValueError("분석 필수 필드·길이 오류: " + field)
+    threat = a.get("threat_type")
+    if not isinstance(threat, str) or threat not in THREATS or not isinstance(a.get("impact_tags"), dict):
+        raise ValueError("위협 유형·태그 오류")
+    for key, bound in {"위협유형": 6, "고객영향": 8}.items():
+        tag = a["impact_tags"].get(key)
+        if not isinstance(tag, str) or not tag.strip() or len(tag) > bound:
+            raise ValueError("영향 태그 미완성")
+    if article.get("_body_failed"):
+        if score > 4.9 or level != "하" or "[본문 미수집]" not in a["summary"]:
+            raise ValueError("본문 미수집 점수·등급·표시 오류")
+        # 실패한 페이지에 남은 메뉴·스크립트나 유사 기사 본문은 근거로 쓰지 않는다.
+        source = article.get("description", "") or ""
+    else:
+        source = " ".join([article.get("title", ""), article.get("description", ""), article.get("_body", "")])
+    quote = a.get("evidence_quote", "")
+    if not isinstance(quote, str) or len(quote) < 8 or quote not in source:
+        raise ValueError("원문 근거 인용 없음")
+    if score >= 5 and a.get("reviewed") is not True:
+        raise ValueError("중·상 등급 근거 재검토 미완료")
+    source_numbers = set(re.findall(r"\d+(?:\.\d+)?", source.replace(",", "")))
+    summary_numbers = set(re.findall(r"\d+(?:\.\d+)?", a["summary"].replace(",", "")))
+    if not summary_numbers <= source_numbers:
+        raise ValueError("요약에 원문 미확인 수치")
+    return a
 
 
 class Provider:
     def __init__(self, job, result, bot, current_seen_hash, at=None):
-        self.rows, self.analyses = validate(job, result, current_seen_hash, at)
+        self.withheld = {}
+        self.rows, self.analyses = validate(
+            job, result, current_seen_hash, at, withheld_reasons=self.withheld)
         self.job, self.bot = job, bot
 
     def collect(self, seen):
@@ -494,7 +522,10 @@ class Provider:
         return [a for a in articles if self.rows[a["article_id"]]["relevant"]]
 
     def analysis_for(self, article):
-        return copy.deepcopy(self.analyses[article["article_id"]])
+        aid = article["article_id"]
+        if aid in self.withheld:
+            return None
+        return copy.deepcopy(self.analyses[aid])
 
 
 class DeliveryGuard:
@@ -837,6 +868,9 @@ def consume(config, queue, job_id, dry_run=False, self_test=False):
     # result can change before retry; only this attempt may declare no delivery.
     for key in ("no_delivery_required", "review_required", "delivery_skipped_reason"):
         job.pop(key, None)
+    job.pop("validation_withheld", None)
+    if provider.withheld:
+        job["validation_withheld"] = provider.withheld
     job.update(status="sending", sending_at=now().isoformat())
     reserved=queue.put(path, job, sha)
     reserved_sha=(reserved or {}).get('content',{}).get('sha')
