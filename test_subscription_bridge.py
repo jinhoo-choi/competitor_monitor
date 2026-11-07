@@ -98,6 +98,19 @@ class SubscriptionRegression(unittest.TestCase):
 
     def analysis(self): return next(iter(self.result['analyses'].values()))
 
+    def test_withheld_requires_exact_selection_and_complete_input_classification(self):
+        aid = self.job["input"]["items"][0]["article_id"]
+        for withheld in ({aid: "중복 등록"}, {"unknown-id": "입력 외 기사"}, []):
+            with self.subTest(withheld=withheld), self.assertRaisesRegex(ValueError, "선정 ID"):
+                bridge.validate(self.job, {**self.result, "withheld": withheld}, "seen")
+        result = {**self.result, "analyses": {}, "withheld": {aid: "원문 검증 보류"}}
+        with self.assertRaisesRegex(ValueError, "입력 처리 건수"):
+            bridge.validate(self.job, {**result, "classifications": []}, "seen")
+        holds = {}
+        _, analyses = bridge.validate(self.job, result, "seen", withheld_reasons=holds)
+        self.assertEqual(analyses, {})
+        self.assertEqual(holds, result["withheld"])
+
     def test_same_version_policy_change_and_missing_hash_are_rejected(self):
         for value in [None, '0'*64]:
             result = copy.deepcopy(self.result)
@@ -391,6 +404,51 @@ class DeliveryIntegrityRegression(unittest.TestCase):
         self.stack.enter_context(patch.object(bot.smtplib,'SMTP_SSL',return_value=self.server))
 
     def consume(self):return bridge.consume({'engine':'subscription'},self.queue,self.job['job_id'])
+
+    def test_article_holds_do_not_block_valid_report_or_enter_seen(self):
+        valid = self.job["input"]["items"][0]
+        explicit = {**valid, "title": "삼성증권 바이오기업 공동 행사",
+                    "description": "삼성증권은 바이오벤처 공동 행사를 열기로 했다.",
+                    "_company": "삼성증권", "link": "https://example.invalid/explicit"}
+        invalid = {**valid, "title": "미래에셋증권 연금 자산관리 기능 공개",
+                   "description": "미래에셋증권은 연금 자산관리 기능을 공개했다.",
+                   "_body": "미래에셋증권은 연금 자산관리 기능을 공개했다.",
+                   "_company": "미래에셋증권", "link": "https://example.invalid/invalid"}
+        for article in (explicit, invalid):
+            aid = article["article_id"] = bridge.article_id(article)
+            self.job["input"]["items"].append(article)
+            self.job["input"]["raw_articles"].append(copy.deepcopy(article))
+            self.result["classifications"].append(
+                {"article_id": aid, "relevant": True, "reason": "경쟁사 신규 동향"})
+        self.result["withheld"] = {explicit["article_id"]: "기존 사건과 다른 서비스·계약 주제"}
+        self.result["analyses"][invalid["article_id"]] = {
+            **self.result["analyses"][valid["article_id"]],
+            "company_name": "미래에셋증권", "evidence_quote": "원문에 없는 구체적인 주장"}
+        self.job["input_hash"] = self.result["input_hash"] = bridge.digest(self.job["input"])
+        self.queue = MemoryQueue(self.job, self.result)
+
+        with patch.object(bot, "hard_filter", side_effect=lambda articles: (articles, [])), \
+             patch.object(bot, "send_email_error", return_value=True) as notice:
+            self.consume()
+        state, _ = self.queue.get(self.path)
+        self.assertEqual(list(state["receipts"].values()), ["accepted", "accepted"])
+        self.assertEqual(self.server.sendmail.call_count, 2)
+        notice.assert_called_once()
+        self.assertEqual(state["validation_withheld"], {
+            explicit["article_id"]: "기존 사건과 다른 서비스·계약 주제",
+            invalid["article_id"]: "원문 근거 인용 없음",
+        })
+        log, _ = self.queue.get("filter-logs/" + self.job["job_id"] + ".json")
+        self.assertEqual({row["article_id"]: row["decision"] for row in log["entries"]}, {
+            valid["article_id"]: "SENT", explicit["article_id"]: "WITHHELD",
+            invalid["article_id"]: "WITHHELD",
+        })
+        saved = Path("seen_articles.json").read_text()
+        self.assertIn(valid["link"], saved)
+        self.assertNotIn(explicit["link"], saved)
+        self.assertNotIn(invalid["link"], saved)
+        bridge.acknowledge(self.queue, self.job["job_id"])
+        self.assertEqual(self.queue.get(self.path)[0]["status"], "completed")
 
     def test_all_withheld_finishes_without_report_or_history_change(self):
         article = self.job['input']['items'][0]
