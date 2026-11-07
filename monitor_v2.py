@@ -2449,8 +2449,13 @@ def _run_main(provider=None):
 
     for i, art in enumerate(relevant):
         print(f"  [{i+1}/{len(relevant)}] {art['_company']} | {art['title'][:38]}...")
-        result = analyze_article(art, external_analysis=provider.analysis_for(art)) if provider is not None else analyze_article(art)
-        reason = _withhold_reason(result)
+        external_analysis = provider.analysis_for(art) if provider is not None else None
+        if provider is not None and external_analysis is None:
+            reason = provider.withheld[art["article_id"]]
+        else:
+            result = (analyze_article(art, external_analysis=external_analysis)
+                      if provider is not None else analyze_article(art))
+            reason = _withhold_reason(result)
         if reason:
             _OPERATIONAL_NOTES.append(reason + ": " + result.get("title", "")[:160])
             withheld_reasons[article_decision_key(art)] = reason
