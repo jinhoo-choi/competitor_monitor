@@ -1,7 +1,7 @@
 {
-  "operation": "consume",
-  "job_id": "42732592567",
-  "dry_run": false,
-  "self_test": false,
-  "request_id": "insight-42732592567-20261110T010245Z-consume"
+  "operation": "recover-inputs",
+  "source_job_ids": [
+    "42732592567"
+  ],
+  "request_id": "owner-recovery-42732592567-20261110T034337Z"
 }
