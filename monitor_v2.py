@@ -2457,7 +2457,10 @@ def _run_main(provider=None):
                       if provider is not None else analyze_article(art))
             reason = _withhold_reason(result)
         if reason:
-            _OPERATIONAL_NOTES.append(reason + ": " + result.get("title", "")[:160])
+            note = reason + ": " + art.get("title", "")[:160]
+            if art.get("article_id"):
+                note += f" [기사 ID: {art['article_id']}]"
+            _OPERATIONAL_NOTES.append(note)
             withheld_reasons[article_decision_key(art)] = reason
             continue
         analyzed.append(result)

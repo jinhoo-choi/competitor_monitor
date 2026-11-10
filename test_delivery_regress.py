@@ -166,6 +166,60 @@ class DeliveryRegression(unittest.TestCase):
         refused = bot._smtp_send("subject", "html", ["group@example.invalid"])
         self.assertIn("group@example.invalid", refused)
 
+    def provider_notice(self, titles, *, valid_first=False):
+        from types import SimpleNamespace
+        mocks = self.main_fixture()
+        valid = copy.deepcopy(mocks["analyze_article"].return_value)
+        valid.update(article_id="valid", title="직전 정상 기사 제목")
+        holds = [dict(copy.deepcopy(valid), article_id=f"held-{i}", title=title,
+                      link=f"https://example.invalid/held-{i}")
+                 for i, title in enumerate(titles)]
+        articles = ([valid] if valid_first else []) + holds
+        reasons = {a["article_id"]: "같은 보류 사유" for a in holds}
+        mocks["hard_filter"].return_value = (articles, [])
+        provider = SimpleNamespace(
+            collect=lambda seen: copy.deepcopy(articles),
+            relevant=lambda rows: rows,
+            analysis_for=lambda article: (None if article["article_id"] in reasons
+                                         else copy.deepcopy(article["analysis"])),
+            withheld=reasons,
+        )
+        self.sender()
+        with patch.object(bot, "send_email_error", return_value=True) as notice:
+            bot.main(provider)
+        notice.assert_called_once()
+        self.assertTrue(notice.call_args.kwargs["operational"])
+        self.assertEqual(mocks["save_filter_log"].call_args.args[4], reasons)
+        return notice.call_args.args[1].splitlines(), mocks
+
+    def test_provider_first_article_withheld_keeps_owner_notice_and_no_report(self):
+        lines, mocks = self.provider_notice(["처음부터 보류된 기사"])
+        self.assertEqual(len(lines), 1)
+        self.assertIn("처음부터 보류된 기사", lines[0])
+        self.assertIn("held-0", lines[0])
+        mocks["analyze_article"].assert_not_called()
+        mocks["save_seen"].assert_not_called()
+        mocks["build_email_html"].assert_not_called()
+
+    def test_provider_consecutive_holds_keep_current_source_titles(self):
+        titles = ["한미약품·삼성증권 바이오 행사", "롯데 주주우대 연계"]
+        lines, mocks = self.provider_notice(titles, valid_first=True)
+        self.assertEqual(len(lines), 2)
+        for i, title in enumerate(titles):
+            self.assertIn(title, lines[i])
+            self.assertIn(f"held-{i}", lines[i])
+        self.assertTrue(all("직전 정상 기사 제목" not in line for line in lines))
+        mocks["save_seen"].assert_called_once()
+        self.assertEqual(mocks["save_seen"].call_args.kwargs["sent_urls"],
+                         {"https://example.invalid/article"})
+
+    def test_provider_same_title_and_reason_holds_keep_distinct_article_ids(self):
+        lines, _ = self.provider_notice(["같은 제목", "같은 제목"], valid_first=True)
+        self.assertEqual(len(lines), 2)
+        for i, line in enumerate(lines):
+            self.assertIn("같은 제목", line)
+            self.assertIn(f"held-{i}", line)
+
     def test_test_mode_still_sends_only_owner(self):
         self.stack.enter_context(patch.object(bot, "TEST_MODE", True))
         send = self.sender()
@@ -357,3 +411,4 @@ class OwnCompanyExclusionRegression(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
