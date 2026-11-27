@@ -121,6 +121,57 @@ class BatchEventTests(unittest.TestCase):
         reversal = card("reversal", "한빛행사", "키움증권 한빛행사 참여기업을 다시 4곳으로 변경했다.", [("참여기업", "4곳")], "행사")
         self.assertEqual(len(self.select([reversal], [prior])), 1)
 
+    def test_nominal_maturity_aliases_are_one_card_and_not_later_updates(self):
+        for first, second in itertools.permutations(("365일", "1년", "12개월"), 2):
+            with self.subTest(first=first, second=second):
+                one = card("one", "안심계좌", f"키움증권 안심계좌 만기는 {first}이다.",
+                           [("만기", first)], "안심계좌")
+                two = card("two", "안심계좌", f"키움증권 안심계좌 만기는 {second}이다.",
+                           [("만기", second)], "안심계좌")
+                self.assertEqual(len(self.select([copy.deepcopy(one), copy.deepcopy(two)])), 1)
+                prior = assess_event(one, one["analysis"], [], set(), NOW - timedelta(hours=1))["record"]
+                two["analysis"]["event"].update(novelty="update", matched_event_id=prior["event_id"])
+                self.assertEqual(self.select([two], [prior]), [])
+
+    def test_real_maturity_change_still_conflicts_in_batch_and_delivers_later(self):
+        for first, second in (("180일", "365일"), ("365일", "366일"), ("1년", "2년"),
+                              ("12개월", "13개월"), ("365일", "1년 이상")):
+            with self.subTest(first=first, second=second):
+                one = card("one", "안심계좌", f"키움증권 안심계좌 만기는 {first}이다.",
+                           [("만기", first)], "안심계좌")
+                two = card("two", "안심계좌", f"키움증권 안심계좌 만기는 {second}이다.",
+                           [("만기", second)], "안심계좌")
+                with self.assertRaisesRegex(ValueError, "수치 충돌"):
+                    self.select([copy.deepcopy(one), copy.deepcopy(two)])
+                prior = assess_event(one, one["analysis"], [], set(), NOW - timedelta(hours=1))["record"]
+                two["analysis"]["event"].update(novelty="update", matched_event_id=prior["event_id"])
+                self.assertEqual(len(self.select([two], [prior])), 1)
+
+    def test_nominal_maturity_alias_in_history_is_not_new_without_reversal(self):
+        current = card("current", "안심계좌", "키움증권 안심계좌 만기는 180일이다.",
+                       [("만기기간", "180일")], "안심계좌")
+        prior = assess_event(current, current["analysis"], [], set(), NOW - timedelta(hours=1))["record"]
+        prior["fact_history"] = {"만기기간": ["365일", "180일"]}
+        old = card("old", "안심계좌", "키움증권 안심계좌 만기는 1년이다.",
+                   [("만기기간", "1년")], "안심계좌")
+        self.assertEqual(self.select([old], [prior]), [])
+        reversal = card("reversal", "안심계좌", "키움증권 안심계좌 만기를 다시 1년으로 변경했다.",
+                        [("만기기간", "1년")], "안심계좌")
+        self.assertEqual(len(self.select([reversal], [prior])), 1)
+
+    def test_non_maturity_axes_and_distinct_products_are_not_normalized(self):
+        one = card("one", "안심계좌", "키움증권 안심계좌 보유기간은 365일이다.",
+                   [("보유기간", "365일")], "안심계좌")
+        two = card("two", "안심계좌", "키움증권 안심계좌 보유기간은 1년이다.",
+                   [("보유기간", "1년")], "안심계좌")
+        with self.assertRaisesRegex(ValueError, "수치 충돌"):
+            self.select([one, two])
+        one = card("one", "안심계좌", "키움증권 안심계좌 만기는 365일이다.",
+                   [("만기", "365일")], "안심계좌")
+        two = card("two", "안심펀드", "키움증권 안심펀드 만기는 1년이다.",
+                   [("만기", "1년")], "안심펀드")
+        self.assertEqual(len(self.select([one, two])), 2)
+
     def test_saved_alias_proof_accepts_full_date_precision(self):
         sent = self.select(fixture())
         prior = next(a["_event_record"] for a in sent if a["article_id"].startswith("bio"))

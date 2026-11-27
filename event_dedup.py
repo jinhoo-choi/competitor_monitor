@@ -222,6 +222,11 @@ def _fact_numbers(key, value):
     # Currency, percentages, dates, signs and other units remain distinct.
     if re.search(r"참여기업|지원팀|통과|결선", normalize_text(key)):
         value = re.sub(r"(개사|곳|팀)", "개", value)
+    # Compare nominal one-year maturity labels only on a maturity axis.
+    # Do not convert calendar dates, qualified terms or arbitrary day counts.
+    if (re.search(r"만기(?:기간)?$", normalize_text(key))
+            and re.fullmatch(r"(?:365일|1년|12개월)(?:만기)?", _literal(value))):
+        return {"nominal_maturity_1y"}
     return _numbers(value)
 
 
@@ -253,8 +258,12 @@ def _fact_changes(event, prior):
             previous_numbers = _fact_numbers(key, old.get(key, ""))
             if previous_numbers and numbers != previous_numbers:
                 changes.append(key)
-            elif not old.get(key) and not numbers <= reported:
-                changes.append(key)
+            elif not old.get(key):
+                # Source-wide reported_values are raw numeric tokens, not
+                # axis-specific maturity labels.
+                reported_numbers = _numbers(value) if numbers == {"nominal_maturity_1y"} else numbers
+                if not reported_numbers <= reported:
+                    changes.append(key)
         elif (event["stage"] != prior.get("stage", "other")
                 and prior.get("stage") not in {None, "other"}
                 and event["stage"] not in {"other", "plan"}
