@@ -8,10 +8,10 @@ from pathlib import Path
 
 def arguments(signal):
     operation = signal.get("operation")
-    if operation not in {"connection", "initialize", "collect-test", "consume", "rollback-check", "cancel", "recover-state", "recover-inputs"}:
+    if operation not in {"connection", "initialize", "collect-test", "consume", "ack", "rollback-check", "cancel", "recover-state", "recover-inputs"}:
         raise ValueError("지원하지 않는 요청")
     args = [operation]
-    if operation in {"consume", "cancel", "recover-state"}:
+    if operation in {"consume", "ack", "cancel", "recover-state"}:
         job_id = signal.get("job_id", "")
         if not isinstance(job_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", job_id):
             raise ValueError("회차 ID 오류")
@@ -41,7 +41,7 @@ def arguments(signal):
         args += ["--dry-run"]
     if self_test:
         args += ["--self-test"]
-    if os.environ.get("GITHUB_REF", "refs/heads/main") != "refs/heads/main" and ((operation == "consume" and not (dry or self_test)) or operation in {"recover-state", "recover-inputs"}):
+    if os.environ.get("GITHUB_REF", "refs/heads/main") != "refs/heads/main" and ((operation == "consume" and not (dry or self_test)) or operation in {"ack", "recover-state", "recover-inputs"}):
         raise ValueError("운영 발송은 main에서만 가능")
     return args
 
@@ -51,8 +51,11 @@ if __name__ == "__main__":
     args = arguments(signal)
     if signal.get("self_test"):
         os.environ.update(TEST_MODE="1", NO_RESULT_RECEIVER=os.environ["GMAIL_USER"])
+    # ACK-only calls the existing guarded ACK once; it must not rerun consume,
+    # push history or invoke the workflow's post-consume ACK a second time.
     production = signal["operation"] == "recover-state" or (signal["operation"] == "consume" and not signal.get("dry_run") and not signal.get("self_test"))
     with open(os.environ.get("GITHUB_OUTPUT", os.devnull), "a") as output:
         output.write("production=" + str(production).lower() + "\n")
         output.write("job_id=" + signal.get("job_id", "") + "\n")
     subprocess.run(["python", "subscription_bridge.py", *args], check=True)
+

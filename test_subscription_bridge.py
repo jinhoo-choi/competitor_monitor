@@ -368,6 +368,40 @@ class SubscriptionRegression(unittest.TestCase):
                 q.initialize()
             self.assertTrue(all(len(c.args)<2 or c.args[1]=='GET' for c in request.call_args_list))
 
+    def test_ack_request_is_main_only_with_bounded_id_and_no_other_operations(self):
+        with patch.dict(os.environ, {'GITHUB_REF': 'refs/heads/main'}):
+            self.assertEqual(signal.arguments({'operation': 'ack', 'job_id': 'accepted-round'}),
+                             ['ack', '--job-id', 'accepted-round'])
+            for request in ({'operation': 'ack'},
+                            {'operation': 'ack', 'job_id': '$(whoami)'},
+                            {'operation': 'ack', 'job_id': 'accepted-round', 'dry_run': True},
+                            {'operation': 'ack', 'job_id': 'accepted-round', 'self_test': True},
+                            {'operation': 'ack', 'job_id': 'accepted-round', 'article_ids': ['a'*24]},
+                            {'operation': 'ack', 'job_id': 'accepted-round', 'source_job_ids': ['old']}):
+                with self.subTest(request=request), self.assertRaises(ValueError):
+                    signal.arguments(request)
+        with patch.dict(os.environ, {'GITHUB_REF': 'refs/heads/codex/insight-subscription'}):
+            with self.assertRaises(ValueError):
+                signal.arguments({'operation': 'ack', 'job_id': 'accepted-round'})
+
+    def test_ack_request_runs_guarded_ack_once_without_post_consume_outputs(self):
+        import runpy
+        script = Path(signal.__file__).resolve()
+        with tempfile.TemporaryDirectory() as tmp:
+            request = Path(tmp) / 'request.json'
+            request.write_text('{"operation":"ack","job_id":"accepted-round"}')
+            output = Path(tmp) / 'outputs'
+            real_read = Path.read_text
+            def read(path, *args, **kwargs):
+                return real_read(request if str(path) == 'subscription_request.json' else path,
+                                 *args, **kwargs)
+            with patch.dict(os.environ, {'GITHUB_REF': 'refs/heads/main', 'GITHUB_OUTPUT': str(output)}), \
+                 patch.object(Path, 'read_text', read), patch('subprocess.run') as run:
+                runpy.run_path(str(script), run_name='__main__')
+            run.assert_called_once_with(
+                ['python', 'subscription_bridge.py', 'ack', '--job-id', 'accepted-round'], check=True)
+            self.assertEqual(output.read_text(), 'production=false\njob_id=accepted-round\n')
+
     def test_signal_never_evaluates_commands_and_blocks_branch_broadcast(self):
         for request in [dict(operation='consume',job_id='$(whoami)'),dict(operation='scheduled'),dict(operation='consume',job_id='id',dry_run='false')]:
             with self.assertRaises(ValueError): signal.arguments(request)
@@ -857,3 +891,4 @@ class AnalysisLimitLoggingRegression(unittest.TestCase):
 
 
 if __name__ == '__main__': unittest.main()
+
