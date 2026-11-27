@@ -1,5 +1,7 @@
 {
-  "operation": "ack",
-  "job_id": "45301702869",
-  "request_id": "owner-recovery-45301702869-20261127T003547Z"
+  "operation": "consume",
+  "job_id": "45920053954",
+  "dry_run": false,
+  "self_test": false,
+  "request_id": "insight-45920053954-20261127T010505Z-consume"
 }
